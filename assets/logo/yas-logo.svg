@@ -1,0 +1,7 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- YAS wordmark -->
+  <rect width="40" height="40" rx="8" fill="#1A56DB"/>
+  <text x="20" y="27" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="16" fill="white" letter-spacing="-0.5">YAS</text>
+  <text x="52" y="18" font-family="Inter, sans-serif" font-weight="700" font-size="14" fill="#0F172A">Help Desk</text>
+  <text x="52" y="32" font-family="Cairo, sans-serif" font-weight="400" font-size="9" fill="#64748B">Technical Support</text>
+</svg>

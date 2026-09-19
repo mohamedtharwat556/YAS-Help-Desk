@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231A56DB%27/%3E%3Ctext x=%2716%27 y=%2722%27 text-anchor=%27middle%27 font-family=%27Inter%27 font-weight=%27800%27 font-size=%2712%27 fill=%27white%27%3EYAS%3C/text%3E%3C/svg%3E">
+  <title>YAS Help Desk — الدعم الفني</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/customer.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<!-- ── Header ───────────────────────────────────────────────── -->
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <a href="index.html" class="portal-logo">
+      <div class="logo-mark">YAS</div>
+      <div class="logo-text">
+        <div class="brand">YAS Help Desk</div>
+        <div class="tagline">Technical Support &amp; Customer Service</div>
+      </div>
+    </a>
+
+    <nav class="portal-nav" id="portal-nav">
+      <a href="index.html" class="active">الرئيسية</a>
+      <a href="support.html">تسجيل طلب</a>
+      <a href="tracking.html">متابعة الطلب</a>
+      <a href="index.html#faq">الأسئلة الشائعة</a>
+    </nav>
+
+    <div class="portal-nav-actions">
+      <button class="theme-toggle" id="theme-toggle-btn" aria-label="تبديل الوضع"></button>
+      <button class="menu-toggle" id="menu-toggle" aria-label="القائمة">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ── Main ─────────────────────────────────────────────────── -->
+<main class="portal-page">
+
+  <!-- Hero -->
+  <section class="hero stagger-children">
+    <div class="hero-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      YAS Technical Support
+    </div>
+    <h1>YAS Help Desk</h1>
+    <div class="hero-arabic">محتاج مساعدة؟ إحنا معاك.</div>
+    <p>سجل طلب الدعم الفني، تابع حالة جهازك، أو تواصل مع فريق YAS بسهولة.</p>
+
+    <div class="hero-actions">
+      <a href="support.html" class="btn btn-primary btn-lg">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        تسجيل طلب دعم
+      </a>
+      <a href="tracking.html" class="btn btn-secondary btn-lg">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        متابعة طلب
+      </a>
+    </div>
+
+    <!-- Live Ticket Preview -->
+    <div class="ticket-preview hover-lift">
+      <div class="ticket-preview-header">
+        <span class="ticket-preview-id" id="preview-ticket-id">YAS-SUP-10482</span>
+        <span class="badge badge-new" style="font-size:0.6875rem">مباشر</span>
+      </div>
+      <div class="ticket-preview-type">Laptop Support — Dell Latitude</div>
+      <div class="ticket-preview-status" id="preview-status">
+        <span class="badge badge-reviewing">قيد المراجعة</span>
+      </div>
+      <div class="ticket-preview-update">
+        <span class="live-dot"></span>
+        آخر تحديث: منذ 15 دقيقة
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Categories -->
+  <section class="categories-section">
+    <h2>خدمات الدعم الفني</h2>
+    <p class="subtitle">اختر نوع الخدمة التي تحتاجها وسنوصلك بالفريق المناسب</p>
+
+    <div class="categories-grid stagger-children">
+      <a href="support.html" class="category-card" data-type="technical">
+        <div class="category-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></svg>
+        </div>
+        <div class="category-info">
+          <h4>الدعم الفني</h4>
+          <p>مشكلة فنية في الجهاز</p>
+        </div>
+      </a>
+
+      <a href="support.html" class="category-card" data-type="maintenance">
+        <div class="category-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div class="category-info">
+          <h4>الصيانة</h4>
+          <p>طلب صيانة وفحص</p>
+        </div>
+      </a>
+
+      <a href="support.html" class="category-card" data-type="warranty">
+        <div class="category-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="category-info">
+          <h4>الضمان</h4>
+          <p>استفسار أو طلب متعلق بالضمان</p>
+        </div>
+      </a>
+
+      <a href="support.html" class="category-card" data-type="complaint">
+        <div class="category-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="category-info">
+          <h4>الشكاوى</h4>
+          <p>شكوى أو مشكلة في الخدمة</p>
+        </div>
+      </a>
+
+      <a href="support.html" class="category-card" data-type="inquiry">
+        <div class="category-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="category-info">
+          <h4>الاستفسارات</h4>
+          <p>استفسار عن منتج أو خدمة</p>
+        </div>
+      </a>
+
+      <a href="support.html" class="category-card" data-type="installation">
+        <div class="category-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+        </div>
+        <div class="category-info">
+          <h4>التركيب والإعداد</h4>
+          <p>تركيب وإعداد الأجهزة</p>
+        </div>
+      </a>
+
+      <a href="support.html" class="category-card" data-type="followup">
+        <div class="category-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        </div>
+        <div class="category-info">
+          <h4>المتابعة</h4>
+          <p>متابعة طلب سابق</p>
+        </div>
+      </a>
+
+      <a href="support.html" class="category-card" data-type="other">
+        <div class="category-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+        <div class="category-info">
+          <h4>طلب آخر</h4>
+          <p>أي طلب آخر</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section style="max-width:900px;margin:0 auto var(--space-16);padding:0 var(--space-8);width:100%">
+    <h2 style="text-align:center;margin-bottom:var(--space-3)">كيف تعمل الخدمة؟</h2>
+    <p style="text-align:center;color:var(--text-muted);margin-bottom:var(--space-10);font-size:0.9375rem">أربع خطوات بسيطة للحصول على الدعم الفني</p>
+    <div class="grid-4 stagger-children">
+      <div class="card" style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);font-size:1.25rem;font-weight:800;color:var(--primary);font-family:var(--font-ui)">١</div>
+        <h4 style="margin-bottom:var(--space-2)">سجّل طلبك</h4>
+        <p style="font-size:0.875rem">أدخل بياناتك ومعلومات جهازك وصف المشكلة</p>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);font-size:1.25rem;font-weight:800;color:var(--primary);font-family:var(--font-ui)">٢</div>
+        <h4 style="margin-bottom:var(--space-2)">احصل على رقم</h4>
+        <p style="font-size:0.875rem">ستحصل فوراً على رقم الطلب YAS-SUP-XXXXX</p>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);font-size:1.25rem;font-weight:800;color:var(--primary);font-family:var(--font-ui)">٣</div>
+        <h4 style="margin-bottom:var(--space-2)">فريقنا يتواصل</h4>
+        <p style="font-size:0.875rem">سيتواصل معك Eng. Adam Farouk لمتابعة طلبك</p>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);font-size:1.25rem;font-weight:800;color:var(--primary);font-family:var(--font-ui)">٤</div>
+        <h4 style="margin-bottom:var(--space-2)">حل المشكلة</h4>
+        <p style="font-size:0.875rem">تابع حالة طلبك حتى يتم حل مشكلتك بنجاح</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-page" id="faq">
+    <h2 style="text-align:center;margin-bottom:var(--space-3)">الأسئلة الشائعة</h2>
+    <p style="text-align:center;color:var(--text-muted);margin-bottom:var(--space-8);font-size:0.9375rem">إجابات على أكثر الأسئلة شيوعاً</p>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        كيف أتابع حالة طلب الدعم الفني؟
+        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>بعد إنشاء الطلب، ستحصل على رقم فريد بصيغة YAS-SUP-XXXXX. يمكنك استخدام هذا الرقم في صفحة "متابعة الطلب" للاطلاع على الحالة الحالية وجميع التحديثات.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        ما هي أنواع الأجهزة التي تدعمها YAS؟
+        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>تدعم YAS مجموعة واسعة من الأجهزة تشمل: اللاب توب، الكمبيوتر المكتبي، أجهزة الكاشير POS، كاميرات وأنظمة Hikvision، البروجكتر، الشاشات، الطابعات، أجهزة الشبكات، والملحقات المختلفة.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        كم يستغرق الرد على طلب الدعم؟
+        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>يتم استلام الطلبات فور تقديمها، ويسعى فريقنا للتواصل معك خلال ساعات العمل. الطلبات العاجلة تحظى بالأولوية وقد يتم الرد عليها في غضون ساعة.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        هل يمكنني تقديم طلب خارج ساعات العمل؟
+        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>نعم، يمكنك تقديم الطلب في أي وقت عبر البوابة الإلكترونية. سيتم استلام الطلب وتعيينه تلقائياً، وسيتم التواصل معك في أقرب وقت ممكن خلال ساعات العمل الرسمية.</p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question">
+        ما الفرق بين طلب الصيانة وطلب الدعم الفني؟
+        <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-answer">
+        <p>الدعم الفني يشمل المساعدة في حل المشكلات البرمجية والتقنية عن بُعد أو بزيارة. أما الصيانة فتعني الفحص الفيزيائي للجهاز وإصلاح الأعطال المادية، وقد تتطلب استلام الجهاز في مقر YAS.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ────────────────────────────────────────────────── -->
+<footer class="portal-footer">
+  <div style="margin-bottom:var(--space-3)">
+    <strong style="color:var(--text)">YAS Help Desk</strong> — Technical Support &amp; Customer Service
+  </div>
+  <div>إشراف Eng. Adam Farouk · جميع الحقوق محفوظة لـ YAS © 2026</div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/customer.js"></script>
+</body>
+</html>

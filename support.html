@@ -1,0 +1,498 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231A56DB%27/%3E%3Ctext x=%2716%27 y=%2722%27 text-anchor=%27middle%27 font-family=%27Inter%27 font-weight=%27800%27 font-size=%2712%27 fill=%27white%27%3EYAS%3C/text%3E%3C/svg%3E">
+  <title>تسجيل طلب دعم — YAS Help Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/customer.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <a href="index.html" class="portal-logo">
+      <div class="logo-mark">YAS</div>
+      <div class="logo-text">
+        <div class="brand">YAS Help Desk</div>
+        <div class="tagline">Technical Support &amp; Customer Service</div>
+      </div>
+    </a>
+    <nav class="portal-nav" id="portal-nav">
+      <a href="index.html">الرئيسية</a>
+      <a href="support.html" class="active">تسجيل طلب</a>
+      <a href="tracking.html">متابعة الطلب</a>
+    </nav>
+    <div class="portal-nav-actions">
+      <button class="theme-toggle" id="theme-toggle-btn" aria-label="تبديل الوضع"></button>
+      <button class="menu-toggle" id="menu-toggle" aria-label="القائمة">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="portal-page">
+
+  <!-- ══ FORM SECTION ══ -->
+  <div id="form-section">
+    <div class="support-page page-enter">
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb" style="margin-bottom:var(--space-6)">
+        <a href="index.html">الرئيسية</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">تسجيل طلب دعم فني</span>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-bar" style="margin-bottom:var(--space-8)">
+        <div class="progress-fill" id="form-progress" style="width:0%"></div>
+      </div>
+
+      <!-- Step Indicator -->
+      <div class="step-indicator" style="margin-bottom:var(--space-8)">
+        <div class="step-item active" data-step="1">
+          <div class="step-dot">1</div>
+          <div class="step-label">بيانات العميل</div>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-dot">2</div>
+          <div class="step-label">بيانات الجهاز</div>
+        </div>
+        <div class="step-item" data-step="3">
+          <div class="step-dot">3</div>
+          <div class="step-label">تفاصيل الطلب</div>
+        </div>
+        <div class="step-item" data-step="4">
+          <div class="step-dot">4</div>
+          <div class="step-label">المراجعة</div>
+        </div>
+      </div>
+
+      <form id="ticket-form" novalidate>
+
+        <!-- ══ STEP 1: Customer Info ══ -->
+        <div class="form-step active" id="step-1">
+          <div class="form-card">
+            <div class="form-card-header">
+              <h2>بيانات العميل</h2>
+              <p>أدخل معلوماتك الشخصية للتواصل معك</p>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cust-name" class="required">الاسم الكامل</label>
+                <input type="text" id="cust-name" placeholder="مثال: محمد أحمد العمري" autocomplete="name">
+                <div class="form-error" id="cust-name-error"></div>
+              </div>
+              <div class="form-group">
+                <label for="cust-phone" class="required">رقم الجوال</label>
+                <input type="tel" id="cust-phone" placeholder="05XXXXXXXX" autocomplete="tel" dir="ltr" style="text-align:center">
+                <div class="form-error" id="cust-phone-error"></div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="cust-whatsapp">رقم واتساب</label>
+                <input type="tel" id="cust-whatsapp" placeholder="اتركه فارغاً إذا مطابق للجوال" dir="ltr" style="text-align:center">
+                <div class="form-hint">اتركه فارغاً إذا كان نفس رقم الجوال</div>
+              </div>
+              <div class="form-group">
+                <label for="cust-email">البريد الإلكتروني</label>
+                <input type="email" id="cust-email" placeholder="example@email.com" autocomplete="email" dir="ltr" style="text-align:center">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="cust-company">الشركة / المؤسسة</label>
+              <input type="text" id="cust-company" placeholder="اسم الشركة أو المؤسسة (اختياري)">
+            </div>
+
+            <div class="form-actions">
+              <span style="font-size:0.875rem;color:var(--text-muted)">الخطوة 1 من 4</span>
+              <button type="button" class="btn btn-primary" data-next-step>
+                التالي
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ STEP 2: Device Info ══ -->
+        <div class="form-step" id="step-2">
+          <div class="form-card">
+            <div class="form-card-header">
+              <h2>بيانات الجهاز</h2>
+              <p>أخبرنا عن الجهاز الذي تحتاج إلى دعم له</p>
+            </div>
+
+            <!-- Device Type Selection -->
+            <div class="form-group">
+              <label class="required">نوع الجهاز</label>
+              <input type="hidden" id="device-type-hidden">
+              <div class="device-grid">
+
+                <div class="device-option" data-value="laptop">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16"/></svg>
+                  </div>
+                  <span>لاب توب</span>
+                </div>
+
+                <div class="device-option" data-value="desktop">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                  </div>
+                  <span>كمبيوتر</span>
+                </div>
+
+                <div class="device-option" data-value="pos">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/><path d="M7 13h2m0 0h2m-2 0v2m0-2v-2"/></svg>
+                  </div>
+                  <span>كاشير</span>
+                </div>
+
+                <div class="device-option" data-value="hikvision">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                  </div>
+                  <span>Hikvision</span>
+                </div>
+
+                <div class="device-option" data-value="projector">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="8" width="22" height="8" rx="2"/><path d="M10 8V6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2"/><circle cx="17" cy="12" r="1"/></svg>
+                  </div>
+                  <span>بروجكتر</span>
+                </div>
+
+                <div class="device-option" data-value="monitor">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  </div>
+                  <span>شاشة</span>
+                </div>
+
+                <div class="device-option" data-value="printer">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  </div>
+                  <span>طابعة</span>
+                </div>
+
+                <div class="device-option" data-value="network">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="6"/><rect x="9" y="16" width="6" height="6"/><rect x="2" y="9" width="6" height="6"/><rect x="16" y="9" width="6" height="6"/><line x1="15" y1="5" x2="19" y2="12"/><line x1="9" y1="5" x2="5" y2="12"/><line x1="5" y1="15" x2="9" y2="19"/><line x1="19" y1="15" x2="15" y2="19"/></svg>
+                  </div>
+                  <span>شبكة</span>
+                </div>
+
+                <div class="device-option" data-value="accessories">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="10" rx="2"/><path d="M6 11h4M8 9v4"/><circle cx="16" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
+                  </div>
+                  <span>ملحقات</span>
+                </div>
+
+                <div class="device-option" data-value="other">
+                  <div class="device-option-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  </div>
+                  <span>أخرى</span>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="device-brand">الماركة / الشركة المصنعة</label>
+                <input type="text" id="device-brand" placeholder="مثال: Dell، HP، Lenovo، Apple">
+              </div>
+              <div class="form-group">
+                <label for="device-model" class="required">الموديل</label>
+                <input type="text" id="device-model" placeholder="مثال: Latitude 5420، EliteBook 840">
+                <div class="form-error" id="device-model-error"></div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="device-serial">الرقم التسلسلي (Serial Number)</label>
+                <input type="text" id="device-serial" placeholder="اختياري — يساعد في التتبع" dir="ltr" style="text-align:center">
+              </div>
+              <div class="form-group">
+                <label for="purchase-date">تاريخ الشراء</label>
+                <input type="date" id="purchase-date">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="warranty-status">حالة الضمان</label>
+              <select id="warranty-status">
+                <option value="unknown">غير محدد</option>
+                <option value="active">الضمان ساري</option>
+                <option value="expiring">الضمان يقترب من الانتهاء</option>
+                <option value="expired">الضمان منتهي</option>
+              </select>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" data-prev-step>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                السابق
+              </button>
+              <span style="font-size:0.875rem;color:var(--text-muted)">الخطوة 2 من 4</span>
+              <button type="button" class="btn btn-primary" data-next-step>
+                التالي
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ STEP 3: Request Details ══ -->
+        <div class="form-step" id="step-3">
+          <div class="form-card">
+            <div class="form-card-header">
+              <h2>تفاصيل الطلب</h2>
+              <p>صف مشكلتك بوضوح حتى نتمكن من مساعدتك بشكل أفضل</p>
+            </div>
+
+            <div class="form-group">
+              <label for="request-type" class="required">نوع الطلب</label>
+              <select id="request-type">
+                <option value="">اختر نوع الطلب</option>
+                <option value="technical">دعم فني — مشكلة تقنية</option>
+                <option value="maintenance">صيانة — فحص وإصلاح</option>
+                <option value="warranty">ضمان — استفسار أو طلب ضمان</option>
+                <option value="complaint">شكوى — مشكلة في الخدمة</option>
+                <option value="inquiry">استفسار — سؤال عن منتج أو خدمة</option>
+                <option value="installation">تركيب — إعداد وتركيب</option>
+                <option value="followup">متابعة — طلب سابق</option>
+                <option value="other">أخرى</option>
+              </select>
+              <div class="form-error" id="request-type-error"></div>
+            </div>
+
+            <!-- Priority Selection -->
+            <div class="form-group">
+              <label class="required">الأولوية</label>
+              <input type="hidden" id="priority-hidden">
+              <div class="priority-options">
+                <div class="priority-option" data-value="low">
+                  <span class="priority-label" style="color:var(--priority-low)">عادية</span>
+                  <span class="priority-sub">مشكلة بسيطة</span>
+                </div>
+                <div class="priority-option" data-value="medium">
+                  <span class="priority-label" style="color:var(--info)">مهمة</span>
+                  <span class="priority-sub">تؤثر على العمل</span>
+                </div>
+                <div class="priority-option" data-value="high">
+                  <span class="priority-label" style="color:var(--warning)">عالية</span>
+                  <span class="priority-sub">مشكلة حرجة</span>
+                </div>
+                <div class="priority-option selected" data-value="critical">
+                  <span class="priority-label" style="color:var(--danger)">عاجلة</span>
+                  <span class="priority-sub">توقف كامل</span>
+                </div>
+              </div>
+              <!-- Priority pre-selected to "medium" via tickets.js TicketForm.init() -->
+            </div>
+
+            <div class="form-group">
+              <label for="problem-desc" class="required">وصف المشكلة</label>
+              <textarea id="problem-desc" rows="5" placeholder="صف المشكلة بالتفصيل: متى بدأت؟ ما هي الأعراض؟ هل جربت أي حلول؟ ما تأثيرها على عملك؟"></textarea>
+              <div class="form-error" id="desc-error"></div>
+              <div class="form-hint">كلما كان الوصف أوضح، كلما تمكنا من مساعدتك أسرع</div>
+            </div>
+
+            <!-- File Upload -->
+            <div class="form-group">
+              <label>إرفاق صور أو ملفات (اختياري)</label>
+              <div class="file-upload-area" id="file-upload-area">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto;display:block;color:var(--text-muted)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <p>اسحب الملفات هنا أو اضغط للاختيار</p>
+                <p style="font-size:0.75rem;color:var(--text-disabled);margin-top:4px">PNG, JPG, PDF — بحد أقصى 10MB</p>
+                <input type="file" id="file-input" multiple accept="image/*,.pdf">
+              </div>
+              <div id="file-list"></div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" data-prev-step>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                السابق
+              </button>
+              <span style="font-size:0.875rem;color:var(--text-muted)">الخطوة 3 من 4</span>
+              <button type="button" class="btn btn-primary" data-next-step>
+                مراجعة الطلب
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══ STEP 4: Review ══ -->
+        <div class="form-step" id="step-4">
+          <div class="form-card">
+            <div class="form-card-header">
+              <h2>مراجعة الطلب</h2>
+              <p>تأكد من صحة البيانات قبل الإرسال</p>
+            </div>
+
+            <!-- Customer Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                بيانات العميل
+              </div>
+              <div class="review-row"><span class="review-label">الاسم</span><span class="review-value" id="review-name">—</span></div>
+              <div class="review-row"><span class="review-label">الجوال</span><span class="review-value" id="review-phone" dir="ltr">—</span></div>
+              <div class="review-row"><span class="review-label">واتساب</span><span class="review-value" id="review-whatsapp" dir="ltr">—</span></div>
+              <div class="review-row"><span class="review-label">البريد</span><span class="review-value" id="review-email" dir="ltr">—</span></div>
+              <div class="review-row"><span class="review-label">الشركة</span><span class="review-value" id="review-company">—</span></div>
+            </div>
+
+            <!-- Device Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                بيانات الجهاز
+              </div>
+              <div class="review-row"><span class="review-label">نوع الجهاز</span><span class="review-value" id="review-device-type">—</span></div>
+              <div class="review-row"><span class="review-label">الماركة</span><span class="review-value" id="review-device-brand">—</span></div>
+              <div class="review-row"><span class="review-label">الموديل</span><span class="review-value" id="review-device-model">—</span></div>
+              <div class="review-row"><span class="review-label">الرقم التسلسلي</span><span class="review-value" id="review-device-serial" dir="ltr">—</span></div>
+              <div class="review-row"><span class="review-label">تاريخ الشراء</span><span class="review-value" id="review-purchase-date">—</span></div>
+              <div class="review-row"><span class="review-label">الضمان</span><span class="review-value" id="review-warranty">—</span></div>
+            </div>
+
+            <!-- Request Review -->
+            <div class="review-section">
+              <div class="review-section-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-4-4z"/><polyline points="15 5 15 9 19 9"/></svg>
+                تفاصيل الطلب
+              </div>
+              <div class="review-row"><span class="review-label">نوع الطلب</span><span class="review-value" id="review-req-type">—</span></div>
+              <div class="review-row"><span class="review-label">الأولوية</span><span class="review-value" id="review-priority">—</span></div>
+              <div class="review-row" style="align-items:flex-start">
+                <span class="review-label">وصف المشكلة</span>
+                <span class="review-value" id="review-desc" style="max-width:360px;white-space:pre-wrap;font-size:0.875rem;line-height:1.6">—</span>
+              </div>
+            </div>
+
+            <!-- Notice -->
+            <div style="background:var(--primary-light);border:1px solid rgba(26,86,219,0.2);border-radius:var(--radius-lg);padding:var(--space-4);display:flex;gap:10px;align-items:flex-start;margin-bottom:var(--space-6)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <div style="font-size:0.875rem;color:var(--primary)">
+                بعد الإرسال، سيتم تعيين طلبك إلى <strong>Eng. Adam Farouk</strong> وسيتم التواصل معك قريباً.
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" data-prev-step>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                تعديل
+              </button>
+              <span style="font-size:0.875rem;color:var(--text-muted)">الخطوة 4 من 4</span>
+              <button type="button" class="btn btn-primary btn-lg" id="submit-ticket">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                إرسال طلب الدعم
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ══ SUCCESS SECTION ══ -->
+  <div id="success-section" style="display:none">
+    <div class="success-page page-enter">
+
+      <div class="success-icon">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline class="check-draw" points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+
+      <h1 style="margin-bottom:var(--space-3)">تم إرسال طلبك بنجاح!</h1>
+      <p id="success-cust-name" style="font-size:1.0625rem;color:var(--text-muted);margin-bottom:0"></p>
+      <p style="font-size:1rem;color:var(--text-muted);margin-bottom:var(--space-6)">
+        شكراً لتواصلك مع YAS. تم استلام طلبك وسيتم التواصل معك قريباً.
+      </p>
+
+      <div class="ticket-id-display">
+        <div class="id-label">رقم طلبك</div>
+        <div class="id-value" id="success-ticket-id">YAS-SUP-XXXXX</div>
+      </div>
+
+      <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:var(--space-8)">
+        احتفظ بهذا الرقم لمتابعة حالة طلبك في أي وقت
+      </p>
+
+      <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-primary btn-lg" id="track-ticket-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          متابعة الطلب
+        </button>
+        <button class="btn btn-secondary" id="copy-ticket-id">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          نسخ الرقم
+        </button>
+        <a href="index.html" class="btn btn-ghost">
+          العودة للرئيسية
+        </a>
+      </div>
+
+      <!-- What's next -->
+      <div class="card" style="margin-top:var(--space-10);text-align:right">
+        <h3 style="margin-bottom:var(--space-5);font-size:1rem">ماذا سيحدث الآن؟</h3>
+        <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+          <div style="display:flex;gap:var(--space-3);align-items:flex-start">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;font-weight:800;color:var(--primary)">١</div>
+            <div><strong style="font-size:0.9rem">سيراجع Eng. Adam Farouk طلبك</strong><p style="font-size:0.8125rem;margin:2px 0 0">خلال ساعات العمل الرسمية</p></div>
+          </div>
+          <div style="display:flex;gap:var(--space-3);align-items:flex-start">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;font-weight:800;color:var(--primary)">٢</div>
+            <div><strong style="font-size:0.9rem">سيتم التواصل معك عبر الهاتف أو واتساب</strong><p style="font-size:0.8125rem;margin:2px 0 0">للاستفسار عن تفاصيل إضافية إذا لزم</p></div>
+          </div>
+          <div style="display:flex;gap:var(--space-3);align-items:flex-start">
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;font-weight:800;color:var(--primary)">٣</div>
+            <div><strong style="font-size:0.9rem">تابع حالة طلبك</strong><p style="font-size:0.8125rem;margin:2px 0 0">باستخدام الرقم أعلاه في صفحة المتابعة</p></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer class="portal-footer">
+  <div>YAS Help Desk — Technical Support &amp; Customer Service</div>
+  <div style="margin-top:4px">إشراف Eng. Adam Farouk · جميع الحقوق محفوظة لـ YAS © 2026</div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/file-upload.js"></script>
+<script src="js/tickets.js"></script>
+</body>
+</html>

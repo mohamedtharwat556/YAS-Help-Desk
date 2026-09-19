@@ -1,0 +1,69 @@
+{
+  "name": "YAS Help Desk",
+  "short_name": "YAS HD",
+  "description": "نظام الدعم الفني وخدمة العملاء",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1A56DB",
+  "orientation": "portrait-primary",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231A56DB'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Inter' font-weight='800' font-size='12' fill='white'%3EYAS%3C/text%3E%3C/svg%3E",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%231A56DB'/%3E%3Ctext x='96' y='132' text-anchor='middle' font-family='Inter' font-weight='800' font-size='72' fill='white'%3EYAS%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='96' fill='%231A56DB'/%3E%3Ctext x='256' y='352' text-anchor='middle' font-family='Inter' font-weight='800' font-size='192' fill='white'%3EYAS%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "تسجيل طلب جديد",
+      "short_name": "طلب جديد",
+      "description": "تسجيل طلب دعم فني جديد",
+      "url": "support.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231A56DB'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Inter' font-weight='800' font-size='12' fill='white'%3EYAS%3C/text%3E%3C/svg%3E",
+          "sizes": "32x32"
+        }
+      ]
+    },
+    {
+      "name": "متابعة الطلب",
+      "short_name": "متابعة",
+      "description": "متابعة حالة طلب موجود",
+      "url": "tracking.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231A56DB'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Inter' font-weight='800' font-size='12' fill='white'%3EYAS%3C/text%3E%3C/svg%3E",
+          "sizes": "32x32"
+        }
+      ]
+    },
+    {
+      "name": "لوحة التحكم",
+      "short_name": "لوحة التحكم",
+      "description": "الدخول إلى لوحة التحكم",
+      "url": "login.html",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231A56DB'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Inter' font-weight='800' font-size='12' fill='white'%3EYAS%3C/text%3E%3C/svg%3E",
+          "sizes": "32x32"
+        }
+      ]
+    }
+  ]
+}

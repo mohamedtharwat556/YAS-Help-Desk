@@ -1,0 +1,449 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231A56DB%27/%3E%3Ctext x=%2716%27 y=%2722%27 text-anchor=%27middle%27 font-family=%27Inter%27 font-weight=%27800%27 font-size=%2712%27 fill=%27white%27%3EYAS%3C/text%3E%3C/svg%3E">
+  <title>الإعدادات — YAS Help Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div class="dashboard-layout" id="settings-page">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="logo-mark" style="width:34px;height:34px;background:var(--primary);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.875rem;font-weight:800;font-family:var(--font-ui);flex-shrink:0">YAS</div>
+      <div><div class="brand">YAS Help Desk</div><div class="tagline">Engineer Dashboard</div></div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">الرئيسية</div>
+      <a href="dashboard.html" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        نظرة عامة
+      </a>
+      <div class="nav-section-label">إدارة الطلبات</div>
+      <a href="tickets.html" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-4-4z"/><polyline points="15 5 15 9 19 9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        الطلبات
+      </a>
+      <a href="customers.html" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        العملاء
+      </a>
+      <a href="devices.html" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        الأجهزة
+      </a>
+      <div class="nav-section-label">الخدمات</div>
+      <a href="maintenance.html" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        الصيانة
+      </a>
+      <a href="warranty.html" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        الضمان
+      </a>
+      <div class="nav-section-label">التحليلات</div>
+      <a href="reports.html" class="nav-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        التقارير
+      </a>
+      <div class="nav-section-label">النظام</div>
+      <a href="settings.html" class="nav-item active">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        الإعدادات
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-user-initials">AF</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-user-name">Eng. Adam Farouk</div>
+          <div class="user-role" id="sidebar-user-role">Technical Support Engineer</div>
+        </div>
+      </div>
+      <button class="logout-btn" id="logout-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        تسجيل الخروج
+      </button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- ── Main ───────────────────────────────────────────────── -->
+  <div class="main-content">
+
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="top-bar-left">
+        <button class="sidebar-toggle" id="sidebar-toggle">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="global-search">
+          <span class="global-search-icon">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input type="text" id="global-search" placeholder="بحث سريع...">
+          <div class="search-results-dropdown" id="search-results"></div>
+        </div>
+      </div>
+      <div class="top-bar-actions">
+        <button class="icon-btn theme-toggle" id="theme-toggle-btn"></button>
+        <button class="icon-btn" id="notif-btn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-badge" id="notif-badge" style="display:none">0</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Notification Panel -->
+    <div class="notif-panel" id="notif-panel">
+      <div class="notif-panel-header">
+        <span class="notif-panel-title">الإشعارات</span>
+        <button class="notif-panel-clear" id="notif-clear">مسح الكل</button>
+      </div>
+      <div id="notif-list"></div>
+    </div>
+
+    <!-- Page Content -->
+    <main class="page-content page-enter">
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb" style="margin-bottom:var(--space-5)">
+        <a href="dashboard.html">لوحة التحكم</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">الإعدادات</span>
+      </div>
+
+      <div class="page-header">
+        <div>
+          <h1>إعدادات النظام</h1>
+          <p>تخصيص إعدادات YAS Help Desk</p>
+        </div>
+      </div>
+
+      <!-- Settings Layout -->
+      <div class="settings-grid">
+
+        <!-- Settings Nav -->
+        <div class="settings-sidebar">
+          <div class="settings-nav-item active" data-panel="panel-general">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            إعدادات عامة
+          </div>
+          <div class="settings-nav-item" data-panel="panel-contact">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            إعدادات التواصل
+          </div>
+          <div class="settings-nav-item" data-panel="panel-appearance">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+            المظهر والثيم
+          </div>
+          <div class="settings-nav-item" data-panel="panel-notifications">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            الإشعارات
+          </div>
+          <div class="settings-nav-item" data-panel="panel-account">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            الحساب
+          </div>
+          <div class="settings-nav-item" data-panel="panel-danger">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span style="color:var(--danger)">منطقة الخطر</span>
+          </div>
+        </div>
+
+        <!-- Settings Panels -->
+        <div>
+
+          <!-- ── General Settings ── -->
+          <div class="settings-panel active card" id="panel-general">
+            <div class="settings-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              الإعدادات العامة
+            </div>
+            <form id="general-settings-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="set-company-name">اسم الشركة</label>
+                  <input type="text" id="set-company-name" placeholder="YAS">
+                </div>
+                <div class="form-group">
+                  <label for="set-engineer-name">اسم المهندس المسؤول</label>
+                  <input type="text" id="set-engineer-name" placeholder="Eng. Adam Farouk">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>التعيين التلقائي</label>
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-lg)">
+                  <div>
+                    <div style="font-weight:600;font-size:0.9rem">تعيين الطلبات تلقائياً</div>
+                    <div style="font-size:0.8125rem;color:var(--text-muted);margin-top:2px">تعيين كل طلب جديد إلى Eng. Adam Farouk تلقائياً</div>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="set-auto-assign" checked>
+                    <div class="toggle-track"></div>
+                  </label>
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:flex-end;margin-top:var(--space-2)">
+                <button type="submit" class="btn btn-primary">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  حفظ الإعدادات
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ── Contact Settings ── -->
+          <div class="settings-panel card" id="panel-contact">
+            <div class="settings-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              إعدادات التواصل
+            </div>
+            <form id="contact-settings-form">
+              <div class="form-group">
+                <label for="set-whatsapp">رقم واتساب YAS</label>
+                <div style="position:relative">
+                  <input type="tel" id="set-whatsapp" placeholder="966500000000" dir="ltr" style="text-align:center;padding-right:40px">
+                  <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#25D366">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  </span>
+                </div>
+                <div class="form-hint">يُستخدم في زر "تواصل عبر واتساب" داخل تفاصيل الطلب. أدخل الرقم بالصيغة الدولية بدون + (مثل: 966501234567)</div>
+              </div>
+
+              <div style="background:var(--warning-light);border:1px solid #FDE68A;border-radius:var(--radius-lg);padding:var(--space-4);margin-bottom:var(--space-5);display:flex;gap:10px;align-items:flex-start">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#92400E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                <div style="font-size:0.8125rem;color:#92400E">
+                  تأكد من إدخال رقم واتساب صحيح. سيظهر هذا الرقم في روابط التواصل مع العملاء عبر واتساب.
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:flex-end">
+                <button type="submit" class="btn btn-primary">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  حفظ
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- ── Appearance ── -->
+          <div class="settings-panel card" id="panel-appearance">
+            <div class="settings-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+              المظهر والثيم
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+
+              <!-- Dark Mode -->
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-lg)">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <div style="width:40px;height:40px;border-radius:var(--radius-md);background:var(--primary-light);display:flex;align-items:center;justify-content:center;color:var(--primary)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-weight:600;font-size:0.9rem">الوضع الداكن</div>
+                    <div style="font-size:0.8125rem;color:var(--text-muted)">تبديل بين الوضع الفاتح والداكن</div>
+                  </div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="set-dark-mode">
+                  <div class="toggle-track"></div>
+                </label>
+              </div>
+
+              <!-- Theme Preview -->
+              <div style="padding:var(--space-5);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-lg)">
+                <div style="font-size:0.875rem;font-weight:600;margin-bottom:var(--space-4)">معاينة الألوان الأساسية</div>
+                <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--primary)"></div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">Primary</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--success)"></div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">Success</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--warning)"></div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">Warning</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--danger)"></div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">Danger</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--surface);border:1px solid var(--border)"></div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">Surface</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+                    <div style="width:48px;height:48px;border-radius:var(--radius-lg);background:var(--background);border:1px solid var(--border)"></div>
+                    <div style="font-size:0.75rem;color:var(--text-muted)">Background</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ── Notifications ── -->
+          <div class="settings-panel card" id="panel-notifications">
+            <div class="settings-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              إعدادات الإشعارات
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-lg)">
+                <div>
+                  <div style="font-weight:600;font-size:0.9rem">إشعارات البريد الإلكتروني</div>
+                  <div style="font-size:0.8125rem;color:var(--text-muted)">استلام إشعار بالبريد عند كل طلب جديد</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="set-email-notif">
+                  <div class="toggle-track"></div>
+                </label>
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-lg)">
+                <div>
+                  <div style="font-weight:600;font-size:0.9rem">إشعارات الطلبات العاجلة</div>
+                  <div style="font-size:0.8125rem;color:var(--text-muted);margin-top:2px">تنبيه فوري عند وصول طلب بأولوية عاجلة</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <div class="toggle-track"></div>
+                </label>
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-lg)">
+                <div>
+                  <div style="font-weight:600;font-size:0.9rem">إشعارات حل الطلبات</div>
+                  <div style="font-size:0.8125rem;color:var(--text-muted);margin-top:2px">إشعار عند تحديث حالة الطلب إلى "تم الحل"</div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <div class="toggle-track"></div>
+                </label>
+              </div>
+
+              <div style="background:var(--primary-light);border:1px solid rgba(26,86,219,0.15);border-radius:var(--radius-lg);padding:var(--space-4);font-size:0.875rem;color:var(--primary)">
+                ملاحظة: الإشعارات المرئية داخل لوحة التحكم مفعّلة دائماً. خيارات البريد الإلكتروني تتطلب ربطاً بخادم بريد حقيقي في الإصدار الإنتاجي.
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Account ── -->
+          <div class="settings-panel card" id="panel-account">
+            <div class="settings-section-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              معلومات الحساب
+            </div>
+
+            <!-- Profile Card -->
+            <div style="display:flex;align-items:center;gap:var(--space-5);padding:var(--space-5);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-xl);margin-bottom:var(--space-6)">
+              <div style="width:64px;height:64px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.25rem;font-weight:800;font-family:var(--font-ui);flex-shrink:0">AF</div>
+              <div>
+                <div style="font-size:1.0625rem;font-weight:700">Eng. Adam Farouk</div>
+                <div style="font-size:0.875rem;color:var(--text-muted);margin-top:2px">Technical Support Engineer</div>
+                <div style="font-size:0.8125rem;color:var(--text-muted);margin-top:4px;font-family:var(--font-ui)" dir="ltr">adam@yas.sa</div>
+              </div>
+            </div>
+
+            <!-- Demo notice -->
+            <div style="background:var(--warning-light);border:1px solid #FDE68A;border-radius:var(--radius-lg);padding:var(--space-5);margin-bottom:var(--space-5)">
+              <div style="font-weight:700;color:#92400E;margin-bottom:var(--space-2)">إصدار تجريبي — Frontend Only</div>
+              <div style="font-size:0.875rem;color:#78350F;line-height:1.7">
+                هذا النظام حالياً في وضع العرض التجريبي. البيانات محفوظة في المتصفح فقط (LocalStorage). في الإصدار الإنتاجي، سيتم ربط النظام بخادم حقيقي مع قاعدة بيانات، نظام مصادقة آمن، وإشعارات بريد إلكتروني.
+              </div>
+            </div>
+
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+              <button class="btn btn-secondary" onclick="YAS.showToast('تغيير كلمة المرور يتطلب خادم حقيقي في الوضع التجريبي', 'info')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                تغيير كلمة المرور
+              </button>
+              <button class="btn btn-danger" id="logout-btn-settings">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                تسجيل الخروج
+              </button>
+            </div>
+          </div>
+
+          <!-- ── Danger Zone ── -->
+          <div class="settings-panel card" id="panel-danger">
+            <div class="settings-section-title" style="color:var(--danger)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              منطقة الخطر
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+
+              <!-- Reset Demo Data -->
+              <div style="padding:var(--space-5);border:1px solid var(--border);border-radius:var(--radius-lg)">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap">
+                  <div>
+                    <div style="font-weight:700;font-size:0.9375rem;margin-bottom:4px">إعادة تعيين البيانات التجريبية</div>
+                    <div style="font-size:0.875rem;color:var(--text-muted)">إعادة تحميل الطلبات التجريبية الافتراضية العشرة. لن تُحذف إعداداتك.</div>
+                  </div>
+                  <button class="btn btn-secondary btn-sm" id="reset-demo-data" style="flex-shrink:0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+                    إعادة تعيين
+                  </button>
+                </div>
+              </div>
+
+              <!-- Clear All Data -->
+              <div style="padding:var(--space-5);border:1px solid var(--danger-light);border-radius:var(--radius-lg);background:rgba(239,68,68,0.02)">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap">
+                  <div>
+                    <div style="font-weight:700;font-size:0.9375rem;margin-bottom:4px;color:var(--danger)">حذف جميع البيانات</div>
+                    <div style="font-size:0.875rem;color:var(--text-muted)">حذف جميع الطلبات والإشعارات والبيانات المحفوظة. هذا الإجراء لا يمكن التراجع عنه.</div>
+                  </div>
+                  <button class="btn btn-danger btn-sm" id="clear-all-data" style="flex-shrink:0">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    حذف الكل
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/api.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/sla.js"></script>
+<script src="js/settings-page.js"></script>
+<script>
+  // Extra logout button in account panel
+  document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('logout-btn-settings');
+    if (btn) btn.addEventListener('click', () => YASAuth.logout());
+  });
+</script>
+</body>
+</html>

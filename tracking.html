@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%231A56DB%27/%3E%3Ctext x=%2716%27 y=%2722%27 text-anchor=%27middle%27 font-family=%27Inter%27 font-weight=%27800%27 font-size=%2712%27 fill=%27white%27%3EYAS%3C/text%3E%3C/svg%3E">
+  <title>متابعة الطلب — YAS Help Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/customer.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+<header class="portal-header">
+  <div class="portal-header-inner">
+    <a href="index.html" class="portal-logo">
+      <div class="logo-mark">YAS</div>
+      <div class="logo-text">
+        <div class="brand">YAS Help Desk</div>
+        <div class="tagline">Technical Support &amp; Customer Service</div>
+      </div>
+    </a>
+    <nav class="portal-nav" id="portal-nav">
+      <a href="index.html">الرئيسية</a>
+      <a href="support.html">تسجيل طلب</a>
+      <a href="tracking.html" class="active">متابعة الطلب</a>
+    </nav>
+    <div class="portal-nav-actions">
+      <button class="theme-toggle" id="theme-toggle-btn" aria-label="تبديل الوضع"></button>
+      <button class="menu-toggle" id="menu-toggle" aria-label="القائمة">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="portal-page">
+  <div class="tracking-page page-enter">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb" style="margin-bottom:var(--space-6)">
+      <a href="index.html">الرئيسية</a>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current">متابعة الطلب</span>
+    </div>
+
+    <!-- Search Card -->
+    <div class="tracking-search">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-4);color:var(--primary)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <h2>تتبع طلب الدعم الفني</h2>
+      <p>أدخل رقم الطلب الذي حصلت عليه عند تسجيل طلبك</p>
+
+      <form id="tracking-form">
+        <div class="tracking-search-row">
+          <input
+            type="text"
+            id="track-input"
+            placeholder="YAS-SUP-XXXXX"
+            autocomplete="off"
+            spellcheck="false"
+            style="letter-spacing:0.08em;font-family:var(--font-ui);font-weight:700;font-size:1rem;text-transform:uppercase"
+          >
+          <button type="submit" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            بحث
+          </button>
+        </div>
+        <div style="font-size:0.8125rem;color:var(--text-muted);margin-top:var(--space-3)">
+          مثال: YAS-SUP-10482 &nbsp;|&nbsp; يمكنك أيضاً إدخال الأرقام فقط: 10482
+        </div>
+      </form>
+    </div>
+
+    <!-- Result -->
+    <div id="ticket-result" class="ticket-result">
+
+      <!-- Header -->
+      <div class="ticket-result-header">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- Body -->
+      <div class="ticket-result-body">
+
+        <!-- Info grid -->
+        <div class="ticket-info-grid">
+          <!-- Filled by JS -->
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Timeline -->
+        <h4 style="margin-bottom:var(--space-5);font-size:0.9375rem;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          مسار الطلب
+        </h4>
+        <div class="timeline">
+          <!-- Filled by JS -->
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+          <a href="support.html" class="btn btn-outline">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            طلب دعم جديد
+          </a>
+          <button class="btn btn-secondary" onclick="document.getElementById('ticket-result').classList.remove('show');document.getElementById('track-input').value='';document.getElementById('track-input').focus()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            بحث آخر
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Help Note -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:var(--space-6);margin-top:var(--space-6);display:flex;gap:var(--space-4);align-items:flex-start">
+      <div style="width:40px;height:40px;border-radius:var(--radius-md);background:var(--warning-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--warning)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div>
+        <strong style="font-size:0.9375rem">لا تتذكر رقم طلبك؟</strong>
+        <p style="font-size:0.875rem;color:var(--text-muted);margin-top:4px">
+          تحقق من الرسالة التي أرسلها لك النظام عند تسجيل الطلب. إذا واجهت مشكلة، تواصل مع Eng. Adam Farouk مباشرة.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="portal-footer">
+  <div>YAS Help Desk — Technical Support &amp; Customer Service</div>
+  <div style="margin-top:4px">إشراف Eng. Adam Farouk · جميع الحقوق محفوظة لـ YAS © 2026</div>
+</footer>
+
+<div id="toast-container"></div>
+
+<script src="js/api.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/tickets.js"></script>
+</body>
+</html>

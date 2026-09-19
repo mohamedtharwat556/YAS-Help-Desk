@@ -1,0 +1,422 @@
+/* ============================================================
+   YAS Help Desk — Responsive CSS
+   ============================================================ */
+
+/* ── Tablet (≤ 1024px) ──────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(100%);
+    box-shadow: var(--shadow-xl);
+    z-index: 500;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-right: 0;
+  }
+
+  .sidebar-toggle {
+    display: flex;
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 499;
+  }
+
+  .sidebar-overlay.show { display: block; }
+
+  .ticket-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-details-aside {
+    order: -1;
+  }
+
+  .global-search {
+    width: 220px;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .customer-profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .settings-nav-item {
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+}
+
+/* ── Mobile (≤ 768px) ───────────────────────────────────────── */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 56px;
+  }
+
+  /* Portal Header */
+  .portal-header {
+    padding: 0 var(--space-4);
+  }
+
+  .portal-header-inner {
+    max-width: 100%;
+  }
+
+  .portal-nav {
+    display: none;
+  }
+
+  .portal-nav.mobile-open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: var(--space-4);
+    z-index: 200;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .menu-toggle {
+    display: flex !important;
+  }
+
+  /* Hero */
+  .hero {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .hero h1 {
+    font-size: 1.875rem;
+  }
+
+  .hero-arabic {
+    font-size: 1.25rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Categories */
+  .categories-section {
+    padding: 0 var(--space-4) var(--space-8);
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  /* Multi-step form */
+  .support-page {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .form-card {
+    padding: var(--space-5);
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .step-label {
+    display: none;
+  }
+
+  .priority-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Tracking */
+  .tracking-page {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .tracking-search {
+    padding: var(--space-5);
+  }
+
+  .tracking-search-row {
+    flex-direction: column;
+  }
+
+  .ticket-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Dashboard top bar */
+  .top-bar {
+    padding: 0 var(--space-4);
+  }
+
+  .global-search {
+    display: none;
+  }
+
+  .page-content {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  /* Stats */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .stat-card-value {
+    font-size: 1.5rem;
+  }
+
+  /* Tables */
+  .table-responsive {
+    display: block;
+  }
+
+  .table-responsive thead {
+    display: none;
+  }
+
+  .table-responsive tbody tr {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .table-responsive tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .table-responsive tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .table-responsive tbody td::before {
+    content: attr(data-label);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  /* Ticket Details */
+  .ticket-header-top {
+    flex-direction: column;
+  }
+
+  .ticket-meta-list {
+    gap: var(--space-3);
+  }
+
+  /* Ticket filters */
+  .ticket-filters {
+    flex-direction: column;
+  }
+
+  .ticket-filters .search-box { width: 100%; }
+  .filter-select { width: 100%; }
+
+  /* Grids */
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Page header */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Donut chart */
+  .donut-chart-wrap {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Reports */
+  .bar-label {
+    width: 80px;
+    font-size: 0.75rem;
+  }
+
+  /* Login */
+  .login-card {
+    padding: var(--space-6);
+  }
+
+  /* Pagination */
+  .pagination {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  /* Modals */
+  .modal {
+    padding: var(--space-5);
+    margin: var(--space-4);
+    max-height: calc(100vh - 32px);
+  }
+
+  /* Confirm */
+  .confirm-actions {
+    flex-direction: column;
+  }
+  .confirm-actions .btn { width: 100%; }
+
+  /* Nav badge */
+  .nav-badge { display: none; }
+
+  .notif-panel {
+    width: calc(100vw - 32px);
+    left: 16px;
+  }
+}
+
+/* ── Small Mobile (≤ 480px) ─────────────────────────────────── */
+@media (max-width: 480px) {
+  .hero h1 { font-size: 1.5rem; }
+
+  .categories-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+
+  .category-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-4);
+  }
+
+  .device-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .step-dot {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+
+  .ticket-id-display .id-value {
+    font-size: 1.375rem;
+  }
+
+  .priority-options {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── Menu toggle button (only shown on mobile) ──────────────── */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+
+.menu-toggle:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* ── Print Styles ───────────────────────────────────────────── */
+@media print {
+  .sidebar, .top-bar, .portal-header, .toast-container { display: none !important; }
+  .main-content { margin-right: 0 !important; }
+  .page-content { padding: 0 !important; }
+}
+
+/* ── Detail page grids (device-details, customer-details) ───── */
+@media (max-width: 1024px) {
+  .customer-profile-grid,
+  [style*="grid-template-columns:320px"],
+  [style*="grid-template-columns: 320px"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Reports page stats 4-col → 2-col ─────────────────────── */
+@media (max-width: 900px) {
+  #reports-page .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ── Settings grid collapse ────────────────────────────────── */
+@media (max-width: 768px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .settings-nav-item {
+    border-bottom: 1px solid var(--border) !important;
+    border-right: none !important;
+  }
+}
