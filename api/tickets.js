@@ -38,7 +38,7 @@ module.exports = async function handler(req, res) {
   const path = req.url.replace('/api/tickets', '');
 
   // GET /api/tickets
-  if (path === '' && req.method === 'GET') {
+  if ((path === '' || path.startsWith('?')) && req.method === 'GET') {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Unauthorized' });

@@ -46,7 +46,12 @@ const YAS_API = {
 
     if (isVercel) {
       // For Vercel, use .js suffix for serverless functions
-      url = `/api${endpoint}.js`;
+      // But don't add .js if already present or if it's a full URL with query params
+      if (endpoint.includes('.js') || endpoint.includes('?')) {
+        url = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`;
+      } else {
+        url = `/api${endpoint}.js`;
+      }
     } else {
       url = `${this.baseURL}${endpoint}`;
     }
@@ -78,8 +83,19 @@ const YAS_API = {
    * GET request
    */
   async get(endpoint, params = {}) {
-    const queryString = new URLSearchParams(params).toString();
-    const url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    let url;
+    
+    if (isVercel) {
+      // For Vercel, add .js suffix before query params
+      const queryString = new URLSearchParams(params).toString();
+      const baseEndpoint = endpoint.endsWith('.js') ? endpoint : `${endpoint}.js`;
+      url = queryString ? `${baseEndpoint}?${queryString}` : baseEndpoint;
+    } else {
+      const queryString = new URLSearchParams(params).toString();
+      url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    }
+    
     return this.request(url, { method: 'GET' });
   },
 
@@ -227,6 +243,14 @@ const YAS_API = {
       };
     }
     return {};
+  },
+
+  /**
+   * Get notifications
+   */
+  async getNotifications() {
+    // Notifications endpoint not implemented yet, return empty array
+    return { success: true, data: [] };
   }
 };
 

@@ -35,7 +35,9 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Database not configured' });
   }
 
-  if (req.method === 'GET') {
+  const path = req.url.replace('/api/customers', '');
+
+  if ((path === '' || path.startsWith('?')) && req.method === 'GET') {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Unauthorized' });
