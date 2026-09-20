@@ -1,7 +1,7 @@
 {
   "name": "yas-helpdesk",
   "version": "1.0.0",
-  "description": "YAS Help Desk - Direct Supabase Integration",
+  "description": "YAS Help Desk - Simplified Backend with Supabase",
   "scripts": {
     "serve": "serve . -p 8000"
   },
@@ -14,6 +14,8 @@
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
     "serve": "^14.2.0"
   }
 }
