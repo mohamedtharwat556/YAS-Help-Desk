@@ -20,7 +20,7 @@ app.use(express.json());
 // Supabase Configuration
 const supabaseUrl = process.env.SUPABASE_URL || 'https://dqepsuecouvnvozcnjth.supabase.co';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxZXBzdWVjb3V2bnZvemNuanRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTgxODY3NCwiZXhwIjoyMTA1Mzk0Njc0fQ.yn1zGz8RIbyPKTkjw8YwTZr5cnTvyvd4Tp5COv046HE';
-const jwtSecret = process.env.JWT_SECRET || 'yas-helpdesk-secret-key-2026-production';
+const jwtSecret = process.env.JWT_SECRET || 'yas-helpdesk-2026-secret-key';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
