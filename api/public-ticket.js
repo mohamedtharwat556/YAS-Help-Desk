@@ -22,6 +22,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (!supabase) {
+    console.error('Supabase not configured:', { url: !!supabaseUrl, key: !!supabaseKey });
     return res.status(500).json({ error: 'Database not configured' });
   }
 
@@ -31,6 +32,8 @@ module.exports = async function handler(req, res) {
       if (typeof body === 'string') {
         body = JSON.parse(body);
       }
+
+      console.log('Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model });
 
       const { customer, device, request_type, priority = 'medium', description, files = [] } = body || {};
 
@@ -49,7 +52,12 @@ module.exports = async function handler(req, res) {
         .select()
         .single();
 
-      if (customerError) throw customerError;
+      if (customerError) {
+        console.error('Customer creation error:', customerError);
+        throw customerError;
+      }
+
+      console.log('Customer created:', newCustomer.id);
 
       // Create device
       const { data: newDevice, error: deviceError } = await supabase
@@ -66,7 +74,12 @@ module.exports = async function handler(req, res) {
         .select()
         .single();
 
-      if (deviceError) throw deviceError;
+      if (deviceError) {
+        console.error('Device creation error:', deviceError);
+        throw deviceError;
+      }
+
+      console.log('Device created:', newDevice.id);
 
       // Generate ticket number
       const { data: lastTicket } = await supabase
@@ -79,6 +92,8 @@ module.exports = async function handler(req, res) {
         ? parseInt(lastTicket[0].ticket_number.replace('YAS-SUP-', ''))
         : 10480;
       const ticketNumber = `YAS-SUP-${lastNumber + 1}`;
+
+      console.log('Ticket number:', ticketNumber);
 
       // Create ticket
       const { data: ticket, error: ticketError } = await supabase
@@ -101,7 +116,12 @@ module.exports = async function handler(req, res) {
         `)
         .single();
 
-      if (ticketError) throw ticketError;
+      if (ticketError) {
+        console.error('Ticket creation error:', ticketError);
+        throw ticketError;
+      }
+
+      console.log('Ticket created successfully:', ticket.id);
 
       res.status(201).json({
         success: true,
@@ -110,7 +130,7 @@ module.exports = async function handler(req, res) {
       });
     } catch (error) {
       console.error('Create ticket error:', error);
-      res.status(500).json({ error: 'Failed to create ticket' });
+      res.status(500).json({ error: 'Failed to create ticket', details: error.message });
     }
   } else {
     res.status(405).json({ error: 'Method not allowed' });
