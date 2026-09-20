@@ -451,7 +451,7 @@ const YAS_API = {
    */
   async uploadFile(file) {
     const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    const url = isVercel ? '/api/upload.js' : `${this.baseURL}/upload`;
+    const url = isVercel ? '/api/upload' : `${this.baseURL}/upload`;
     
     const formData = new FormData();
     formData.append('file', file);
@@ -472,7 +472,7 @@ const YAS_API = {
    */
   async uploadMultipleFiles(files) {
     const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    const url = isVercel ? '/api/upload/multiple.js' : `${this.baseURL}/upload/multiple`;
+    const url = isVercel ? '/api/upload/multiple' : `${this.baseURL}/upload/multiple`;
     
     const formData = new FormData();
     files.forEach(file => {
