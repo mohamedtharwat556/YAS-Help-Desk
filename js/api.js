@@ -180,11 +180,16 @@ const YAS_API = {
         },
         customer: ticket.customer || { name: 'Unknown', phone: '—' },
         device: ticket.device || { type: 'unknown', model: 'Unknown' },
-        assignedTo: ticket.assigned_user?.name || 'Unassigned',
+        assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
+        assigned_user: ticket.assigned_user,
+        assigned_to: ticket.assigned_to,
         // Keep original fields for backward compatibility
         request_type: ticket.request_type,
         priority: ticket.priority,
-        description: ticket.description
+        description: ticket.description,
+        // Add activities array for timeline
+        activities: [],
+        notes: []
       }));
       return { success: true, data: transformedTickets };
     }
