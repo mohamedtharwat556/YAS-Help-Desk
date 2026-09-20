@@ -33,7 +33,7 @@ module.exports = async function handler(req, res) {
         body = JSON.parse(body);
       }
 
-      console.log('Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model, request_type: body.request_type });
+      console.log('[PUBLIC-TICKET] Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model, request_type: body.request_type });
 
       const { customer, device, request_type, priority = 'medium', description, files = [] } = body || {};
 
@@ -113,32 +113,44 @@ module.exports = async function handler(req, res) {
         return res.status(500).json({ error: 'Failed to create device', details: error.message });
       }
 
-      // Generate ticket number
-      const { data: lastTicket } = await supabase
-        .from('tickets')
-        .select('ticket_number')
-        .order('created_at', { ascending: false })
-        .limit(1);
+      // Generate ticket number with retry logic to avoid duplicates
+      let finalTicketNumber;
+      let attempts = 0;
+      const maxAttempts = 5;
 
-      const lastNumber = lastTicket && lastTicket.length > 0
-        ? parseInt(lastTicket[0].ticket_number.replace('YAS-SUP-', ''))
-        : 10480;
-      const ticketNumber = `YAS-SUP-${lastNumber + 1}`;
+      while (attempts < maxAttempts) {
+        const { data: lastTicket } = await supabase
+          .from('tickets')
+          .select('ticket_number')
+          .order('created_at', { ascending: false })
+          .limit(1);
 
-      console.log('Ticket number:', ticketNumber);
+        const lastNumber = lastTicket && lastTicket.length > 0
+          ? parseInt(lastTicket[0].ticket_number.replace('YAS-SUP-', ''))
+          : 10480;
+        const ticketNumber = `YAS-SUP-${lastNumber + 1 + attempts}`;
 
-      // Check if ticket number already exists (to avoid duplicates)
-      const { data: existingTicket } = await supabase
-        .from('tickets')
-        .select('id')
-        .eq('ticket_number', ticketNumber)
-        .single();
+        console.log(`[PUBLIC-TICKET] Attempt ${attempts + 1}: Generated ticket number: ${ticketNumber}`);
 
-      let finalTicketNumber = ticketNumber;
-      if (existingTicket) {
-        console.log('Ticket number already exists, trying next number');
-        finalTicketNumber = `YAS-SUP-${lastNumber + 2}`;
-        console.log('Final ticket number:', finalTicketNumber);
+        // Check if this ticket number already exists
+        const { data: existingTicket } = await supabase
+          .from('tickets')
+          .select('id')
+          .eq('ticket_number', ticketNumber)
+          .single();
+
+        if (!existingTicket) {
+          finalTicketNumber = ticketNumber;
+          console.log(`[PUBLIC-TICKET] Found unique ticket number: ${finalTicketNumber}`);
+          break;
+        }
+
+        console.log(`[PUBLIC-TICKET] Ticket number ${ticketNumber} already exists, trying next...`);
+        attempts++;
+      }
+
+      if (!finalTicketNumber) {
+        throw new Error('Failed to generate unique ticket number after multiple attempts');
       }
 
       // Create ticket
