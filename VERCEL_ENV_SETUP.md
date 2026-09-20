@@ -6,29 +6,28 @@
 
 Go to your Vercel project: https://vercel.com/projs-projects-5ba5cc35/yas-help-desk/settings/environment-variables
 
-### Add the following variables:
+### 🔴 REQUIRED VARIABLES (Must Add These)
 
-### 1. Basic Configuration
-```
-NODE_ENV=production
-PORT=3000
-```
-
-### 2. Supabase Configuration
+### 1. Supabase Configuration
 Get these from: https://supabase.com/dashboard/project/_/settings/api
 
 ```
 SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your_anon_key_here
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 ```
 
-### 3. JWT Configuration
+### 2. JWT Configuration
 Generate a secure key: `openssl rand -base64 32`
 
 ```
 JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
-JWT_EXPIRES_IN=7d
+```
+
+### 🟢 OPTIONAL VARIABLES (Recommended)
+
+### 3. Basic Configuration
+```
+NODE_ENV=production
 ```
 
 ### 4. File Upload Configuration

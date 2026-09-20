@@ -7,7 +7,7 @@
 
 const YAS_API = {
   // Use environment variable for production, fallback to localhost for development
-  baseURL: window.ENV?.API_URL || 'http://localhost:3000/api',
+  baseURL: window.ENV?.API_URL || 'http://localhost:3001/api',
   token: localStorage.getItem('yas_api_token') || null,
 
   /**
@@ -143,8 +143,10 @@ const YAS_API = {
    */
   async login(email, password) {
     const response = await this.post('/auth', { email, password });
+    console.log('[API] Login response:', response);
     if (response.success && response.data.token) {
       this.setToken(response.data.token);
+      console.log('[API] Token set successfully:', !!this.token);
       return response.data;
     }
     throw new Error('Login failed');
@@ -320,11 +322,31 @@ const YAS_API = {
    * Submit public ticket (no auth required)
    */
   async submitPublicTicket(ticketData) {
-    const response = await this.post('/public-ticket', ticketData);
+    console.log('[API] Submitting public ticket with data:', ticketData);
+
+    // Transform frontend format to API format
+    const apiData = {
+      customer: ticketData.customer,
+      device: ticketData.device,
+      request_type: ticketData.request?.type || ticketData.request_type,
+      priority: ticketData.request?.priority || ticketData.priority,
+      description: ticketData.request?.description || ticketData.description,
+      files: ticketData.request?.files || ticketData.files || []
+    };
+
+    console.log('[API] Transformed API data:', apiData);
+
+    const response = await this.post('/public-ticket', apiData);
+    console.log('[API] Public ticket response:', response);
+
     if (response.success) {
       // Transform response to match frontend format
       const transformedTicket = {
-        ...response.data,
+        id: response.data.id,
+        ticket_number: response.data.ticket_number,
+        status: response.data.status,
+        created_at: response.data.created_at,
+        updated_at: response.data.updated_at,
         request: {
           type: response.data.request_type,
           priority: response.data.priority,
@@ -332,8 +354,10 @@ const YAS_API = {
         },
         customer: response.data.customer || {},
         device: response.data.device || {},
-        assignedTo: response.data.assigned_user?.name || 'Unassigned'
+        assignedTo: response.data.assigned_user?.name || 'Unassigned',
+        assigned_user: response.data.assigned_user
       };
+      console.log('[API] Transformed ticket:', transformedTicket);
       return { success: true, data: transformedTicket };
     }
     return response;

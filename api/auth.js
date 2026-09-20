@@ -40,12 +40,15 @@ module.exports = async function handler(req, res) {
       }
 
       const { email, password } = body || {};
-      
+
+      console.log('[Auth API] Login attempt for email:', email);
+
       if (!email || !password) {
         return res.status(400).json({ error: 'Email and password are required' });
       }
 
       if (!supabase) {
+        console.log('[Auth API] Database not configured');
         return res.status(500).json({ error: 'Database not configured' });
       }
 
@@ -55,6 +58,8 @@ module.exports = async function handler(req, res) {
         .select('*')
         .eq('email', email)
         .single();
+
+      console.log('[Auth API] User lookup result:', !!user, 'Error:', !!error);
 
       if (error || !user) {
         return res.status(401).json({ error: 'Invalid credentials' });

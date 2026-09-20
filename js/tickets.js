@@ -301,17 +301,26 @@ const TicketForm = {
       btn.disabled  = true;
     }
 
-    setTimeout(() => {
-      const ticket = YASStorage.createTicket(this.data);
+    setTimeout(async () => {
+      try {
+        console.log('[TicketForm] Creating ticket with data:', this.data);
+        const ticket = await YASStorage.createTicket(this.data);
+        console.log('[TicketForm] Ticket created:', ticket);
 
-      if (ticket) {
-        // Save ticket ID for success page (use ticket_number if available)
-        const ticketId = ticket.ticket_number || ticket.id;
-        sessionStorage.setItem('yas_new_ticket_id', ticketId);
-        sessionStorage.setItem('yas_new_ticket_name', this.data.customer.name);
-        window.location.href = 'support.html?success=1';
-      } else {
-        YAS.showToast('حدث خطأ أثناء إنشاء الطلب. حاول مرة أخرى.', 'error');
+        if (ticket) {
+          // Save ticket ID for success page (use ticket_number if available)
+          const ticketId = ticket.ticket_number || ticket.id;
+          console.log('[TicketForm] Saving ticket ID:', ticketId);
+          sessionStorage.setItem('yas_new_ticket_id', ticketId);
+          sessionStorage.setItem('yas_new_ticket_name', this.data.customer.name);
+          window.location.href = 'support.html?success=1';
+        } else {
+          YAS.showToast('حدث خطأ أثناء إنشاء الطلب. حاول مرة أخرى.', 'error');
+          if (btn) { btn.textContent = 'إرسال طلب الدعم'; btn.disabled = false; }
+        }
+      } catch (error) {
+        console.error('[TicketForm] Error creating ticket:', error);
+        YAS.showToast('حدث خطأ أثناء إنشاء الطلب: ' + (error.message || 'يرجى المحاولة مرة أخرى'), 'error');
         if (btn) { btn.textContent = 'إرسال طلب الدعم'; btn.disabled = false; }
       }
     }, 800);
@@ -323,8 +332,12 @@ function initSuccessPage() {
   const ticketId = sessionStorage.getItem('yas_new_ticket_id');
   const custName  = sessionStorage.getItem('yas_new_ticket_name');
 
+  console.log('[Success Page] Ticket ID from session:', ticketId);
+  console.log('[Success Page] Customer name from session:', custName);
+
   if (!ticketId) {
     // If arrived here without creating a ticket, show a generic message
+    console.log('[Success Page] No ticket ID found in session');
     return;
   }
 
@@ -332,7 +345,10 @@ function initSuccessPage() {
   const nameEl = document.getElementById('success-cust-name');
   const trackBtn = document.getElementById('track-ticket-btn');
 
-  if (idEl)   idEl.textContent  = ticketId;
+  if (idEl) {
+    idEl.textContent  = ticketId;
+    console.log('[Success Page] Set ticket ID to element:', ticketId);
+  }
   if (nameEl) nameEl.textContent = custName || '';
   if (trackBtn) {
     trackBtn.addEventListener('click', () => {

@@ -40,13 +40,20 @@ module.exports = async function handler(req, res) {
   // GET /api/tickets
   if ((path === '' || path.startsWith('?')) && req.method === 'GET') {
     const authHeader = req.headers.authorization;
+    console.log('[Tickets API] Auth header:', authHeader ? 'Present' : 'Missing');
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('[Tickets API] Unauthorized - missing or invalid auth header');
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const token = authHeader.substring(7);
+    console.log('[Tickets API] Token length:', token.length);
     const decoded = verifyToken(token);
+    console.log('[Tickets API] Token decoded:', !!decoded);
+
     if (!decoded) {
+      console.log('[Tickets API] Invalid token');
       return res.status(401).json({ error: 'Invalid token' });
     }
 

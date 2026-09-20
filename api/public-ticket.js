@@ -33,9 +33,15 @@ module.exports = async function handler(req, res) {
         body = JSON.parse(body);
       }
 
-      console.log('Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model });
+      console.log('Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model, request_type: body.request_type });
 
       const { customer, device, request_type, priority = 'medium', description, files = [] } = body || {};
+
+      // Validate required fields
+      if (!request_type) {
+        console.error('Missing request_type in request body:', body);
+        return res.status(400).json({ error: 'request_type is required' });
+      }
 
       // Create or update customer
       const { data: newCustomer, error: customerError } = await supabase
@@ -95,11 +101,25 @@ module.exports = async function handler(req, res) {
 
       console.log('Ticket number:', ticketNumber);
 
+      // Check if ticket number already exists (to avoid duplicates)
+      const { data: existingTicket } = await supabase
+        .from('tickets')
+        .select('id')
+        .eq('ticket_number', ticketNumber)
+        .single();
+
+      let finalTicketNumber = ticketNumber;
+      if (existingTicket) {
+        console.log('Ticket number already exists, trying next number');
+        finalTicketNumber = `YAS-SUP-${lastNumber + 2}`;
+        console.log('Final ticket number:', finalTicketNumber);
+      }
+
       // Create ticket
       const { data: ticket, error: ticketError } = await supabase
         .from('tickets')
         .insert({
-          ticket_number: ticketNumber,
+          ticket_number: finalTicketNumber,
           customer_id: newCustomer.id,
           device_id: newDevice.id,
           request_type,
@@ -121,7 +141,8 @@ module.exports = async function handler(req, res) {
         throw ticketError;
       }
 
-      console.log('Ticket created successfully:', ticket.id);
+      console.log('Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
+      console.log('Full ticket object:', JSON.stringify(ticket, null, 2));
 
       res.status(201).json({
         success: true,

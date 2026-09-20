@@ -35,7 +35,7 @@ async function getAllTickets() {
 
   if (USE_API) {
     try {
-      // Only use API if we have a valid token
+      // Try to use API if we have a valid token
       if (YAS_API && YAS_API.token) {
         console.log('[Storage] Fetching tickets from API...');
         const response = await YAS_API.getTickets({ limit: 1000 });
@@ -49,7 +49,21 @@ async function getAllTickets() {
           return tickets;
         }
       } else {
-        console.log('[Storage] No API token available, using LocalStorage');
+        console.log('[Storage] No API token available, checking if authenticated...');
+        // Check if user is authenticated via session
+        const session = getSession();
+        if (session && session.authenticated) {
+          console.log('[Storage] User is authenticated but no API token, trying to fetch...');
+          const response = await YAS_API.getTickets({ limit: 1000 });
+          if (response.success) {
+            localStorage.removeItem(YAS_STORAGE_KEY);
+            const tickets = Array.isArray(response.data) ? response.data : [];
+            console.log('[Storage] Returning', tickets.length, 'tickets from API');
+            return tickets;
+          }
+        } else {
+          console.log('[Storage] No API token and not authenticated, using LocalStorage');
+        }
       }
     } catch (error) {
       console.error('[Storage] API error, falling back to LocalStorage:', error);
@@ -89,15 +103,23 @@ async function getTicketById(id) {
 }
 
 async function createTicket(ticketData) {
+  console.log('[Storage] createTicket called with data:', ticketData);
+
   if (USE_API) {
     try {
       // Use public endpoint for customer submissions (no auth required)
+      console.log('[Storage] Using API to create ticket');
       const response = await YAS_API.submitPublicTicket(ticketData);
+      console.log('[Storage] API response:', response);
+
       if (response.success) {
+        console.log('[Storage] Ticket created successfully via API:', response.data);
         return response.data;
+      } else {
+        console.error('[Storage] API returned success=false:', response);
       }
     } catch (error) {
-      console.error('API error, falling back to LocalStorage:', error);
+      console.error('[Storage] API error, falling back to LocalStorage:', error);
     }
   }
   
@@ -499,7 +521,8 @@ async function seedDemoData() {
   // Disable demo data seeding when using real API
   if (USE_API) return;
 
-  if ((await getAllTickets()).length > 0) return; // already seeded
+  const tickets = await getAllTickets();
+  if (tickets.length > 0) return; // already seeded
 
   localStorage.setItem(YAS_COUNTER_KEY, '10481');
 
