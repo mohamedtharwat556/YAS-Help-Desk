@@ -13,14 +13,19 @@ function registerServiceWorker() {
         .then((registration) => {
           console.log('[PWA] Service Worker registered with scope:', registration.scope);
           
+          // Force update immediately for debugging
+          registration.update();
+          
           // Check for updates
           registration.addEventListener('updatefound', () => {
             const newWorker = registration.installing;
             if (newWorker) {
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New content is available
-                  showUpdateNotification();
+                  // New content is available - force reload
+                  console.log('[PWA] New Service Worker available, reloading...');
+                  navigator.serviceWorker.controller.postMessage({ type: 'SKIP_WAITING' });
+                  setTimeout(() => window.location.reload(), 1000);
                 }
               });
             }

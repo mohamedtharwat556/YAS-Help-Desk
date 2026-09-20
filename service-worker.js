@@ -3,7 +3,7 @@
    Offline support and caching for PWA
    ============================================================ */
 
-const CACHE_NAME = 'yas-helpdesk-v3';
+const CACHE_NAME = 'yas-helpdesk-v4';
 const OFFLINE_URL = 'index.html';
 
 // Files to cache
@@ -106,6 +106,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
+  // Skip HTML pages to avoid redirect issues - always serve from network
+  if (event.request.destination === 'document') {
+    event.respondWith(
+      fetch(event.request, { redirect: 'follow' })
+        .catch(() => caches.match(OFFLINE_URL))
+    );
+    return;
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((cachedResponse) => {
@@ -130,11 +139,6 @@ self.addEventListener('fetch', (event) => {
             return networkResponse;
           })
           .catch(() => {
-            // If network fails, try to serve offline page
-            if (event.request.destination === 'document') {
-              return caches.match(OFFLINE_URL);
-            }
-            
             // Return a custom offline response for other requests
             return new Response('Offline - No network connection available', {
               status: 503,
