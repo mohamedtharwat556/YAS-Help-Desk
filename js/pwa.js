@@ -7,6 +7,21 @@
 
 /* ── Service Worker Registration ───────────────────────────── */
 function registerServiceWorker() {
+  // Temporarily disabled Service Worker due to Vercel redirect issues
+  console.log('[PWA] Service Worker temporarily disabled');
+  
+  // Unregister any existing service workers
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      for(let registration of registrations) {
+        registration.unregister();
+        console.log('[PWA] Unregistered existing Service Worker');
+      }
+    });
+  }
+  
+  return;
+  
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('service-worker.js')
@@ -203,6 +218,18 @@ if (document.readyState === 'loading') {
 } else {
   initPWA();
 }
+
+/* ── Clear Service Worker Cache on Load ──────────────────────── */
+window.addEventListener('load', () => {
+  if ('caches' in window) {
+    caches.keys().then(function(cacheNames) {
+      cacheNames.forEach(function(cacheName) {
+        caches.delete(cacheName);
+        console.log('[PWA] Cleared cache:', cacheName);
+      });
+    });
+  }
+});
 
 /* ── Global Functions ─────────────────────────────────────────── */
 window.YASPWA = {
