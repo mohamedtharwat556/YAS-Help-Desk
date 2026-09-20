@@ -13,8 +13,7 @@ const YAS_THEME_KEY    = 'yas_theme';
 const YAS_COUNTER_KEY  = 'yas_ticket_counter';
 
 // Flag to determine if we should use API or LocalStorage
-// Temporarily disabled to work with LocalStorage only
-const USE_API = false; // typeof YAS_API !== 'undefined' && YAS_API.token;
+const USE_API = typeof YAS_API !== 'undefined' && YAS_API.token;
 
 /* ── Ticket Counter ────────────────────────────────────────── */
 function getNextTicketNumber() {
@@ -148,8 +147,8 @@ async function createTicket(ticketData) {
   addNotification({
     type:    'new',
     title:   'طلب دعم جديد',
-    message: `طلب دعم جديد من ${ticket.customer.name} — ${ticket.id}`,
-    ticketId: ticket.id
+    message: `طلب دعم جديد من ${ticket.customer.name} — ${ticket.ticket_number || ticket.id}`,
+    ticketId: ticket.ticket_number || ticket.id
   });
 
   return ticket;
