@@ -118,7 +118,7 @@ const YAS_API = {
    * Login user
    */
   async login(email, password) {
-    const response = await this.post('/auth/login', { email, password });
+    const response = await this.post('/auth', { email, password });
     if (response.success && response.data.token) {
       this.setToken(response.data.token);
       return response.data;
@@ -130,7 +130,7 @@ const YAS_API = {
    * Get current user
    */
   async getCurrentUser() {
-    return this.get('/auth/me');
+    return this.get('/me');
   },
 
   /**
