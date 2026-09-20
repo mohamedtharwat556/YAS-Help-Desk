@@ -7,11 +7,7 @@
   "rewrites": [
     {
       "source": "/health",
-      "destination": "/api/health.js"
-    },
-    {
-      "source": "/api/auth/:path*",
-      "destination": "/api/auth/[...path].js"
+      "destination": "/api/index.js"
     },
     {
       "source": "/api/:path*",
