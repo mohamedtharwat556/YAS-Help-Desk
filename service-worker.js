@@ -91,65 +91,9 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache, fall back to network
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') {
-    return;
-  }
-  
-  // Skip API calls - they should always go to network
-  if (event.request.url.includes('/api/')) {
-    return;
-  }
-  
-  // Skip external resources
-  if (event.request.url.includes('http') && !event.request.url.includes(self.location.origin)) {
-    return;
-  }
-  
-  // Skip HTML pages to avoid redirect issues - always serve from network
-  if (event.request.destination === 'document') {
-    event.respondWith(
-      fetch(event.request, { redirect: 'follow' })
-        .catch(() => caches.match(OFFLINE_URL))
-    );
-    return;
-  }
-  
-  event.respondWith(
-    caches.match(event.request)
-      .then((cachedResponse) => {
-        // Return cached response if available
-        if (cachedResponse) {
-          console.log('[Service Worker] Serving from cache:', event.request.url);
-          return cachedResponse;
-        }
-        
-        // Otherwise, fetch from network
-        console.log('[Service Worker] Fetching from network:', event.request.url);
-        return fetch(event.request, { redirect: 'follow' })
-          .then((networkResponse) => {
-            // Cache the response for future use
-            if (networkResponse && networkResponse.status === 200) {
-              const responseToCache = networkResponse.clone();
-              caches.open(CACHE_NAME)
-                .then((cache) => {
-                  cache.put(event.request, responseToCache);
-                });
-            }
-            return networkResponse;
-          })
-          .catch(() => {
-            // Return a custom offline response for other requests
-            return new Response('Offline - No network connection available', {
-              status: 503,
-              statusText: 'Service Unavailable',
-              headers: new Headers({
-                'Content-Type': 'text/plain'
-              })
-            });
-          });
-      })
-  );
+  // Skip all requests - let browser handle everything
+  // Service Worker disabled to prevent caching and redirect issues
+  return;
 });
 
 // Handle messages from clients
