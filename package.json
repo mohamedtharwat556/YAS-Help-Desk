@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "YAS Help Desk - Full Stack Application",
   "scripts": {
-    "start": "node backend/server.js",
+    "start": "node server.js",
     "dev": "nodemon backend/server.js",
     "serve": "serve . -p 8000"
   },
