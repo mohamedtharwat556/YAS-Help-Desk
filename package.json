@@ -1,6 +1,6 @@
 {
   "name": "yas-helpdesk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "YAS Help Desk - Simplified Backend with Supabase",
   "scripts": {
     "serve": "serve . -p 8000",
