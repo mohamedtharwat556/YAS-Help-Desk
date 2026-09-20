@@ -75,9 +75,14 @@ async function handleLogin(email, password, btn, errorDiv) {
     // Use real API login
     const response = await YAS_API.login(email, password);
 
-    console.log('Login response:', response);
+    console.log('[Auth] Login response:', response);
 
+    // API login already saves the token internally
+    // The response structure is { user: {...}, token: "..." }
     if (response && response.user) {
+      console.log('[Auth] User authenticated:', response.user.email);
+      console.log('[Auth] Token exists:', !!YAS_API.token);
+
       // Clear old LocalStorage data to ensure fresh API data
       localStorage.removeItem('yas_tickets');
       localStorage.removeItem('yas_notifications');

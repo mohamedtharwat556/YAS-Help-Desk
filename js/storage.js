@@ -31,28 +31,38 @@ function generateTicketId() {
 
 /* ── Tickets ───────────────────────────────────────────────── */
 async function getAllTickets() {
+  console.log('[Storage] getAllTickets called, USE_API:', USE_API, 'Token exists:', !!YAS_API?.token);
+
   if (USE_API) {
     try {
       // Only use API if we have a valid token
       if (YAS_API && YAS_API.token) {
+        console.log('[Storage] Fetching tickets from API...');
         const response = await YAS_API.getTickets({ limit: 1000 });
+        console.log('[Storage] API response:', response);
+
         if (response.success) {
           // Clear old LocalStorage data to ensure consistency
           localStorage.removeItem(YAS_STORAGE_KEY);
-          return Array.isArray(response.data) ? response.data : [];
+          const tickets = Array.isArray(response.data) ? response.data : [];
+          console.log('[Storage] Returning', tickets.length, 'tickets from API');
+          return tickets;
         }
       } else {
         console.log('[Storage] No API token available, using LocalStorage');
       }
     } catch (error) {
-      console.error('API error, falling back to LocalStorage:', error);
+      console.error('[Storage] API error, falling back to LocalStorage:', error);
     }
   }
 
   // Fallback to LocalStorage
   try {
-    return JSON.parse(localStorage.getItem(YAS_STORAGE_KEY) || '[]');
+    const localTickets = JSON.parse(localStorage.getItem(YAS_STORAGE_KEY) || '[]');
+    console.log('[Storage] Returning', localTickets.length, 'tickets from LocalStorage');
+    return localTickets;
   } catch {
+    console.log('[Storage] No LocalStorage data, returning empty array');
     return [];
   }
 }
