@@ -3,7 +3,7 @@
    Offline support and caching for PWA
    ============================================================ */
 
-const CACHE_NAME = 'yas-helpdesk-v2';
+const CACHE_NAME = 'yas-helpdesk-v3';
 const OFFLINE_URL = 'index.html';
 
 // Files to cache
@@ -117,7 +117,7 @@ self.addEventListener('fetch', (event) => {
         
         // Otherwise, fetch from network
         console.log('[Service Worker] Fetching from network:', event.request.url);
-        return fetch(event.request)
+        return fetch(event.request, { redirect: 'follow' })
           .then((networkResponse) => {
             // Cache the response for future use
             if (networkResponse && networkResponse.status === 200) {
