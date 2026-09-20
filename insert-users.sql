@@ -3,16 +3,6 @@
 -- Execute this in Supabase SQL Editor
 -- ============================================================
 
--- First, check if users table exists
-DO $$
-BEGIN
-    IF NOT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users') THEN
-        RAISE NOTICE 'Users table does not exist. Please run schema.sql first.';
-    ELSE
-        RAISE NOTICE 'Users table exists. Proceeding with user insertion.';
-    END IF;
-END $$;
-
 -- Delete existing users if they exist (to avoid duplicates)
 DELETE FROM users WHERE email IN ('admin@yas.sa', 'adam@yas.sa');
 
