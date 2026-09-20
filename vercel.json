@@ -5,6 +5,10 @@
       "destination": "/api/health.js"
     },
     {
+      "source": "/api/auth/login",
+      "destination": "/api/auth/login.js"
+    },
+    {
       "source": "/api/public/submit-ticket",
       "destination": "/api/public/submit-ticket.js"
     },
