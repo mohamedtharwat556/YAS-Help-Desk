@@ -26,16 +26,32 @@ module.exports = async function handler(req, res) {
 
   if (req.method === 'POST') {
     try {
-      const { email, password } = req.body || {};
+      // Parse body for Vercel serverless functions
+      let body = req.body;
+      if (typeof body === 'string') {
+        try {
+          body = JSON.parse(body);
+        } catch (e) {
+          body = {};
+        }
+      }
+
+      const { email, password } = body || {};
+      
+      console.log('Login attempt:', { email, hasPassword: !!password });
 
       if (!email || !password) {
+        console.log('Missing credentials:', { email: !!email, password: !!password });
         return res.status(400).json({ error: 'Email and password are required' });
       }
 
       if (!supabase) {
+        console.log('Supabase not configured:', { supabaseUrl: !!supabaseUrl, supabaseKey: !!supabaseKey });
         return res.status(500).json({ error: 'Database not configured' });
       }
 
+      console.log('Looking up user:', email);
+      
       // Find user by email
       const { data: user, error } = await supabase
         .from('users')
@@ -43,12 +59,18 @@ module.exports = async function handler(req, res) {
         .eq('email', email)
         .single();
 
+      console.log('User lookup result:', { error: error?.message, userFound: !!user });
+
       if (error || !user) {
+        console.log('User not found or error:', error?.message);
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
       // Check password
+      console.log('Checking password for user:', user.email);
       const validPassword = await bcrypt.compare(password, user.password_hash);
+      console.log('Password check result:', { valid: validPassword });
+      
       if (!validPassword) {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
