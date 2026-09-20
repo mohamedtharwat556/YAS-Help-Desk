@@ -37,55 +37,81 @@ module.exports = async function handler(req, res) {
 
       const { customer, device, request_type, priority = 'medium', description, files = [] } = body || {};
 
+      console.log('Parsed request data:', { customer, device, request_type, priority, description });
+
       // Validate required fields
       if (!request_type) {
         console.error('Missing request_type in request body:', body);
         return res.status(400).json({ error: 'request_type is required' });
       }
 
-      // Create or update customer
-      const { data: newCustomer, error: customerError } = await supabase
-        .from('customers')
-        .upsert({
-          name: customer.name,
-          phone: customer.phone,
-          whatsapp: customer.whatsapp || customer.phone,
-          email: customer.email,
-          company: customer.company
-        }, {
-          onConflict: 'phone'
-        })
-        .select()
-        .single();
-
-      if (customerError) {
-        console.error('Customer creation error:', customerError);
-        throw customerError;
+      if (!customer || !customer.name || !customer.phone) {
+        console.error('Missing customer data:', customer);
+        return res.status(400).json({ error: 'Customer name and phone are required' });
       }
 
-      console.log('Customer created:', newCustomer.id);
+      if (!device || !device.model) {
+        console.error('Missing device data:', device);
+        return res.status(400).json({ error: 'Device model is required' });
+      }
+
+      // Create or update customer
+      let newCustomer;
+      try {
+        const result = await supabase
+          .from('customers')
+          .upsert({
+            name: customer.name,
+            phone: customer.phone,
+            whatsapp: customer.whatsapp || customer.phone,
+            email: customer.email,
+            company: customer.company
+          }, {
+            onConflict: 'phone'
+          })
+          .select()
+          .single();
+
+        if (result.error) {
+          console.error('Customer creation error:', result.error);
+          throw result.error;
+        }
+
+        newCustomer = result.data;
+        console.log('Customer created:', newCustomer.id);
+      } catch (error) {
+        console.error('Customer creation exception:', error);
+        return res.status(500).json({ error: 'Failed to create customer', details: error.message });
+      }
 
       // Create device
-      const { data: newDevice, error: deviceError } = await supabase
-        .from('devices')
-        .insert({
-          customer_id: newCustomer.id,
-          type: device.type,
-          brand: device.brand,
-          model: device.model,
-          serial_number: device.serial_number,
-          purchase_date: device.purchase_date,
-          warranty_status: device.warranty_status || 'unknown'
-        })
-        .select()
-        .single();
+      let newDevice;
+      try {
+        const result = await supabase
+          .from('devices')
+          .insert({
+            customer_id: newCustomer.id,
+            type: device.type,
+            brand: device.brand,
+            model: device.model,
+            serial_number: device.serial_number,
+            purchase_date: device.purchase_date,
+            warranty_status: device.warranty_status || 'unknown'
+          })
+          .select()
+          .single();
 
-      if (deviceError) {
-        console.error('Device creation error:', deviceError);
-        throw deviceError;
+        if (result.error) {
+          console.error('Device creation error:', result.error);
+          throw result.error;
+        }
+
+        newDevice = result.data;
+        console.log('Device created:', newDevice.id);
+      } catch (error) {
+        console.error('Device creation exception:', error);
+        return res.status(500).json({ error: 'Failed to create device', details: error.message });
       }
-
-      console.log('Device created:', newDevice.id);
 
       // Generate ticket number
       const { data: lastTicket } = await supabase
@@ -116,39 +142,46 @@ module.exports = async function handler(req, res) {
       }
 
       // Create ticket
-      const { data: ticket, error: ticketError } = await supabase
-        .from('tickets')
-        .insert({
-          ticket_number: finalTicketNumber,
-          customer_id: newCustomer.id,
-          device_id: newDevice.id,
-          request_type,
-          priority,
-          description,
-          files,
-          status: 'received'
-        })
-        .select(`
-          *,
-          customer:customers(*),
-          device:devices(*),
-          assigned_user:users(id, name, email, role)
-        `)
-        .single();
+      let ticket;
+      try {
+        const result = await supabase
+          .from('tickets')
+          .insert({
+            ticket_number: finalTicketNumber,
+            customer_id: newCustomer.id,
+            device_id: newDevice.id,
+            request_type,
+            priority,
+            description,
+            files,
+            status: 'received'
+          })
+          .select(`
+            *,
+            customer:customers(*),
+            device:devices(*),
+            assigned_user:users(id, name, email, role)
+          `)
+          .single();
 
-      if (ticketError) {
-        console.error('Ticket creation error:', ticketError);
-        throw ticketError;
+        if (result.error) {
+          console.error('Ticket creation error:', result.error);
+          throw result.error;
+        }
+
+        ticket = result.data;
+        console.log('Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
+        console.log('Full ticket object:', JSON.stringify(ticket, null, 2));
+
+        res.status(201).json({
+          success: true,
+          message: 'Ticket created successfully',
+          data: ticket
+        });
+      } catch (error) {
+        console.error('Ticket creation exception:', error);
+        return res.status(500).json({ error: 'Failed to create ticket', details: error.message });
       }
-
-      console.log('Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
-      console.log('Full ticket object:', JSON.stringify(ticket, null, 2));
-
-      res.status(201).json({
-        success: true,
-        message: 'Ticket created successfully',
-        data: ticket
-      });
     } catch (error) {
       console.error('Create ticket error:', error);
       res.status(500).json({ error: 'Failed to create ticket', details: error.message });

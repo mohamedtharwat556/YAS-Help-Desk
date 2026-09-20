@@ -406,18 +406,24 @@ async function getAllNotifications() {
 }
 
 function addNotification(data) {
-  const notifs = getAllNotifications();
-  const notif = {
-    id:      Date.now(),
-    ...data,
-    read:    false,
-    time:    new Date().toISOString()
-  };
-  notifs.unshift(notif);
-  // Keep max 50
-  if (notifs.length > 50) notifs.splice(50);
-  localStorage.setItem(YAS_NOTIF_KEY, JSON.stringify(notifs));
-  return notif;
+  // Get notifications directly from LocalStorage (synchronous)
+  try {
+    const notifs = JSON.parse(localStorage.getItem(YAS_NOTIF_KEY) || '[]');
+    const notif = {
+      id:      Date.now(),
+      ...data,
+      read:    false,
+      time:    new Date().toISOString()
+    };
+    notifs.unshift(notif);
+    // Keep max 50
+    if (notifs.length > 50) notifs.splice(50);
+    localStorage.setItem(YAS_NOTIF_KEY, JSON.stringify(notifs));
+    return notif;
+  } catch (error) {
+    console.error('[Storage] Error adding notification:', error);
+    return null;
+  }
 }
 
 async function markAllNotificationsRead() {
