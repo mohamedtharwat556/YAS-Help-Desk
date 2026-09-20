@@ -14,71 +14,74 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
+  if (!supabase) {
+    return res.status(500).json({ error: 'Database not configured' });
+  }
+
   if (req.method === 'POST') {
     try {
-      const { customer_name, customer_phone, customer_email, customer_company, device_type, device_brand, device_model, device_serial, request_type, priority, description } = req.body || {};
-
-      // Validate required fields
-      if (!customer_name || !customer_phone || !device_type || !request_type || !description) {
-        return res.status(400).json({ error: 'Missing required fields' });
+      let body = req.body;
+      if (typeof body === 'string') {
+        body = JSON.parse(body);
       }
 
-      if (!supabase) {
-        return res.status(500).json({ error: 'Database not configured' });
+      const { customer, device, request_type, priority = 'medium', description, files = [] } = body || {};
+
+      if (!customer || !customer.name || !customer.phone) {
+        return res.status(400).json({ error: 'Customer name and phone are required' });
       }
 
-      // Check if customer exists by phone
-      let customerId;
-      const { data: existingCustomer } = await supabase
+      if (!device || !device.type || !device.model) {
+        return res.status(400).json({ error: 'Device type and model are required' });
+      }
+
+      if (!request_type || !description) {
+        return res.status(400).json({ error: 'Request type and description are required' });
+      }
+
+      // Create or update customer
+      const { data: newCustomer, error: customerError } = await supabase
         .from('customers')
-        .select('id')
-        .eq('phone', customer_phone)
+        .upsert({
+          name: customer.name,
+          phone: customer.phone,
+          whatsapp: customer.whatsapp || customer.phone,
+          email: customer.email,
+          company: customer.company
+        }, {
+          onConflict: 'phone'
+        })
+        .select()
         .single();
 
-      if (existingCustomer) {
-        customerId = existingCustomer.id;
-      } else {
-        // Create new customer
-        const { data: newCustomer, error: customerError } = await supabase
-          .from('customers')
-          .insert({
-            name: customer_name,
-            phone: customer_phone,
-            email: customer_email || null,
-            company: customer_company || null
-          })
-          .select()
-          .single();
-
-        if (customerError) throw customerError;
-        customerId = newCustomer.id;
+      if (customerError) {
+        return res.status(500).json({ error: 'Failed to create customer' });
       }
 
-      // Create device if provided
-      let deviceId = null;
-      if (device_type && device_brand) {
-        const { data: newDevice, error: deviceError } = await supabase
-          .from('devices')
-          .insert({
-            customer_id: customerId,
-            type: device_type,
-            brand: device_brand,
-            model: device_model || null,
-            serial_number: device_serial || null
-          })
-          .select()
-          .single();
+      // Create device
+      const { data: newDevice, error: deviceError } = await supabase
+        .from('devices')
+        .insert({
+          customer_id: newCustomer.id,
+          type: device.type,
+          brand: device.brand,
+          model: device.model,
+          serial_number: device.serial_number,
+          purchase_date: device.purchase_date,
+          warranty_status: device.warranty_status || 'unknown'
+        })
+        .select()
+        .single();
 
-        if (!deviceError) {
-          deviceId = newDevice.id;
-        }
+      if (deviceError) {
+        return res.status(500).json({ error: 'Failed to create device' });
       }
 
       // Generate ticket number
@@ -93,35 +96,86 @@ module.exports = async function handler(req, res) {
         : 10480;
       const ticketNumber = `YAS-SUP-${lastNumber + 1}`;
 
+      // Get settings for auto-assignment
+      const { data: settings } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'auto_assign')
+        .single();
+
+      let assignedTo = null;
+      if (settings?.value?.enabled) {
+        const { data: engineer } = await supabase
+          .from('users')
+          .select('id')
+          .eq('email', settings.value.default_engineer_id)
+          .single();
+        assignedTo = engineer?.id;
+      }
+
       // Create ticket
       const { data: ticket, error: ticketError } = await supabase
         .from('tickets')
         .insert({
           ticket_number: ticketNumber,
-          customer_id: customerId,
-          device_id: deviceId,
-          request_type: request_type,
-          priority: priority || 'medium',
-          description: description,
+          customer_id: newCustomer.id,
+          device_id: newDevice.id,
+          assigned_to: assignedTo,
+          request_type,
+          priority,
+          description,
+          files,
           status: 'received'
         })
         .select(`
           *,
           customer:customers(*),
-          device:devices(*)
+          device:devices(*),
+          assigned_user:users(id, name, email, role)
         `)
         .single();
 
-      if (ticketError) throw ticketError;
+      if (ticketError) {
+        return res.status(500).json({ error: 'Failed to create ticket' });
+      }
+
+      // Create initial activities
+      const activities = [
+        {
+          ticket_id: ticket.id,
+          label: 'تم إنشاء الطلب',
+          description: `أنشأ العميل ${customer.name} طلب دعم جديد`,
+          type: 'create'
+        },
+        {
+          ticket_id: ticket.id,
+          label: 'تم استلام الطلب',
+          description: assignedTo ? 'تم استلام الطلب وإسناده تلقائياً' : 'تم استلام الطلب',
+          type: 'assign'
+        }
+      ];
+
+      await supabase.from('ticket_activities').insert(activities);
+
+      // Create notification
+      if (assignedTo) {
+        await supabase.from('notifications').insert({
+          user_id: assignedTo,
+          type: 'new',
+          title: 'طلب دعم جديد',
+          message: `طلب دعم جديد من ${customer.name} — ${ticket.ticket_number}`,
+          ticket_id: ticket.id
+        });
+      }
 
       res.status(201).json({
         success: true,
-        message: 'Ticket submitted successfully',
+        message: 'Ticket created successfully',
         data: ticket
       });
     } catch (error) {
-      console.error('Submit ticket error:', error);
-      res.status(500).json({ error: 'Failed to submit ticket' });
+      console.error('Create ticket error:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   } else {
     res.status(405).json({ error: 'Method not allowed' });
