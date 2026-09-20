@@ -187,14 +187,20 @@ const TicketManager = {
     }
 
     const q = this.searchQuery;
-    tbody.innerHTML = page.map(t => `
+    tbody.innerHTML = page.map(t => {
+      // Handle both API format (ticket_number) and LocalStorage format (id)
+      const ticketId = t.ticket_number || t.id;
+      const createdAt = t.createdAt || t.created_at;
+      const updatedAt = t.updatedAt || t.updated_at;
+
+      return `
       <tr>
         <td>
           <div style="display:flex;align-items:center;gap:6px">
             <span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem;white-space:nowrap">
-              ${YAS.highlightText(t.id, q)}
+              ${YAS.highlightText(ticketId, q)}
             </span>
-            <button class="btn btn-ghost" style="padding:2px 4px" onclick="YAS.copyToClipboard('${t.id}')" data-tooltip="نسخ">
+            <button class="btn btn-ghost" style="padding:2px 4px" onclick="YAS.copyToClipboard('${ticketId}')" data-tooltip="نسخ">
               ${YAS.Icons.copy}
             </button>
           </div>
@@ -217,8 +223,8 @@ const TicketManager = {
         <td>${YAS.statusBadge(t.status)}</td>
         <td>${typeof YASSLA !== 'undefined' ? YASSLA.getBadge(t) : '—'}</td>
         <td style="font-size:0.875rem">${t.assignedTo || t.assigned_user?.name || 'Unassigned'}</td>
-        <td style="font-size:0.8125rem;color:var(--text-muted);white-space:nowrap">${YAS.formatDate(t.createdAt)}</td>
-        <td style="font-size:0.8125rem;color:var(--text-muted);white-space:nowrap">${YAS.timeAgo(t.updatedAt)}</td>
+        <td style="font-size:0.8125rem;color:var(--text-muted);white-space:nowrap">${YAS.formatDate(createdAt)}</td>
+        <td style="font-size:0.8125rem;color:var(--text-muted);white-space:nowrap">${YAS.timeAgo(updatedAt)}</td>
         <td>
           <div class="ticket-actions-cell">
             <a href="ticket-details.html?id=${t.id}" class="btn btn-outline btn-sm" data-tooltip="عرض">
@@ -233,7 +239,8 @@ const TicketManager = {
           </div>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   },
 
   renderPagination() {
@@ -387,40 +394,45 @@ const TicketDetails = {
   render() {
     const t = this.ticket;
 
+    // Handle both API format (ticket_number) and LocalStorage format (id)
+    const ticketId = t.ticket_number || t.id;
+    const createdAt = t.createdAt || t.created_at;
+    const updatedAt = t.updatedAt || t.updated_at;
+
     // Breadcrumb
     const bcId = document.getElementById('breadcrumb-ticket-id');
-    if (bcId) bcId.textContent = t.id;
+    if (bcId) bcId.textContent = ticketId;
 
     // Header
-    this.setEl('detail-ticket-id',   t.id);
-    this.setEl('detail-ticket-type', YAS.RequestTypeLabels[t.request.type] || t.request.type);
+    this.setEl('detail-ticket-id',   ticketId);
+    this.setEl('detail-ticket-type', YAS.RequestTypeLabels[t.request?.type || t.request_type] || t.request?.type || t.request_type);
     this.setHTML('detail-status',    YAS.statusBadge(t.status));
-    this.setHTML('detail-priority',  YAS.priorityBadge(t.request.priority));
-    this.setEl('detail-assigned',    t.assignedTo);
-    this.setEl('detail-created',     YAS.formatDateTime(t.createdAt));
-    this.setEl('detail-updated',     YAS.timeAgo(t.updatedAt));
+    this.setHTML('detail-priority',  YAS.priorityBadge(t.request?.priority || t.priority));
+    this.setEl('detail-assigned',    t.assignedTo || t.assigned_user?.name || 'Unassigned');
+    this.setEl('detail-created',     YAS.formatDateTime(createdAt));
+    this.setEl('detail-updated',     YAS.timeAgo(updatedAt));
 
     // Customer
-    this.setEl('cust-detail-name',    t.customer.name);
-    this.setEl('cust-detail-phone',   t.customer.phone);
-    this.setEl('cust-detail-wa',      t.customer.whatsapp || t.customer.phone);
-    this.setEl('cust-detail-email',   t.customer.email || '—');
-    this.setEl('cust-detail-company', t.customer.company || '—');
+    this.setEl('cust-detail-name',    t.customer?.name || 'Unknown');
+    this.setEl('cust-detail-phone',   t.customer?.phone || '—');
+    this.setEl('cust-detail-wa',      t.customer?.whatsapp || t.customer?.phone || '—');
+    this.setEl('cust-detail-email',   t.customer?.email || '—');
+    this.setEl('cust-detail-company', t.customer?.company || '—');
 
     // Device
-    this.setEl('dev-detail-type',    YAS.DeviceTypeLabels[t.device.type] || t.device.type);
-    this.setEl('dev-detail-brand',   t.device.brand || '—');
-    this.setEl('dev-detail-model',   t.device.model || '—');
-    this.setEl('dev-detail-serial',  t.device.serialNumber || '—');
-    this.setEl('dev-detail-date',    t.device.purchaseDate ? YAS.formatDate(t.device.purchaseDate) : '—');
-    this.setHTML('dev-detail-warranty', YAS.warrantyBadge(t.device.warranty));
+    this.setEl('dev-detail-type',    YAS.DeviceTypeLabels[t.device?.type] || t.device?.type || 'Unknown');
+    this.setEl('dev-detail-brand',   t.device?.brand || '—');
+    this.setEl('dev-detail-model',   t.device?.model || '—');
+    this.setEl('dev-detail-serial',  t.device?.serial_number || t.device?.serialNumber || '—');
+    this.setEl('dev-detail-date',    t.device?.purchase_date || t.device?.purchaseDate ? YAS.formatDate(t.device?.purchase_date || t.device?.purchaseDate) : '—');
+    this.setHTML('dev-detail-warranty', YAS.warrantyBadge(t.device?.warranty_status || t.device?.warranty || 'unknown'));
 
     // Description
-    this.setEl('issue-description', t.request.description);
+    this.setEl('issue-description', t.request?.description || t.description || '—');
 
     // Attached Files
-    if (typeof YASFileUpload !== 'undefined' && t.request.files && t.request.files.length > 0) {
-      YASFileUpload.displayFiles('attached-files-container', t.request.files);
+    if (typeof YASFileUpload !== 'undefined' && (t.request?.files || t.files) && (t.request?.files?.length || t.files?.length) > 0) {
+      YASFileUpload.displayFiles('attached-files-container', t.request?.files || t.files);
     }
 
     // Contact buttons
@@ -429,8 +441,8 @@ const TicketDetails = {
     const emailBtn = document.getElementById('contact-email-btn');
 
     if (waBtn) {
-      const waNumber = t.customer.whatsapp || t.customer.phone;
-      const waMsg    = `مرحباً ${t.customer.name}، بخصوص طلب الدعم الفني رقم ${t.id}`;
+      const waNumber = t.customer?.whatsapp || t.customer?.phone;
+      const waMsg    = `مرحباً ${t.customer?.name}، بخصوص طلب الدعم الفني رقم ${ticketId}`;
       waBtn.href = YAS.buildWhatsAppLink(waNumber, waMsg);
       waBtn.target = '_blank';
       waBtn.addEventListener('click', () => {
@@ -463,7 +475,7 @@ const TicketDetails = {
     if (statusSelect) statusSelect.value = t.status;
 
     // Page title
-    document.title = `${t.id} — YAS Help Desk`;
+    document.title = `${ticketId} — YAS Help Desk`;
   },
 
   renderNotes() {
@@ -571,9 +583,10 @@ const TicketDetails = {
     const closeBtn = document.getElementById('close-ticket-btn');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => {
+        const ticketId = this.ticket.ticket_number || this.ticket.id;
         YAS.showConfirm({
           title:       'إغلاق الطلب',
-          message:     `هل تريد إغلاق الطلب ${this.ticket.id}؟`,
+          message:     `هل تريد إغلاق الطلب ${ticketId}؟`,
           confirmText: 'نعم، إغلاق',
           type:        'warning',
           onConfirm: () => {
