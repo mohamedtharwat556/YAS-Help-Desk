@@ -6,12 +6,16 @@
   },
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "/api/index.js"
-    },
-    {
       "source": "/health",
       "destination": "/api/health.js"
+    },
+    {
+      "source": "/api/auth/:path*",
+      "destination": "/api/auth/[...path].js"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index.js"
     }
   ],
   "headers": [
