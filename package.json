@@ -1,0 +1,23 @@
+{
+  "name": "yas-helpdesk-frontend",
+  "version": "1.0.0",
+  "description": "YAS Help Desk Frontend - Customer Portal & Engineer Dashboard",
+  "scripts": {
+    "start": "serve .",
+    "dev": "serve . -p 8000",
+    "build": "node build-config.js"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "helpdesk",
+    "support",
+    "frontend",
+    "customer-portal",
+    "dashboard"
+  ],
+  "author": "YAS",
+  "license": "MIT"
+}

@@ -37,8 +37,23 @@ app.use(helmet({
 // ============================================================
 // CORS Configuration
 // ============================================================
+// For Vercel deployment, allow same-origin requests
+// For local development, allow localhost
+const allowedOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',')
+  : ['http://localhost:8000', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:8000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.VERCEL === '1') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -64,7 +79,8 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // ============================================================
 // Static Files
 // ============================================================
-const uploadDir = process.env.UPLOAD_DIR || './uploads';
+// For Vercel, use /tmp directory. For local, use ./uploads
+const uploadDir = process.env.VERCEL === '1' ? '/tmp' : (process.env.UPLOAD_DIR || './uploads');
 app.use('/uploads', express.static(uploadDir));
 
 // ============================================================
@@ -110,11 +126,14 @@ app.use(errorHandler);
 // ============================================================
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 YAS Help Desk API Server`);
-  console.log(`📡 Server running on port ${PORT}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🔗 Health check: http://localhost:${PORT}/health`);
-});
+// Only listen to port if not running on Vercel
+if (process.env.VERCEL !== '1') {
+  app.listen(PORT, () => {
+    console.log(`🚀 YAS Help Desk API Server`);
+    console.log(`📡 Server running on port ${PORT}`);
+    console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 Health check: http://localhost:${PORT}/health`);
+  });
+}
 
 module.exports = app;
