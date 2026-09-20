@@ -35,13 +35,15 @@ async function getAllTickets() {
     try {
       const response = await YAS_API.getTickets({ limit: 1000 });
       if (response.success) {
+        // Clear old LocalStorage data to ensure consistency
+        localStorage.removeItem(YAS_STORAGE_KEY);
         return Array.isArray(response.data) ? response.data : [];
       }
     } catch (error) {
       console.error('API error, falling back to LocalStorage:', error);
     }
   }
-  
+
   // Fallback to LocalStorage
   try {
     return JSON.parse(localStorage.getItem(YAS_STORAGE_KEY) || '[]');

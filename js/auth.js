@@ -74,10 +74,14 @@ async function handleLogin(email, password, btn, errorDiv) {
   try {
     // Use real API login
     const response = await YAS_API.login(email, password);
-    
+
     console.log('Login response:', response);
-    
+
     if (response && response.user) {
+      // Clear old LocalStorage data to ensure fresh API data
+      localStorage.removeItem('yas_tickets');
+      localStorage.removeItem('yas_notifications');
+
       // Store session data
       YASStorage.setSession({
         authenticated: true,
