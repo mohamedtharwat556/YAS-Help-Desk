@@ -14,18 +14,25 @@ async function loadSupabase() {
   if (supabase) return supabase;
 
   try {
-    // Try to load from CDN if not in Node environment
-    if (typeof window !== 'undefined') {
-      const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-      
-      SUPABASE_CONFIG = {
-        url: 'https://dqepsuecouvnvozcnjth.supabase.co',
-        anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxZXBzdWVjb3V2bnZvemNuanRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTg2NzQsImV4cCI6MjEwNTM5NDY3NH0.wwP_8ITnKaks3y1ZT0Yde_4tW_71VlhVEqne2-pYovE'
-      };
-      
-      supabase = createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
-      return supabase;
-    }
+    // Load Supabase from CDN
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.onload = async () => {
+      if (window.supabase) {
+        SUPABASE_CONFIG = {
+          url: 'https://dqepsuecouvnvozcnjth.supabase.co',
+          anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxZXBzdWVjb3V2bnZvemNuanRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTg2NzQsImV4cCI6MjEwNTM5NDY3NH0.wwP_8ITnKaks3y1ZT0Yde_4tW_71VlhVEqne2-pYovE'
+        };
+        
+        supabase = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+      }
+    };
+    document.head.appendChild(script);
+    
+    // Wait for script to load
+    await new Promise(resolve => script.onload = resolve);
+    
+    return supabase;
   } catch (error) {
     console.error('Failed to load Supabase:', error);
     return null;
