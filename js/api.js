@@ -6,7 +6,14 @@
 'use strict';
 
 const YAS_API = {
-  baseURL: 'http://localhost:3000/api',
+  // Use environment variable for production, fallback to localhost for development
+  // For Vercel, use .js file paths
+  baseURL: window.ENV?.API_URL || process.env?.REACT_APP_API_URL || 'http://localhost:3000/api',
+  // Add .js suffix for Vercel functions
+  get apiURL() {
+    const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    return isVercel ? this.baseURL + '.js' : this.baseURL;
+  },
   token: localStorage.getItem('yas_api_token') || null,
 
   /**
@@ -40,7 +47,7 @@ const YAS_API = {
    * Make API request
    */
   async request(endpoint, options = {}) {
-    const url = `${this.baseURL}${endpoint}`;
+    const url = `${this.apiURL}${endpoint}`;
     const config = {
       ...options,
       headers: {
