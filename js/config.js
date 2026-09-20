@@ -15,3 +15,6 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
 window.ENV = {
   API_URL: API_URL
 };
+
+console.log('[Config] API URL:', API_URL);
+console.log('[Config] Hostname:', window.location.hostname);

@@ -7,33 +7,8 @@
 
 /* ── Service Worker Registration ───────────────────────────── */
 function registerServiceWorker() {
-  // Temporarily disabled Service Worker due to Vercel redirect issues
-  console.log('[PWA] Service Worker temporarily disabled');
-  
-  // Unregister any existing service workers
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      for(let registration of registrations) {
-        registration.unregister().then(function() {
-          console.log('[PWA] Unregistered existing Service Worker');
-        });
-      }
-    });
-    
-    // Also clear caches immediately
-    if ('caches' in window) {
-      caches.keys().then(function(cacheNames) {
-        return Promise.all(
-          cacheNames.map(function(cacheName) {
-            return caches.delete(cacheName);
-          })
-        );
-      }).then(function() {
-        console.log('[PWA] Cleared all caches');
-      });
-    }
-  }
-  
+  // Completely disabled Service Worker to ensure system works
+  console.log('[PWA] Service Worker completely disabled');
   return;
   
   if ('serviceWorker' in navigator) {
@@ -232,37 +207,6 @@ if (document.readyState === 'loading') {
 } else {
   initPWA();
 }
-
-/* ── Force clear everything on load ─────────────────────────── */
-window.addEventListener('load', () => {
-  console.log('[PWA] Force clearing Service Worker and caches');
-  
-  // Clear all caches
-  if ('caches' in window) {
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-          return caches.delete(cacheName);
-        })
-      );
-    }).then(function() {
-      console.log('[PWA] Cleared all caches on load');
-    });
-  }
-  
-  // Unregister all service workers
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function(registrations) {
-      return Promise.all(
-        registrations.map(function(registration) {
-          return registration.unregister();
-        })
-      );
-    }).then(function() {
-      console.log('[PWA] Unregistered all Service Workers on load');
-    });
-  }
-});
 
 /* ── Global Functions ─────────────────────────────────────────── */
 window.YASPWA = {

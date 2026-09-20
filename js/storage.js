@@ -13,7 +13,8 @@ const YAS_THEME_KEY    = 'yas_theme';
 const YAS_COUNTER_KEY  = 'yas_ticket_counter';
 
 // Flag to determine if we should use API or LocalStorage
-const USE_API = typeof YAS_API !== 'undefined' && YAS_API.token;
+// Enabled to use real API with Supabase
+const USE_API = true;
 
 /* ── Ticket Counter ────────────────────────────────────────── */
 function getNextTicketNumber() {

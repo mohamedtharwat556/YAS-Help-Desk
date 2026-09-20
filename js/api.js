@@ -55,6 +55,7 @@ const YAS_API = {
         url = `/api${endpoint}.js`;
       }
     } else {
+      // For local development, use direct paths
       url = `${this.baseURL}${endpoint}`;
     }
 
@@ -66,9 +67,13 @@ const YAS_API = {
       }
     };
 
+    console.log('[API] Request:', url, config.method);
+
     try {
       const response = await fetch(url, config);
       const data = await response.json();
+
+      console.log('[API] Response:', response.status, data);
 
       if (!response.ok) {
         throw new Error(data.error || data.message || 'API request failed');
@@ -76,7 +81,7 @@ const YAS_API = {
 
       return data;
     } catch (error) {
-      console.error('API Error:', error);
+      console.error('[API] Error:', error);
       throw error;
     }
   },
