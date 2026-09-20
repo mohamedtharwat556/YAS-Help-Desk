@@ -45,14 +45,15 @@ const YAS_API = {
     let url;
 
     if (isVercel) {
-      // For Vercel, use .js suffix for serverless functions
-      // Handle special case for public-ticket (has hyphen)
+      // For Vercel, the api/ folder becomes serverless functions
+      // The files in api/ folder are automatically served as /api/filename
+      // No .js suffix needed for Vercel serverless functions
       if (endpoint.includes('public-ticket')) {
-        url = `/api/public-ticket.js`;
-      } else if (endpoint.includes('.js') || endpoint.includes('?')) {
-        url = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`;
+        url = `/api/public-ticket`;
+      } else if (endpoint.startsWith('/api')) {
+        url = endpoint;
       } else {
-        url = `/api${endpoint}.js`;
+        url = `/api${endpoint}`;
       }
     } else {
       // For local development, use direct paths
@@ -92,17 +93,17 @@ const YAS_API = {
   async get(endpoint, params = {}) {
     const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
     let url;
-    
+
     if (isVercel) {
-      // For Vercel, add .js suffix before query params
+      // For Vercel, no .js suffix needed for serverless functions
       const queryString = new URLSearchParams(params).toString();
-      const baseEndpoint = endpoint.endsWith('.js') ? endpoint : `${endpoint}.js`;
+      const baseEndpoint = endpoint;
       url = queryString ? `${baseEndpoint}?${queryString}` : baseEndpoint;
     } else {
       const queryString = new URLSearchParams(params).toString();
       url = queryString ? `${endpoint}?${queryString}` : endpoint;
     }
-    
+
     return this.request(url, { method: 'GET' });
   },
 
