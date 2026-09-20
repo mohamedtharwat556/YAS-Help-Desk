@@ -305,8 +305,9 @@ const TicketForm = {
       const ticket = YASStorage.createTicket(this.data);
 
       if (ticket) {
-        // Save ticket ID for success page
-        sessionStorage.setItem('yas_new_ticket_id', ticket.id);
+        // Save ticket ID for success page (use ticket_number if available)
+        const ticketId = ticket.ticket_number || ticket.id;
+        sessionStorage.setItem('yas_new_ticket_id', ticketId);
         sessionStorage.setItem('yas_new_ticket_name', this.data.customer.name);
         window.location.href = 'support.html?success=1';
       } else {

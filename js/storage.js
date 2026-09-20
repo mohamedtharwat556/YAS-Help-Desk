@@ -33,11 +33,16 @@ function generateTicketId() {
 async function getAllTickets() {
   if (USE_API) {
     try {
-      const response = await YAS_API.getTickets({ limit: 1000 });
-      if (response.success) {
-        // Clear old LocalStorage data to ensure consistency
-        localStorage.removeItem(YAS_STORAGE_KEY);
-        return Array.isArray(response.data) ? response.data : [];
+      // Only use API if we have a valid token
+      if (YAS_API && YAS_API.token) {
+        const response = await YAS_API.getTickets({ limit: 1000 });
+        if (response.success) {
+          // Clear old LocalStorage data to ensure consistency
+          localStorage.removeItem(YAS_STORAGE_KEY);
+          return Array.isArray(response.data) ? response.data : [];
+        }
+      } else {
+        console.log('[Storage] No API token available, using LocalStorage');
       }
     } catch (error) {
       console.error('API error, falling back to LocalStorage:', error);
@@ -472,6 +477,9 @@ function toggleTheme() {
 
 /* ── Demo Data ─────────────────────────────────────────────── */
 async function seedDemoData() {
+  // Disable demo data seeding when using real API
+  if (USE_API) return;
+
   if ((await getAllTickets()).length > 0) return; // already seeded
 
   localStorage.setItem(YAS_COUNTER_KEY, '10481');

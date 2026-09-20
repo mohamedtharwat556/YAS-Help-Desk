@@ -360,6 +360,13 @@ function requireAuth() {
     window.location.href = 'login.html';
     return false;
   }
+
+  // Also check if API token exists when using API
+  if (typeof YAS_API !== 'undefined' && YAS_API.token) {
+    // Token exists, proceed
+    return true;
+  }
+
   return true;
 }
 
