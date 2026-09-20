@@ -164,14 +164,64 @@ const YAS_API = {
    * Get all tickets
    */
   async getTickets(params = {}) {
-    return this.get('/tickets', params);
+    const response = await this.get('/tickets', params);
+    if (response.success) {
+      // Transform API response to match frontend expected format
+      const transformedTickets = response.data.map(ticket => ({
+        id: ticket.id,
+        ticket_number: ticket.ticket_number,
+        status: ticket.status,
+        created_at: ticket.created_at,
+        updated_at: ticket.updated_at,
+        request: {
+          type: ticket.request_type,
+          priority: ticket.priority,
+          description: ticket.description
+        },
+        customer: ticket.customer || { name: 'Unknown', phone: '—' },
+        device: ticket.device || { type: 'unknown', model: 'Unknown' },
+        assignedTo: ticket.assigned_user?.name || 'Unassigned',
+        // Keep original fields for backward compatibility
+        request_type: ticket.request_type,
+        priority: ticket.priority,
+        description: ticket.description
+      }));
+      return { success: true, data: transformedTickets };
+    }
+    return response;
   },
 
   /**
    * Create ticket
    */
   async createTicket(ticketData) {
-    return this.post('/tickets', ticketData);
+    // Transform frontend format to API format
+    const apiData = {
+      customer: ticketData.customer,
+      device: ticketData.device,
+      request_type: ticketData.request?.type || ticketData.request_type,
+      priority: ticketData.request?.priority || ticketData.priority,
+      description: ticketData.request?.description || ticketData.description,
+      files: ticketData.request?.files || ticketData.files || []
+    };
+
+    const response = await this.post('/tickets', apiData);
+    if (response.success) {
+      // Transform response back to frontend format
+      const transformedTicket = {
+        ...response.data,
+        request: {
+          type: response.data.request_type,
+          priority: response.data.priority,
+          description: response.data.description
+        },
+        customer: response.data.customer || {},
+        device: response.data.device || {},
+        assignedTo: response.data.assigned_user?.name || 'Unassigned'
+      };
+      return { success: true, data: transformedTicket };
+    }
+    return response;
   },
 
   /**

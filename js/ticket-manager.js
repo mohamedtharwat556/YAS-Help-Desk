@@ -200,23 +200,23 @@ const TicketManager = {
           </div>
         </td>
         <td>
-          <div class="fw-600">${YAS.highlightText(t.customer.name, q)}</div>
-          <div style="font-size:0.75rem;color:var(--text-muted)">${YAS.highlightText(t.customer.phone, q)}</div>
+          <div class="fw-600">${YAS.highlightText(t.customer?.name || 'Unknown', q)}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted)">${YAS.highlightText(t.customer?.phone || '—', q)}</div>
         </td>
         <td>
           <div style="display:flex;align-items:center;gap:6px">
-            <span style="color:var(--text-muted);flex-shrink:0">${YAS.getDeviceIcon(t.device.type)}</span>
+            <span style="color:var(--text-muted);flex-shrink:0">${YAS.getDeviceIcon(t.device?.type || 'unknown')}</span>
             <div>
-              <div class="fw-600" style="font-size:0.875rem">${YAS.highlightText(t.device.model, q)}</div>
-              <div style="font-size:0.75rem;color:var(--text-muted)">${YAS.DeviceTypeLabels[t.device.type] || t.device.type}</div>
+              <div class="fw-600" style="font-size:0.875rem">${YAS.highlightText(t.device?.model || 'Unknown', q)}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted)">${YAS.DeviceTypeLabels[t.device?.type] || t.device?.type || 'Unknown'}</div>
             </div>
           </div>
         </td>
-        <td>${YAS.RequestTypeLabels[t.request.type] || t.request.type}</td>
-        <td>${YAS.priorityBadge(t.request.priority)}</td>
+        <td>${YAS.RequestTypeLabels[t.request?.type || t.request_type] || t.request?.type || t.request_type || 'Unknown'}</td>
+        <td>${YAS.priorityBadge(t.request?.priority || t.priority || 'medium')}</td>
         <td>${YAS.statusBadge(t.status)}</td>
         <td>${typeof YASSLA !== 'undefined' ? YASSLA.getBadge(t) : '—'}</td>
-        <td style="font-size:0.875rem">${t.assignedTo}</td>
+        <td style="font-size:0.875rem">${t.assignedTo || t.assigned_user?.name || 'Unassigned'}</td>
         <td style="font-size:0.8125rem;color:var(--text-muted);white-space:nowrap">${YAS.formatDate(t.createdAt)}</td>
         <td style="font-size:0.8125rem;color:var(--text-muted);white-space:nowrap">${YAS.timeAgo(t.updatedAt)}</td>
         <td>
