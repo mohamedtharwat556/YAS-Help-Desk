@@ -34,8 +34,8 @@ VALUES
 -- Device 6: Fatima's Lenovo Laptop
 ((SELECT id FROM customers WHERE phone = '0512223344' LIMIT 1), 'laptop', 'Lenovo', 'ThinkPad E15', 'LN-E15-4421', '2023-12-01'::date, 'active');
 
--- Insert sample tickets
-INSERT INTO tickets (ticket_number, customer_id, device_id, request_type, priority, description, status, assigned_user_id)
+-- Insert sample tickets (without assigned_user_id to avoid column issues)
+INSERT INTO tickets (ticket_number, customer_id, device_id, request_type, priority, description, status)
 VALUES
 -- Ticket 1: Ahmed's Dell Laptop
 ('YAS-SUP-10483',
@@ -44,8 +44,7 @@ VALUES
  'technical',
  'high',
  'الجهاز يُعيد التشغيل بشكل عشوائي أثناء العمل. المشكلة بدأت بعد تحديث Windows الأخير.',
- 'reviewing',
- (SELECT id FROM users WHERE email = 'adam@yas.sa' LIMIT 1)),
+ 'reviewing'),
 
 -- Ticket 2: Sara's Epson POS
 ('YAS-SUP-10484',
@@ -54,8 +53,7 @@ VALUES
  'maintenance',
  'critical',
  'جهاز الكاشير لا يطبع الفواتير بشكل صحيح. الطابعة تصدر صوتاً ثم تتوقف.',
- 'contacting',
- (SELECT id FROM users WHERE email = 'adam@yas.sa' LIMIT 1)),
+ 'contacting'),
 
 -- Ticket 3: Khalid's HP Desktop
 ('YAS-SUP-10485',
@@ -64,8 +62,7 @@ VALUES
  'warranty',
  'medium',
  'الجهاز لا يشتغل تماماً. عند الضغط على زر التشغيل لا يحدث شيء.',
- 'diagnosing',
- (SELECT id FROM users WHERE email = 'adam@yas.sa' LIMIT 1)),
+ 'diagnosing'),
 
 -- Ticket 4: Noura's Hikvision Camera
 ('YAS-SUP-10486',
@@ -74,8 +71,7 @@ VALUES
  'installation',
  'medium',
  'طلب تركيب 4 كاميرات مراقبة إضافية في المستودع.',
- 'received',
- (SELECT id FROM users WHERE email = 'adam@yas.sa' LIMIT 1)),
+ 'received'),
 
 -- Ticket 5: Omar's Epson Projector
 ('YAS-SUP-10487',
@@ -84,8 +80,7 @@ VALUES
  'maintenance',
  'low',
  'البروجكتر يعرض صورة باهتة وألوانها ليست صحيحة.',
- 'maintenance',
- (SELECT id FROM users WHERE email = 'adam@yas.sa' LIMIT 1)),
+ 'maintenance'),
 
 -- Ticket 6: Fatima's Lenovo Laptop
 ('YAS-SUP-10488',
@@ -94,8 +89,7 @@ VALUES
  'technical',
  'medium',
  'مشكلة في نظام التشغيل - Windows لا يعمل بشكل صحيح.',
- 'received',
- (SELECT id FROM users WHERE email = 'adam@yas.sa' LIMIT 1));
+ 'received');
 
 -- Verify the data
 SELECT 
