@@ -18,15 +18,15 @@ const TicketManager = {
   activeFilters: {},
   searchQuery:   '',
 
-  init() {
+  async init() {
     if (!document.getElementById('tickets-table-body')) return;
     if (!YAS.requireAuth()) return;
     YAS.initDashboardSidebar();
     YAS.initGlobalSearch();
     YAS.initNotifPanel();
 
-    this.allTickets = YASStorage.getAllTickets();
-    this.filtered   = [...this.allTickets];
+    this.allTickets = await YASStorage.getAllTickets();
+    this.filtered   = Array.isArray(this.allTickets) ? [...this.allTickets] : [];
 
     this.bindFilters();
     this.bindSearch();
@@ -297,8 +297,9 @@ const TicketManager = {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },
 
-  refresh() {
-    this.allTickets = YASStorage.getAllTickets();
+  async refresh() {
+    this.allTickets = await YASStorage.getAllTickets();
+    this.allTickets = Array.isArray(this.allTickets) ? this.allTickets : [];
     this.applyFilters();
   }
 };

@@ -34,7 +34,7 @@ async function getAllTickets() {
     try {
       const response = await YAS_API.getTickets({ limit: 1000 });
       if (response.success) {
-        return response.data;
+        return Array.isArray(response.data) ? response.data : [];
       }
     } catch (error) {
       console.error('API error, falling back to LocalStorage:', error);
@@ -278,14 +278,14 @@ function addTicketActivity(id, label, desc, type = 'action') {
   });
 }
 
-function deleteTicket(id) {
-  const tickets = getAllTickets().filter(t => t.id !== id);
+async function deleteTicket(id) {
+  const tickets = (await getAllTickets()).filter(t => t.id !== id);
   saveAllTickets(tickets);
 }
 
 /* ── Statistics ────────────────────────────────────────────── */
-function getStats() {
-  const tickets = getAllTickets();
+async function getStats() {
+  const tickets = await getAllTickets();
   const today   = new Date();
   const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
 
@@ -304,8 +304,8 @@ function getStats() {
 }
 
 /* ── Customers (derived from tickets) ─────────────────────── */
-function getAllCustomers() {
-  const tickets = getAllTickets();
+async function getAllCustomers() {
+  const tickets = await getAllTickets();
   const map = new Map();
 
   tickets.forEach(t => {
@@ -460,8 +460,8 @@ function toggleTheme() {
 }
 
 /* ── Demo Data ─────────────────────────────────────────────── */
-function seedDemoData() {
-  if (getAllTickets().length > 0) return; // already seeded
+async function seedDemoData() {
+  if ((await getAllTickets()).length > 0) return; // already seeded
 
   localStorage.setItem(YAS_COUNTER_KEY, '10481');
 
