@@ -427,27 +427,27 @@ const TicketTracking = {
       infoGrid.innerHTML = `
         <div class="ticket-info-item">
           <label>اسم العميل</label>
-          <span>${ticket.customer.name}</span>
+          <span>${ticket.customer?.name || 'Unknown'}</span>
         </div>
         <div class="ticket-info-item">
           <label>الجهاز</label>
-          <span>${ticket.device.brand} ${ticket.device.model}</span>
+          <span>${ticket.device?.brand || ''} ${ticket.device?.model || 'Unknown'}</span>
         </div>
         <div class="ticket-info-item">
           <label>نوع الطلب</label>
-          <span>${YAS.RequestTypeLabels[ticket.request.type] || ticket.request.type}</span>
+          <span>${YAS.RequestTypeLabels[requestType] || requestType}</span>
         </div>
         <div class="ticket-info-item">
           <label>الفني المسؤول</label>
-          <span>${ticket.assignedTo}</span>
+          <span>${ticket.assignedTo || ticket.assigned_user?.name || 'Unassigned'}</span>
         </div>
         <div class="ticket-info-item">
           <label>تاريخ الإنشاء</label>
-          <span>${YAS.formatDateTime(ticket.createdAt)}</span>
+          <span>${YAS.formatDateTime(ticket.createdAt || ticket.created_at)}</span>
         </div>
         <div class="ticket-info-item">
           <label>آخر تحديث</label>
-          <span>${YAS.timeAgo(ticket.updatedAt)}</span>
+          <span>${YAS.timeAgo(ticket.updatedAt || ticket.updated_at)}</span>
         </div>
       `;
     }
@@ -455,7 +455,7 @@ const TicketTracking = {
     // Timeline
     const timelineEl = container.querySelector('.timeline');
     if (timelineEl) {
-      timelineEl.innerHTML = this.buildTimeline(ticket.status, ticket.activities);
+      timelineEl.innerHTML = this.buildTimeline(ticket.status, ticket.activities || []);
     }
 
     container.classList.add('show');
@@ -478,7 +478,7 @@ const TicketTracking = {
     const currentIdx  = statusOrder.indexOf(currentStatus);
 
     return steps.map((step, idx) => {
-      const isDone   = idx <= currentIdx || activities.some(a => a.type === step.key);
+      const isDone   = idx <= currentIdx || (activities && activities.some(a => a.type === step.key));
       const isActive = step.status === currentStatus || (idx === 0 && currentStatus === 'received');
 
       let dotClass = '';
@@ -488,7 +488,7 @@ const TicketTracking = {
       const labelClass = isDone ? '' : 'muted';
 
       // Find activity time for this step
-      const act = activities.find(a =>
+      const act = activities && activities.find(a =>
         a.type === step.key || (step.status && a.label.includes(YAS.StatusLabels[step.status] || ''))
       );
 
