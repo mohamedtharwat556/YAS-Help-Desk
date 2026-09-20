@@ -18,9 +18,9 @@ app.use(cors());
 app.use(express.json());
 
 // Supabase Configuration
-const supabaseUrl = 'https://dqepsuecouvnvozcnjth.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxZXBzdWVjb3V2bnZvemNuanRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTgxODY3NCwiZXhwIjoyMTA1Mzk0Njc0fQ.yn1zGz8RIbyPKTkjw8YwTZr5cnTvyvd4Tp5COv046HE';
-const jwtSecret = 'eUVaEpjQey1BsAW5hF1ck+5+gJfhfIpslDxrw8KP8+IEw0dVGQzP6hYhv3V9gTBaCLY185XPGP57mLHJz+SC8g==';
+const supabaseUrl = process.env.SUPABASE_URL || 'https://dqepsuecouvnvozcnjth.supabase.co';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxZXBzdWVjb3V2bnZvemNuanRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTgxODY3NCwiZXhwIjoyMTA1Mzk0Njc0fQ.yn1zGz8RIbyPKTkjw8YwTZr5cnTvyvd4Tp5COv046HE';
+const jwtSecret = process.env.JWT_SECRET || 'yas-helpdesk-secret-key-2026-production';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 

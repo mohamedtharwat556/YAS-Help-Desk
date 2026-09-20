@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
+const jwtSecret = process.env.JWT_SECRET || 'yas-helpdesk-secret-key-2026-production';
 
 let supabase;
 if (supabaseUrl && supabaseKey) {
