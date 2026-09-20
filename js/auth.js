@@ -48,7 +48,7 @@ function initLoginPage() {
   const demoFill = document.getElementById('demo-fill');
   if (demoFill) {
     demoFill.addEventListener('click', () => {
-      emailInput.value = 'adam@yas.sa';
+      emailInput.value = 'admin@yas.sa';
       passInput.value  = 'admin123';
       emailInput.classList.remove('error');
       passInput.classList.remove('error');
