@@ -100,10 +100,8 @@ SELECT
   d.model,
   t.request_type,
   t.priority,
-  t.status,
-  u.name as assigned_to
+  t.status
 FROM tickets t
 JOIN customers c ON t.customer_id = c.id
 JOIN devices d ON t.device_id = d.id
-LEFT JOIN users u ON t.assigned_user_id = u.id
 ORDER BY t.created_at DESC;
