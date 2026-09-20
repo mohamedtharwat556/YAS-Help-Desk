@@ -5,20 +5,8 @@
       "destination": "/api/health.js"
     },
     {
-      "source": "/api/auth/login",
-      "destination": "/api/auth/login.js"
-    },
-    {
-      "source": "/api/tickets",
-      "destination": "/api/tickets.js"
-    },
-    {
-      "source": "/api/customers",
-      "destination": "/api/customers.js"
-    },
-    {
-      "source": "/api/devices",
-      "destination": "/api/devices.js"
+      "source": "/api/:path*",
+      "destination": "/api/:path*.js"
     }
   ]
 }
