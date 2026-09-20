@@ -45,8 +45,8 @@ const YAS_API = {
     let url;
 
     if (isVercel) {
-      // For Vercel, use /api path without .js suffix
-      url = `/api${endpoint}`;
+      // For Vercel, add .js suffix for function files
+      url = `/api${endpoint}.js`;
     } else {
       url = `${this.baseURL}${endpoint}`;
     }
@@ -193,7 +193,7 @@ const YAS_API = {
    */
   async submitPublicTicket(ticketData) {
     const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    const url = isVercel ? '/api/public/submit-ticket' : '/api/public/submit-ticket';
+    const url = isVercel ? '/api/public/submit-ticket.js' : '/api/public/submit-ticket';
 
     const response = await fetch(url, {
       method: 'POST',
@@ -451,7 +451,7 @@ const YAS_API = {
    */
   async uploadFile(file) {
     const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    const url = isVercel ? '/api/upload' : `${this.baseURL}/upload`;
+    const url = isVercel ? '/api/upload.js' : `${this.baseURL}/upload`;
     
     const formData = new FormData();
     formData.append('file', file);
@@ -472,7 +472,7 @@ const YAS_API = {
    */
   async uploadMultipleFiles(files) {
     const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    const url = isVercel ? '/api/upload/multiple' : `${this.baseURL}/upload/multiple`;
+    const url = isVercel ? '/api/upload/multiple.js' : `${this.baseURL}/upload/multiple`;
     
     const formData = new FormData();
     files.forEach(file => {
