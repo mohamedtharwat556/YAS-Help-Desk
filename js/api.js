@@ -7,7 +7,7 @@
 
 const YAS_API = {
   // Use environment variable for production, fallback to localhost for development
-  baseURL: window.ENV?.API_URL || process.env?.REACT_APP_API_URL || 'http://localhost:3000/api',
+  baseURL: window.ENV?.API_URL || 'http://localhost:3000/api',
   token: localStorage.getItem('yas_api_token') || null,
 
   /**
