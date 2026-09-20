@@ -190,7 +190,7 @@ const YAS_API = {
    */
   async submitPublicTicket(ticketData) {
     const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    const url = isVercel ? `${this.baseURL}/public/submit-ticket.js` : '/api/public/submit-ticket';
+    const url = isVercel ? '/api/public/submit-ticket.js' : '/api/public/submit-ticket';
 
     const response = await fetch(url, {
       method: 'POST',

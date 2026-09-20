@@ -5,8 +5,8 @@
       "destination": "/api/health.js"
     },
     {
-      "source": "/api/public/:path*",
-      "destination": "/api/public/:path*.js"
+      "source": "/api/public/submit-ticket",
+      "destination": "/api/public/submit-ticket.js"
     },
     {
       "source": "/api/:path*",
