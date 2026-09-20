@@ -400,19 +400,23 @@ const TicketTracking = {
   renderTicket(ticket, container) {
     if (!container) return;
 
+    // Add null safety for request object
+    const requestType = ticket.request?.type || ticket.request_type || 'Unknown';
+    const requestPriority = ticket.request?.priority || ticket.priority || 'medium';
+
     // Header
     const headerEl = container.querySelector('.ticket-result-header');
     if (headerEl) {
       headerEl.innerHTML = `
         <div>
-          <div class="ticket-result-id">${ticket.id}</div>
+          <div class="ticket-result-id">${ticket.id || ticket.ticket_number || 'Unknown'}</div>
           <div style="font-size:0.875rem;color:var(--text-muted);margin-top:4px;">
-            ${YAS.RequestTypeLabels[ticket.request.type] || ticket.request.type}
+            ${YAS.RequestTypeLabels[requestType] || requestType}
           </div>
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
           ${YAS.statusBadge(ticket.status)}
-          ${YAS.priorityBadge(ticket.request.priority)}
+          ${YAS.priorityBadge(requestPriority)}
         </div>
       `;
     }

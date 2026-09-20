@@ -91,6 +91,7 @@ async function createTicket(ticketData) {
 
   const ticket = {
     id,
+    ticket_number: id, // For backward compatibility
     customer: {
       name:     ticketData.customer.name     || '',
       phone:    ticketData.customer.phone    || '',
@@ -112,8 +113,15 @@ async function createTicket(ticketData) {
       description: ticketData.request.description || '',
       files:       ticketData.request.files       || []
     },
+    // For backward compatibility with API format
+    request_type: ticketData.request.type || '',
+    priority: ticketData.request.priority || 'medium',
+    description: ticketData.request.description || '',
     status:     'received',
     assignedTo: 'Adam Farouk',
+    assigned_user: { name: 'Adam Farouk' }, // For API compatibility
+    created_at: now,
+    updated_at: now,
     createdAt:  now,
     updatedAt:  now,
     notes:      [],
