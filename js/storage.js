@@ -301,22 +301,31 @@ async function deleteTicket(id) {
 
 /* ── Statistics ────────────────────────────────────────────── */
 async function getStats() {
+  console.log('[Storage] Getting stats...');
+
   const tickets = await getAllTickets();
+  console.log('[Storage] Tickets for stats:', tickets.length);
+
   const today   = new Date();
   const monthStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
 
-  return {
+  // Handle both API format (created_at, priority) and LocalStorage format (createdAt, request.priority)
+  const stats = {
     total:     tickets.length,
-    newMonth:  tickets.filter(t => t.createdAt >= monthStart).length,
+    newMonth:  tickets.filter(t => (t.createdAt || t.created_at) >= monthStart).length,
     new:       tickets.filter(t => t.status === 'received').length,
     reviewing: tickets.filter(t => t.status === 'reviewing').length,
     inProgress: tickets.filter(t =>
       ['reviewing','contacting','diagnosing','maintenance'].includes(t.status)
     ).length,
     resolved:  tickets.filter(t => ['resolved','closed'].includes(t.status)).length,
-    urgent:    tickets.filter(t => t.request.priority === 'critical').length,
+    urgent:    tickets.filter(t => (t.request?.priority || t.priority) === 'critical').length,
     waiting:   tickets.filter(t => t.status === 'waiting').length
   };
+
+  console.log('[Storage] Stats calculated:', stats);
+
+  return stats;
 }
 
 /* ── Customers (derived from tickets) ─────────────────────── */

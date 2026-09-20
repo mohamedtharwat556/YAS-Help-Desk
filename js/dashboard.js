@@ -4,15 +4,21 @@
 
 'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!YAS.requireAuth()) return;
   YAS.initDashboardSidebar();
   YAS.initGlobalSearch();
   YAS.initNotifPanel();
-  renderStats();
-  renderRecentTickets();
-  renderQuickChart();
+
+  console.log('[Dashboard] Initializing dashboard...');
+
+  // Make functions async and wait for data
+  await renderStats();
+  await renderRecentTickets();
+  await renderQuickChart();
   initGreeting();
+
+  console.log('[Dashboard] Dashboard initialized');
 });
 
 /* ── Greeting ──────────────────────────────────────────────── */
@@ -36,8 +42,11 @@ function initGreeting() {
 }
 
 /* ── Statistics ────────────────────────────────────────────── */
-function renderStats() {
-  const stats = YASStorage.getStats();
+async function renderStats() {
+  console.log('[Dashboard] Loading stats...');
+
+  const stats = await YASStorage.getStats();
+  console.log('[Dashboard] Stats loaded:', stats);
 
   const animate = (id, val) => {
     const el = document.getElementById(id);
@@ -55,13 +64,18 @@ function renderStats() {
 }
 
 /* ── Recent Tickets Table ──────────────────────────────────── */
-function renderRecentTickets() {
+async function renderRecentTickets() {
+  console.log('[Dashboard] Loading recent tickets...');
+
   const tbody = document.getElementById('recent-tickets-body');
   if (!tbody) return;
 
-  const tickets = YASStorage.getAllTickets().slice(0, 8);
+  const tickets = await YASStorage.getAllTickets();
+  console.log('[Dashboard] Tickets loaded:', tickets.length, 'tickets');
 
-  if (tickets.length === 0) {
+  const recentTickets = tickets.slice(0, 8);
+
+  if (recentTickets.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="8">
@@ -75,32 +89,45 @@ function renderRecentTickets() {
     return;
   }
 
-  tbody.innerHTML = tickets.map(t => `
+  tbody.innerHTML = recentTickets.map(t => {
+    // Handle both API format (ticket_number) and LocalStorage format (id)
+    const ticketId = t.ticket_number || t.id;
+    const requestType = t.request?.type || t.request_type;
+    const requestPriority = t.request?.priority || t.priority;
+    const customerName = t.customer?.name || 'Unknown';
+    const customerCompany = t.customer?.company || '—';
+    const deviceType = t.device?.type || 'unknown';
+    const deviceBrand = t.device?.brand || 'Unknown';
+    const deviceModel = t.device?.model || 'Unknown';
+    const createdAt = t.createdAt || t.created_at;
+
+    return `
     <tr class="reveal" style="cursor:pointer" onclick="window.location.href='ticket-details.html?id=${t.id}'">
       <td>
-        <span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem">${t.id}</span>
+        <span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem">${ticketId}</span>
       </td>
       <td>
-        <div style="font-weight:600">${t.customer.name}</div>
-        <div style="font-size:0.75rem;color:var(--text-muted)">${t.customer.company || '—'}</div>
+        <div style="font-weight:600">${customerName}</div>
+        <div style="font-size:0.75rem;color:var(--text-muted)">${customerCompany}</div>
       </td>
       <td>
         <div style="display:flex;align-items:center;gap:6px">
-          <span style="color:var(--text-muted)">${YAS.getDeviceIcon(t.device.type)}</span>
-          <span>${t.device.brand} ${t.device.model}</span>
+          <span style="color:var(--text-muted)">${YAS.getDeviceIcon(deviceType)}</span>
+          <span>${deviceBrand} ${deviceModel}</span>
         </div>
       </td>
-      <td>${YAS.RequestTypeLabels[t.request.type] || t.request.type}</td>
-      <td>${YAS.priorityBadge(t.request.priority)}</td>
+      <td>${YAS.RequestTypeLabels[requestType] || requestType}</td>
+      <td>${YAS.priorityBadge(requestPriority)}</td>
       <td>${YAS.statusBadge(t.status)}</td>
-      <td style="font-size:0.8125rem;color:var(--text-muted)">${YAS.timeAgo(t.createdAt)}</td>
+      <td style="font-size:0.8125rem;color:var(--text-muted)">${YAS.timeAgo(createdAt)}</td>
       <td>
         <a href="ticket-details.html?id=${t.id}" class="btn btn-ghost btn-sm" onclick="event.stopPropagation()">
           ${YAS.Icons.eye} عرض
         </a>
       </td>
     </tr>
-  `).join('');
+  `;
+  }).join('');
 
   // Trigger reveal animations
   requestAnimationFrame(() => {
@@ -111,11 +138,15 @@ function renderRecentTickets() {
 }
 
 /* ── Quick Status Chart ────────────────────────────────────── */
-function renderQuickChart() {
+async function renderQuickChart() {
+  console.log('[Dashboard] Loading chart...');
+
   const container = document.getElementById('quick-chart');
   if (!container) return;
 
-  const tickets = YASStorage.getAllTickets();
+  const tickets = await YASStorage.getAllTickets();
+  console.log('[Dashboard] Chart tickets loaded:', tickets.length);
+
   const statusCounts = {};
   tickets.forEach(t => {
     statusCounts[t.status] = (statusCounts[t.status] || 0) + 1;
