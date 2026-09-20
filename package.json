@@ -1,23 +1,38 @@
 {
-  "name": "yas-helpdesk-frontend",
+  "name": "yas-helpdesk",
   "version": "1.0.0",
-  "description": "YAS Help Desk Frontend - Customer Portal & Engineer Dashboard",
+  "description": "YAS Help Desk - Full Stack Application",
   "scripts": {
-    "start": "serve .",
-    "dev": "serve . -p 8000",
-    "build": "node build-config.js"
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "serve": "serve . -p 8000"
   },
-  "dependencies": {
-    "serve": "^14.2.0"
-  },
-  "devDependencies": {},
   "keywords": [
     "helpdesk",
     "support",
-    "frontend",
-    "customer-portal",
-    "dashboard"
+    "api",
+    "express",
+    "supabase"
   ],
   "author": "YAS",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "@supabase/supabase-js": "^2.38.4",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "express-validator": "^7.0.1",
+    "multer": "^1.4.5-lts.1",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "morgan": "^1.10.0",
+    "serverless-http": "^3.2.0",
+    "serve": "^14.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0"
+  }
 }
