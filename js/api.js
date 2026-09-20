@@ -46,8 +46,10 @@ const YAS_API = {
 
     if (isVercel) {
       // For Vercel, use .js suffix for serverless functions
-      // But don't add .js if already present or if it's a full URL with query params
-      if (endpoint.includes('.js') || endpoint.includes('?')) {
+      // Handle special case for public-ticket (has hyphen)
+      if (endpoint.includes('public-ticket')) {
+        url = `/api/public-ticket.js`;
+      } else if (endpoint.includes('.js') || endpoint.includes('?')) {
         url = endpoint.startsWith('/api') ? endpoint : `/api${endpoint}`;
       } else {
         url = `/api${endpoint}.js`;
@@ -306,6 +308,29 @@ const YAS_API = {
   async getNotifications() {
     // Notifications endpoint not implemented yet, return empty array
     return { success: true, data: [] };
+  },
+
+  /**
+   * Submit public ticket (no auth required)
+   */
+  async submitPublicTicket(ticketData) {
+    const response = await this.post('/public-ticket', ticketData);
+    if (response.success) {
+      // Transform response to match frontend format
+      const transformedTicket = {
+        ...response.data,
+        request: {
+          type: response.data.request_type,
+          priority: response.data.priority,
+          description: response.data.description
+        },
+        customer: response.data.customer || {},
+        device: response.data.device || {},
+        assignedTo: response.data.assigned_user?.name || 'Unassigned'
+      };
+      return { success: true, data: transformedTicket };
+    }
+    return response;
   }
 };
 
