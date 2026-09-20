@@ -75,6 +75,8 @@ async function handleLogin(email, password, btn, errorDiv) {
     // Use real API login
     const response = await YAS_API.login(email, password);
     
+    console.log('Login response:', response);
+    
     if (response && response.user) {
       // Store session data
       YASStorage.setSession({
@@ -83,7 +85,7 @@ async function handleLogin(email, password, btn, errorDiv) {
         email: response.user.email,
         name: response.user.name,
         role: response.user.role,
-        phone: response.user.phone,
+        phone: response.user.phone || '',
         initials: response.user.name.split(' ').map(n => n[0]).join('').toUpperCase(),
         loginTime: new Date().toISOString()
       });
@@ -100,6 +102,9 @@ async function handleLogin(email, password, btn, errorDiv) {
       setTimeout(() => {
         window.location.href = 'dashboard.html';
       }, 600);
+    } else {
+      console.log('Login failed - response structure:', response);
+      showLoginError(errorDiv, 'فشل تسجيل الدخول - يرجى المحاولة مرة أخرى');
     }
   } catch (error) {
     btn.innerHTML = originalText;
