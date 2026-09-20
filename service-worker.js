@@ -3,7 +3,7 @@
    Offline support and caching for PWA
    ============================================================ */
 
-const CACHE_NAME = 'yas-helpdesk-v4';
+const CACHE_NAME = 'yas-helpdesk-v5';
 const OFFLINE_URL = 'index.html';
 
 // Files to cache

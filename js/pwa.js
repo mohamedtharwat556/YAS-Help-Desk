@@ -14,10 +14,24 @@ function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistrations().then(function(registrations) {
       for(let registration of registrations) {
-        registration.unregister();
-        console.log('[PWA] Unregistered existing Service Worker');
+        registration.unregister().then(function() {
+          console.log('[PWA] Unregistered existing Service Worker');
+        });
       }
     });
+    
+    // Also clear caches immediately
+    if ('caches' in window) {
+      caches.keys().then(function(cacheNames) {
+        return Promise.all(
+          cacheNames.map(function(cacheName) {
+            return caches.delete(cacheName);
+          })
+        );
+      }).then(function() {
+        console.log('[PWA] Cleared all caches');
+      });
+    }
   }
   
   return;
@@ -219,14 +233,33 @@ if (document.readyState === 'loading') {
   initPWA();
 }
 
-/* ── Clear Service Worker Cache on Load ──────────────────────── */
+/* ── Force clear everything on load ─────────────────────────── */
 window.addEventListener('load', () => {
+  console.log('[PWA] Force clearing Service Worker and caches');
+  
+  // Clear all caches
   if ('caches' in window) {
     caches.keys().then(function(cacheNames) {
-      cacheNames.forEach(function(cacheName) {
-        caches.delete(cacheName);
-        console.log('[PWA] Cleared cache:', cacheName);
-      });
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          return caches.delete(cacheName);
+        })
+      );
+    }).then(function() {
+      console.log('[PWA] Cleared all caches on load');
+    });
+  }
+  
+  // Unregister all service workers
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+      return Promise.all(
+        registrations.map(function(registration) {
+          return registration.unregister();
+        })
+      );
+    }).then(function() {
+      console.log('[PWA] Unregistered all Service Workers on load');
     });
   }
 });
