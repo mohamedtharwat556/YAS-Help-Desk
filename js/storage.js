@@ -13,7 +13,8 @@ const YAS_THEME_KEY    = 'yas_theme';
 const YAS_COUNTER_KEY  = 'yas_ticket_counter';
 
 // Flag to determine if we should use API or LocalStorage
-const USE_API = typeof YAS_API !== 'undefined' && YAS_API.token;
+// Temporarily disabled to work with LocalStorage only
+const USE_API = false; // typeof YAS_API !== 'undefined' && YAS_API.token;
 
 /* ── Ticket Counter ────────────────────────────────────────── */
 function getNextTicketNumber() {
