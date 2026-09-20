@@ -5,6 +5,10 @@
       "destination": "/api/health.js"
     },
     {
+      "source": "/api/public/:path*",
+      "destination": "/api/public/:path*.js"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*.js"
     }

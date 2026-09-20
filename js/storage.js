@@ -73,7 +73,8 @@ async function getTicketById(id) {
 async function createTicket(ticketData) {
   if (USE_API) {
     try {
-      const response = await YAS_API.createTicket(ticketData);
+      // Use public endpoint for customer submissions (no auth required)
+      const response = await YAS_API.submitPublicTicket(ticketData);
       if (response.success) {
         return response.data;
       }

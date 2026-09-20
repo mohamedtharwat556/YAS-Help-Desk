@@ -186,6 +186,30 @@ const YAS_API = {
   },
 
   /**
+   * Submit public ticket (no authentication required)
+   */
+  async submitPublicTicket(ticketData) {
+    const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    const url = isVercel ? `${this.baseURL}/public/submit-ticket.js` : '/api/public/submit-ticket';
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(ticketData)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to submit ticket');
+    }
+
+    return data;
+  },
+
+  /**
    * Update ticket
    */
   async updateTicket(id, updates) {
