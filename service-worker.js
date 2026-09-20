@@ -3,7 +3,7 @@
    Offline support and caching for PWA
    ============================================================ */
 
-const CACHE_NAME = 'yas-helpdesk-v1';
+const CACHE_NAME = 'yas-helpdesk-v2';
 const OFFLINE_URL = 'index.html';
 
 // Files to cache
@@ -96,7 +96,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Skip API calls or external resources
+  // Skip API calls - they should always go to network
+  if (event.request.url.includes('/api/')) {
+    return;
+  }
+  
+  // Skip external resources
   if (event.request.url.includes('http') && !event.request.url.includes(self.location.origin)) {
     return;
   }
