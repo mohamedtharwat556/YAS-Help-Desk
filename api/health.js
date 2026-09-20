@@ -1,4 +1,4 @@
-// Health check endpoint for Vercel
+// Health check endpoint
 module.exports = function handler(req, res) {
   res.status(200).json({
     status: 'OK',

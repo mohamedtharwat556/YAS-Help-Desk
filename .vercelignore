@@ -1,0 +1,4 @@
+# Force Vercel to redeploy by adding this file
+node_modules
+.env
+.git
