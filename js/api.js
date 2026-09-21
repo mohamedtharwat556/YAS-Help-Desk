@@ -50,6 +50,8 @@ const YAS_API = {
       // No .js suffix needed for Vercel serverless functions
       if (endpoint.includes('submit-ticket')) {
         url = `/api/submit-ticket`;
+      } else if (endpoint.includes('get-tickets')) {
+        url = `/api/get-tickets`;
       } else if (endpoint.startsWith('/api')) {
         url = endpoint;
       } else {
@@ -94,13 +96,17 @@ const YAS_API = {
     const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
     let url;
 
+    // Add timestamp to prevent caching
+    const cacheBuster = { _t: Date.now() };
+    const allParams = { ...params, ...cacheBuster };
+
     if (isVercel) {
       // For Vercel, no .js suffix needed for serverless functions
-      const queryString = new URLSearchParams(params).toString();
+      const queryString = new URLSearchParams(allParams).toString();
       const baseEndpoint = endpoint;
       url = queryString ? `${baseEndpoint}?${queryString}` : baseEndpoint;
     } else {
-      const queryString = new URLSearchParams(params).toString();
+      const queryString = new URLSearchParams(allParams).toString();
       url = queryString ? `${endpoint}?${queryString}` : endpoint;
     }
 
@@ -174,7 +180,8 @@ const YAS_API = {
    * Get all tickets
    */
   async getTickets(params = {}) {
-    const response = await this.get('/tickets', params);
+    // Use fresh endpoint to bypass Vercel caching
+    const response = await this.get('/get-tickets', params);
     if (response.success) {
       // Transform API response to match frontend expected format
       const transformedTickets = response.data.map(ticket => ({

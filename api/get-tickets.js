@@ -1,4 +1,4 @@
-// Tickets endpoint for Vercel
+// Get tickets endpoint for Vercel - FRESH VERSION Sept 21 2026
 const { createClient } = require('@supabase/supabase-js');
 const jwt = require('jsonwebtoken');
 
