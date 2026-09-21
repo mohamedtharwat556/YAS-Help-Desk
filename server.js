@@ -112,7 +112,7 @@ app.post('/api/auth', async (req, res) => {
 });
 
 // Public ticket creation (no auth required)
-app.post('/api/public-ticket', async (req, res) => {
+app.post('/api/submit-ticket', async (req, res) => {
   try {
     const { customer, device, request_type, priority = 'medium', description, files = [] } = req.body;
 
