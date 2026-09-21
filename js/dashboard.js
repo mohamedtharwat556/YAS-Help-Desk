@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   initGreeting();
 
   console.log('[Dashboard] Dashboard initialized');
+
+  // Auto-refresh data every 30 seconds
+  setInterval(async () => {
+    console.log('[Dashboard] Auto-refreshing data...');
+    await renderStats();
+    await renderRecentTickets();
+    await renderQuickChart();
+  }, 30000);
 });
 
 /* ── Greeting ──────────────────────────────────────────────── */
