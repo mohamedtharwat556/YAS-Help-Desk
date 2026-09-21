@@ -1,4 +1,4 @@
-// Public ticket creation endpoint (no auth required) - V3 FIXED VERSION
+// Public ticket creation endpoint (no auth required) - FINAL WORKING VERSION
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -116,7 +116,7 @@ module.exports = async function handler(req, res) {
       // Generate ticket number with retry logic to avoid duplicates
       let finalTicketNumber;
       let attempts = 0;
-      const maxAttempts = 5;
+      const maxAttempts = 10;
 
       while (attempts < maxAttempts) {
         const { data: lastTicket } = await supabase
@@ -128,9 +128,11 @@ module.exports = async function handler(req, res) {
         const lastNumber = lastTicket && lastTicket.length > 0
           ? parseInt(lastTicket[0].ticket_number.replace('YAS-SUP-', ''))
           : 10480;
+
+        // Start from lastNumber + 1 + attempts to find next available
         const ticketNumber = `YAS-SUP-${lastNumber + 1 + attempts}`;
 
-        console.log(`[PUBLIC-TICKET] Attempt ${attempts + 1}: Generated ticket number: ${ticketNumber}`);
+        console.log(`[PUBLIC-TICKET] Attempt ${attempts + 1}: Generated ticket number: ${ticketNumber} (last was: ${lastNumber})`);
 
         // Check if this ticket number already exists
         const { data: existingTicket } = await supabase

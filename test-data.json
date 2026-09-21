@@ -1,0 +1,21 @@
+{
+  "customer": {
+    "name": "Test User",
+    "phone": "0550000000",
+    "whatsapp": "0550000000",
+    "email": "test@example.com",
+    "company": "Test Company"
+  },
+  "device": {
+    "type": "laptop",
+    "brand": "Dell",
+    "model": "Test Model",
+    "serial_number": "TEST-001",
+    "purchase_date": "2024-01-01",
+    "warranty_status": "active"
+  },
+  "request_type": "technical",
+  "priority": "medium",
+  "description": "This is a test ticket from the API test script",
+  "files": []
+}
