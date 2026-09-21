@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YAS Help Desk API Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #fafafa;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .cache-info {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9ecef;
+            border-radius: 5px;
+        }
+        .auth-section {
+            background: #e7f3ff;
+            border: 1px solid #b8daff;
+        }
+        input {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 YAS Help Desk API Test Suite</h1>
+        
+        <div class="test-section auth-section">
+            <h3>🔐 Authentication</h3>
+            <input type="email" id="email" placeholder="Email" value="admin@yas.com">
+            <input type="password" id="password" placeholder="Password" value="admin123">
+            <button class="test-button" onclick="testLogin()">Login</button>
+            <div id="auth-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>❤️ Health Check</h3>
+            <button class="test-button" onclick="testHealth()">Test Health</button>
+            <div id="health-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>👤 Current User</h3>
+            <button class="test-button" onclick="testCurrentUser()">Get Current User</button>
+            <div id="user-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🎫 Tickets API</h3>
+            <button class="test-button" onclick="testGetTickets()">Get Tickets (Main)</button>
+            <button class="test-button" onclick="testGetTicketsFresh()">Get Tickets (Fresh)</button>
+            <button class="test-button" onclick="testCacheBuster()">Test Cache Buster</button>
+            <div id="tickets-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>👥 Other Endpoints</h3>
+            <button class="test-button" onclick="testGetUsers()">Get Users</button>
+            <button class="test-button" onclick="testGetCustomers()">Get Customers</button>
+            <button class="test-button" onclick="testGetDevices()">Get Devices</button>
+            <div id="other-result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📝 Public Ticket</h3>
+            <button class="test-button" onclick="testSubmitTicket()">Submit Public Ticket</button>
+            <div id="public-result" class="result"></div>
+        </div>
+
+        <div class="summary" id="summary">
+            <h3>📊 Test Summary</h3>
+            <p>Total Tests: <span id="total-tests">0</span></p>
+            <p>Passed: <span id="passed-tests" style="color: green;">0</span></p>
+            <p>Failed: <span id="failed-tests" style="color: red;">0</span></p>
+            <p>Success Rate: <span id="success-rate">0%</span></p>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = window.location.origin + '/api';
+        let authToken = null;
+        let testResults = { total: 0, passed: 0, failed: 0 };
+
+        function updateSummary() {
+            document.getElementById('total-tests').textContent = testResults.total;
+            document.getElementById('passed-tests').textContent = testResults.passed;
+            document.getElementById('failed-tests').textContent = testResults.failed;
+            const rate = testResults.total > 0 ? ((testResults.passed / testResults.total) * 100).toFixed(1) : 0;
+            document.getElementById('success-rate').textContent = rate + '%';
+        }
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = 'result ' + type;
+            element.textContent = message;
+        }
+
+        function showJsonResult(elementId, data, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = 'result ' + type;
+            element.textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function makeRequest(url, options = {}) {
+            testResults.total++;
+            const startTime = Date.now();
+            
+            try {
+                const response = await fetch(url, options);
+                const duration = Date.now() - startTime;
+                
+                let data;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+
+                const cacheControl = response.headers.get('cache-control');
+                const result = {
+                    success: response.ok,
+                    status: response.status,
+                    duration: duration,
+                    cacheControl: cacheControl,
+                    data: data
+                };
+
+                if (response.ok) {
+                    testResults.passed++;
+                } else {
+                    testResults.failed++;
+                }
+
+                updateSummary();
+                return result;
+            } catch (error) {
+                testResults.failed++;
+                updateSummary();
+                return {
+                    success: false,
+                    error: error.message
+                };
+            }
+        }
+
+        async function testLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            showResult('auth-result', 'Testing login...', 'info');
+            
+            const result = await makeRequest(`${BASE_URL}/auth`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            if (result.success && result.data.success) {
+                authToken = result.data.data.token;
+                showJsonResult('auth-result', {
+                    message: 'Login successful!',
+                    token: authToken.substring(0, 30) + '...',
+                    cacheControl: result.cacheControl
+                }, 'success');
+            } else {
+                showJsonResult('auth-result', {
+                    message: 'Login failed',
+                    error: result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+
+        async function testHealth() {
+            showResult('health-result', 'Testing health endpoint...', 'info');
+            
+            const result = await makeRequest(`${BASE_URL}/health`);
+            
+            if (result.success) {
+                showJsonResult('health-result', {
+                    message: 'Health check passed',
+                    data: result.data,
+                    cacheControl: result.cacheControl
+                }, 'success');
+            } else {
+                showJsonResult('health-result', {
+                    message: 'Health check failed',
+                    error: result.error || result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+
+        async function testCurrentUser() {
+            if (!authToken) {
+                showResult('user-result', 'Please login first', 'error');
+                return;
+            }
+            
+            showResult('user-result', 'Testing current user...', 'info');
+            
+            const result = await makeRequest(`${BASE_URL}/me`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (result.success) {
+                showJsonResult('user-result', {
+                    message: 'Current user retrieved',
+                    data: result.data,
+                    cacheControl: result.cacheControl
+                }, 'success');
+            } else {
+                showJsonResult('user-result', {
+                    message: 'Failed to get current user',
+                    error: result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+
+        async function testGetTickets() {
+            if (!authToken) {
+                showResult('tickets-result', 'Please login first', 'error');
+                return;
+            }
+            
+            showResult('tickets-result', 'Testing get tickets (main endpoint)...', 'info');
+            
+            const result = await makeRequest(`${BASE_URL}/tickets`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (result.success) {
+                const ticketCount = result.data.data ? result.data.data.length : 0;
+                showJsonResult('tickets-result', {
+                    message: `Tickets retrieved successfully (${ticketCount} tickets)`,
+                    cacheControl: result.cacheControl,
+                    sample: result.data.data ? result.data.data.slice(0, 2) : []
+                }, 'success');
+            } else {
+                showJsonResult('tickets-result', {
+                    message: 'Failed to get tickets',
+                    error: result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+
+        async function testGetTicketsFresh() {
+            if (!authToken) {
+                showResult('tickets-result', 'Please login first', 'error');
+                return;
+            }
+            
+            showResult('tickets-result', 'Testing get tickets (fresh endpoint)...', 'info');
+            
+            const result = await makeRequest(`${BASE_URL}/get-tickets`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (result.success) {
+                const ticketCount = result.data.data ? result.data.data.length : 0;
+                showJsonResult('tickets-result', {
+                    message: `Fresh tickets retrieved successfully (${ticketCount} tickets)`,
+                    cacheControl: result.cacheControl,
+                    hasNoCache: result.cacheControl && result.cacheControl.includes('no-cache'),
+                    sample: result.data.data ? result.data.data.slice(0, 2) : []
+                }, result.cacheControl && result.cacheControl.includes('no-cache') ? 'success' : 'cache-info');
+            } else {
+                showJsonResult('tickets-result', {
+                    message: 'Failed to get fresh tickets',
+                    error: result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+
+        async function testCacheBuster() {
+            if (!authToken) {
+                showResult('tickets-result', 'Please login first', 'error');
+                return;
+            }
+            
+            showResult('tickets-result', 'Testing cache buster (3 requests)...', 'info');
+            
+            const results = [];
+            for (let i = 1; i <= 3; i++) {
+                const timestamp = Date.now();
+                const result = await makeRequest(`${BASE_URL}/get-tickets?_t=${timestamp}`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                results.push({
+                    request: i,
+                    timestamp: timestamp,
+                    cacheControl: result.cacheControl,
+                    success: result.success
+                });
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+
+            const allDifferentTimestamps = results.every(r => r.cacheControl && r.cacheControl.includes('no-cache'));
+            
+            showJsonResult('tickets-result', {
+                message: 'Cache buster test completed',
+                results: results,
+                analysis: {
+                    allRequestsHaveNoCache: allDifferentTimestamps,
+                    cacheBusterWorking: allDifferentTimestamps
+                }
+            }, allDifferentTimestamps ? 'success' : 'cache-info');
+        }
+
+        async function testGetUsers() {
+            if (!authToken) {
+                showResult('other-result', 'Please login first', 'error');
+                return;
+            }
+            
+            showResult('other-result', 'Testing get users...', 'info');
+            
+            const result = await makeRequest(`${BASE_URL}/users`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (result.success) {
+                showJsonResult('other-result', {
+                    message: 'Users retrieved successfully',
+                    count: result.data.data ? result.data.data.length : 0,
+                    cacheControl: result.cacheControl
+                }, 'success');
+            } else {
+                showJsonResult('other-result', {
+                    message: 'Failed to get users',
+                    error: result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+
+        async function testGetCustomers() {
+            if (!authToken) {
+                showResult('other-result', 'Please login first', 'error');
+                return;
+            }
+            
+            showResult('other-result', 'Testing get customers...', 'info');
+            
+            const result = await makeRequest(`${BASE_URL}/customers`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (result.success) {
+                showJsonResult('other-result', {
+                    message: 'Customers retrieved successfully',
+                    count: result.data.data ? result.data.data.length : 0,
+                    cacheControl: result.cacheControl
+                }, 'success');
+            } else {
+                showJsonResult('other-result', {
+                    message: 'Failed to get customers',
+                    error: result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+
+        async function testGetDevices() {
+            if (!authToken) {
+                showResult('other-result', 'Please login first', 'error');
+                return;
+            }
+            
+            showResult('other-result', 'Testing get devices...', 'info');
+            
+            const result = await makeRequest(`${BASE_URL}/devices`, {
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+
+            if (result.success) {
+                showJsonResult('other-result', {
+                    message: 'Devices retrieved successfully',
+                    count: result.data.data ? result.data.data.length : 0,
+                    cacheControl: result.cacheControl
+                }, 'success');
+            } else {
+                showJsonResult('other-result', {
+                    message: 'Failed to get devices',
+                    error: result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+
+        async function testSubmitTicket() {
+            showResult('public-result', 'Testing public ticket submission...', 'info');
+            
+            const ticketData = {
+                customer: {
+                    name: 'API Test Customer',
+                    phone: '+966500000000',
+                    email: 'apitest@example.com'
+                },
+                device: {
+                    type: 'laptop',
+                    brand: 'Dell',
+                    model: 'XPS 15',
+                    serial_number: 'API-TEST-123'
+                },
+                request_type: 'repair',
+                priority: 'medium',
+                description: 'Test ticket created via API test suite'
+            };
+
+            const result = await makeRequest(`${BASE_URL}/submit-ticket`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ticketData)
+            });
+
+            if (result.success) {
+                showJsonResult('public-result', {
+                    message: 'Public ticket submitted successfully',
+                    ticketNumber: result.data.data ? result.data.data.ticket_number : 'N/A',
+                    cacheControl: result.cacheControl
+                }, 'success');
+            } else {
+                showJsonResult('public-result', {
+                    message: 'Failed to submit public ticket',
+                    error: result.data,
+                    cacheControl: result.cacheControl
+                }, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
