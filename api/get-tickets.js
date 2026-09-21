@@ -40,9 +40,9 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Database not configured' });
   }
 
-  const path = req.url.replace('/api/tickets', '');
+  const path = req.url.replace('/api/get-tickets', '');
 
-  // GET /api/tickets
+  // GET /api/get-tickets
   if ((path === '' || path.startsWith('?')) && req.method === 'GET') {
     const authHeader = req.headers.authorization;
     console.log('[Tickets API] Auth header:', authHeader ? 'Present' : 'Missing');
