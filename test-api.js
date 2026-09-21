@@ -1,225 +1,277 @@
-// ============================================================
-// YAS Help Desk - API Test Script
-// Run this to test the API endpoints locally
-// ============================================================
+// Comprehensive API Test for YAS Help Desk
+// Tests all endpoints on Vercel deployment
 
-const express = require('express');
-const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
+// Use built-in fetch for Node.js 18+, otherwise require node-fetch
+const fetch = global.fetch || require('node-fetch');
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+// Configuration - Update this with your Vercel URL
+// Replace with your actual Vercel deployment URL
+const BASE_URL = process.env.API_URL || 'https://your-app.vercel.app/api';
+// For local testing: const BASE_URL = 'http://localhost:3001/api';
 
-// Supabase Configuration
-const supabaseUrl = process.env.SUPABASE_URL || 'https://dqepsuecouvnvozcnjth.supabase.co';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxZXBzdWVjb3V2bnZvemNuanRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTgxODY3NCwiZXhwIjoyMTA1Mzk0Njc0fQ.yn1zGz8RIbyPKTkjw8YwTZr5cnTvyvd4Tp5COv046HE';
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Test credentials (update with valid credentials)
+const TEST_USER = {
+  email: 'admin@yas.com',
+  password: 'admin123'
+};
 
-console.log('[TEST] Starting API Test...');
-console.log('[TEST] Supabase URL:', supabaseUrl);
-console.log('[TEST] Supabase Key:', supabaseKey ? 'Present' : 'Missing');
+let authToken = null;
+let testTicketId = null;
 
-// Test 1: Public Ticket Creation
-app.post('/test-public-ticket', async (req, res) => {
-  console.log('[TEST] Testing public ticket creation...');
-  console.log('[TEST] Request body:', JSON.stringify(req.body, null, 2));
+// Color codes for console output
+const colors = {
+  reset: '\x1b[0m',
+  green: '\x1b[32m',
+  red: '\x1b[31m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  cyan: '\x1b[36m'
+};
 
+function log(message, color = 'reset') {
+  console.log(`${colors[color]}${message}${colors.reset}`);
+}
+
+function logTest(testName) {
+  console.log('\n' + '='.repeat(60));
+  log(`TEST: ${testName}`, 'cyan');
+  console.log('='.repeat(60));
+}
+
+function logSuccess(message) {
+  log(`✓ ${message}`, 'green');
+}
+
+function logError(message) {
+  log(`✗ ${message}`, 'red');
+}
+
+function logInfo(message) {
+  log(`ℹ ${message}`, 'blue');
+}
+
+// Test helper
+async function testEndpoint(name, url, options = {}) {
   try {
-    const { customer, device, request_type, priority = 'medium', description, files = [] } = req.body;
+    logTest(name);
+    logInfo(`URL: ${url}`);
+    logInfo(`Method: ${options.method || 'GET'}`);
 
-    console.log('[TEST] Step 1: Creating customer...');
-    const { data: newCustomer, error: customerError } = await supabase
-      .from('customers')
-      .upsert({
-        name: customer.name,
-        phone: customer.phone,
-        whatsapp: customer.whatsapp || customer.phone,
-        email: customer.email,
-        company: customer.company
-      }, {
-        onConflict: 'phone'
-      })
-      .select()
-      .single();
+    const startTime = Date.now();
+    const response = await fetch(url, options);
+    const duration = Date.now() - startTime;
 
-    if (customerError) {
-      console.error('[TEST] Customer creation failed:', customerError);
-      return res.status(500).json({ error: 'Customer creation failed', details: customerError });
+    logInfo(`Status: ${response.status} (${duration}ms)`);
+    logInfo(`Cache-Control: ${response.headers.get('cache-control') || 'Not set'}`);
+
+    const data = await response.json();
+    logInfo(`Response: ${JSON.stringify(data, null, 2)}`);
+
+    if (response.ok) {
+      logSuccess(`${name} passed`);
+      return { success: true, data, status: response.status };
+    } else {
+      logError(`${name} failed with status ${response.status}`);
+      return { success: false, data, status: response.status };
     }
+  } catch (error) {
+    logError(`${name} failed with error: ${error.message}`);
+    return { success: false, error: error.message };
+  }
+}
 
-    console.log('[TEST] Customer created successfully:', newCustomer.id);
+// Test suite
+async function runTests() {
+  log('\n' + '='.repeat(60));
+  log('YAS HELP DESK API TEST SUITE', 'yellow');
+  log('='.repeat(60) + '\n');
 
-    console.log('[TEST] Step 2: Creating device...');
-    const { data: newDevice, error: deviceError } = await supabase
-      .from('devices')
-      .insert({
-        customer_id: newCustomer.id,
-        type: device.type,
-        brand: device.brand,
-        model: device.model,
-        serial_number: device.serial_number,
-        purchase_date: device.purchase_date,
-        warranty_status: device.warranty_status || 'unknown'
-      })
-      .select()
-      .single();
+  const results = [];
 
-    if (deviceError) {
-      console.error('[TEST] Device creation failed:', deviceError);
-      return res.status(500).json({ error: 'Device creation failed', details: deviceError });
+  // 1. Health Check (if available)
+  results.push(await testEndpoint(
+    'Health Check',
+    `${BASE_URL}/health`,
+    { method: 'GET' }
+  ));
+
+  // 2. Authentication - Login
+  const loginResult = await testEndpoint(
+    'User Login',
+    `${BASE_URL}/auth`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(TEST_USER)
     }
+  );
+  results.push(loginResult);
 
-    console.log('[TEST] Device created successfully:', newDevice.id);
+  if (loginResult.success && loginResult.data.success) {
+    authToken = loginResult.data.data.token;
+    logSuccess(`Auth token obtained: ${authToken.substring(0, 20)}...`);
+  } else {
+    logError('Failed to obtain auth token, skipping authenticated tests');
+    return summarizeResults(results);
+  }
 
-    console.log('[TEST] Step 3: Generating ticket number with retry logic...');
-    let finalTicketNumber;
-    let attempts = 0;
-    const maxAttempts = 10;
+  const authHeaders = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${authToken}`
+  };
 
-    while (attempts < maxAttempts) {
-      const { data: lastTicket } = await supabase
-        .from('tickets')
-        .select('ticket_number')
-        .order('created_at', { ascending: false })
-        .limit(1);
+  // 3. Get Current User
+  results.push(await testEndpoint(
+    'Get Current User',
+    `${BASE_URL}/me`,
+    { headers: authHeaders }
+  ));
 
-      const lastNumber = lastTicket && lastTicket.length > 0
-        ? parseInt(lastTicket[0].ticket_number.replace('YAS-SUP-', ''))
-        : 10480;
+  // 4. Get Users
+  results.push(await testEndpoint(
+    'Get Users',
+    `${BASE_URL}/users`,
+    { headers: authHeaders }
+  ));
 
-      // Start from lastNumber + 1 + attempts to find next available
-      const ticketNumber = `YAS-SUP-${lastNumber + 1 + attempts}`;
+  // 5. Get Tickets (main endpoint)
+  const ticketsResult = await testEndpoint(
+    'Get Tickets (Main Endpoint)',
+    `${BASE_URL}/tickets`,
+    { headers: authHeaders }
+  );
+  results.push(ticketsResult);
 
-      console.log(`[TEST] Attempt ${attempts + 1}: Generated ticket number: ${ticketNumber} (last was: ${lastNumber})`);
+  // 6. Get Tickets (fresh endpoint)
+  const freshTicketsResult = await testEndpoint(
+    'Get Tickets (Fresh Endpoint - Cache Bypass)',
+    `${BASE_URL}/get-tickets`,
+    { headers: authHeaders }
+  );
+  results.push(freshTicketsResult);
 
-      // Check if this ticket number already exists
-      const { data: existingTicket } = await supabase
-        .from('tickets')
-        .select('id')
-        .eq('ticket_number', ticketNumber)
-        .single();
+  // 7. Get Customers
+  results.push(await testEndpoint(
+    'Get Customers',
+    `${BASE_URL}/customers`,
+    { headers: authHeaders }
+  ));
 
-      if (!existingTicket) {
-        finalTicketNumber = ticketNumber;
-        console.log(`[TEST] Found unique ticket number: ${finalTicketNumber}`);
-        break;
+  // 8. Get Devices
+  results.push(await testEndpoint(
+    'Get Devices',
+    `${BASE_URL}/devices`,
+    { headers: authHeaders }
+  ));
+
+  // 9. Cache Test - Multiple requests to same endpoint
+  logTest('Cache Test - Multiple GET Requests');
+  logInfo('Testing if cache-buster is working...');
+  
+  const cacheTestResults = [];
+  for (let i = 1; i <= 3; i++) {
+    const result = await testEndpoint(
+      `Cache Test Request ${i}`,
+      `${BASE_URL}/get-tickets`,
+      { headers: authHeaders }
+    );
+    cacheTestResults.push(result);
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second between requests
+  }
+  results.push(...cacheTestResults);
+
+  // 10. Submit Public Ticket (no auth required)
+  const publicTicketData = {
+    customer: {
+      name: 'Test Customer',
+      phone: '+966500000000',
+      email: 'test@example.com'
+    },
+    device: {
+      type: 'laptop',
+      brand: 'Dell',
+      model: 'XPS 15',
+      serial_number: 'TEST123'
+    },
+    request_type: 'repair',
+    priority: 'medium',
+    description: 'Test ticket for API testing'
+  };
+
+  results.push(await testEndpoint(
+    'Submit Public Ticket',
+    `${BASE_URL}/submit-ticket`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(publicTicketData)
+    }
+  ));
+
+  // 11. Create Ticket (authenticated)
+  if (ticketsResult.success && ticketsResult.data.data && ticketsResult.data.data.length > 0) {
+    testTicketId = ticketsResult.data.data[0].id;
+  }
+
+  // 12. Statistics/Dashboard Data
+  results.push(await testEndpoint(
+    'Get Dashboard Stats (via tickets endpoint)',
+    `${BASE_URL}/tickets?limit=1000`,
+    { headers: authHeaders }
+  ));
+
+  return summarizeResults(results);
+}
+
+function summarizeResults(results) {
+  console.log('\n' + '='.repeat(60));
+  log('TEST SUMMARY', 'yellow');
+  console.log('='.repeat(60));
+
+  const passed = results.filter(r => r.success).length;
+  const failed = results.filter(r => !r.success).length;
+  const total = results.length;
+
+  log(`Total Tests: ${total}`, 'cyan');
+  log(`Passed: ${passed}`, 'green');
+  log(`Failed: ${failed}`, failed > 0 ? 'red' : 'green');
+  log(`Success Rate: ${((passed / total) * 100).toFixed(1)}%`, 'cyan');
+
+  // Failed tests details
+  if (failed > 0) {
+    console.log('\n' + '-'.repeat(60));
+    log('FAILED TESTS:', 'red');
+    console.log('-'.repeat(60));
+    results.forEach((result, index) => {
+      if (!result.success) {
+        log(`Test ${index + 1}: ${result.error || 'Unknown error'}`, 'red');
       }
-
-      console.log(`[TEST] Ticket number ${ticketNumber} already exists, trying next...`);
-      attempts++;
-    }
-
-    if (!finalTicketNumber) {
-      throw new Error('Failed to generate unique ticket number after multiple attempts');
-    }
-
-    console.log('[TEST] Final ticket number:', finalTicketNumber);
-
-    console.log('[TEST] Step 4: Creating ticket...');
-    const { data: ticket, error: ticketError } = await supabase
-      .from('tickets')
-      .insert({
-        ticket_number: finalTicketNumber,
-        customer_id: newCustomer.id,
-        device_id: newDevice.id,
-        request_type,
-        priority,
-        description,
-        files,
-        status: 'received'
-      })
-      .select(`
-        *,
-        customer:customers(*),
-        device:devices(*)
-      `)
-      .single();
-
-    if (ticketError) {
-      console.error('[TEST] Ticket creation failed:', ticketError);
-      return res.status(500).json({ error: 'Ticket creation failed', details: ticketError });
-    }
-
-    console.log('[TEST] Ticket created successfully:', ticket.id, ticket.ticket_number);
-
-    res.status(201).json({
-      success: true,
-      message: 'Test ticket created successfully',
-      data: ticket
     });
-  } catch (error) {
-    console.error('[TEST] Test failed:', error);
-    res.status(500).json({ error: 'Test failed', details: error.message });
   }
-});
 
-// Test 2: Get All Tickets
-app.get('/test-tickets', async (req, res) => {
-  console.log('[TEST] Testing get all tickets...');
-
-  try {
-    const { data: tickets, error } = await supabase
-      .from('tickets')
-      .select(`
-        *,
-        customer:customers(*),
-        device:devices(*)
-      `)
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('[TEST] Get tickets failed:', error);
-      return res.status(500).json({ error: 'Get tickets failed', details: error });
-    }
-
-    console.log('[TEST] Retrieved', tickets.length, 'tickets');
-
-    res.status(200).json({
-      success: true,
-      count: tickets.length,
-      data: tickets
+  // Cache analysis
+  console.log('\n' + '-'.repeat(60));
+  log('CACHE ANALYSIS:', 'yellow');
+  console.log('-'.repeat(60));
+  const cacheResults = results.filter(r => r.cacheControl);
+  if (cacheResults.length > 0) {
+    cacheResults.forEach(r => {
+      log(`Cache-Control: ${r.cacheControl}`, r.cacheControl.includes('no-cache') ? 'green' : 'yellow');
     });
-  } catch (error) {
-    console.error('[TEST] Test failed:', error);
-    res.status(500).json({ error: 'Test failed', details: error.message });
+  } else {
+    log('No cache headers found in responses', 'yellow');
   }
-});
 
-// Test 3: Test Data for Manual Testing
-app.get('/test-data', (req, res) => {
-  res.json({
-    testData: {
-      customer: {
-        name: 'Test User',
-        phone: '0550000000',
-        whatsapp: '0550000000',
-        email: 'test@example.com',
-        company: 'Test Company'
-      },
-      device: {
-        type: 'laptop',
-        brand: 'Dell',
-        model: 'Test Model',
-        serial_number: 'TEST-001',
-        purchase_date: '2024-01-01',
-        warranty_status: 'active'
-      },
-      request_type: 'technical',
-      priority: 'medium',
-      description: 'This is a test ticket from the API test script',
-      files: []
-    }
-  });
-});
+  console.log('\n' + '='.repeat(60));
+  log('TEST SUITE COMPLETED', 'yellow');
+  console.log('='.repeat(60) + '\n');
 
-const PORT = 3002;
-app.listen(PORT, () => {
-  console.log(`🧪 API Test Server running on http://localhost:${PORT}`);
-  console.log(`📡 Test endpoints available:`);
-  console.log(`   POST http://localhost:${PORT}/test-public-ticket`);
-  console.log(`   GET  http://localhost:${PORT}/test-tickets`);
-  console.log(`   GET  http://localhost:${PORT}/test-data`);
-  console.log(`\n🧪 To test, run:`);
-  console.log(`   curl -X POST http://localhost:${PORT}/test-public-ticket -H "Content-Type: application/json" -d @test-data.json`);
+  return { passed, failed, total };
+}
+
+// Run tests
+runTests().catch(error => {
+  logError(`Test suite failed: ${error.message}`);
+  console.error(error);
+  process.exit(1);
 });

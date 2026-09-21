@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "serve . -p 8000",
     "api": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "test-api": "node test-api.js"
   },
   "keywords": [
     "helpdesk",
@@ -20,6 +21,7 @@
     "cors": "^2.8.6",
     "express": "^4.22.3",
     "jsonwebtoken": "^9.0.2",
+    "node-fetch": "^2.7.0",
     "serve": "^14.2.0"
   }
 }
