@@ -63,17 +63,15 @@ module.exports = async function handler(req, res) {
     }
 
     try {
+      // First try simple query without relations
       const { data: tickets, error } = await supabase
         .from('tickets')
-        .select(`
-          *,
-          customer:customers(*),
-          device:devices(*),
-          assigned_user:users(id, name, email, role)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
+
+      console.log('[Tickets API] Fetched tickets count:', tickets?.length || 0);
 
       res.status(200).json({
         success: true,
@@ -81,7 +79,7 @@ module.exports = async function handler(req, res) {
       });
     } catch (error) {
       console.error('Get tickets error:', error);
-      res.status(500).json({ error: 'Failed to fetch tickets' });
+      res.status(500).json({ error: 'Failed to fetch tickets', details: error.message });
     }
   } 
   // POST /api/tickets
