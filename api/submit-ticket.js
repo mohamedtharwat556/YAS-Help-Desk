@@ -1,8 +1,8 @@
-// Public ticket creation endpoint (no auth required) - FINAL WORKING VERSION V2 - Sept 21 2026
+// Submit ticket endpoint (no auth required) - FRESH VERSION Sept 21 2026
 const { createClient } = require('@supabase/supabase-js');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = process.env.SUPABASE_URL || 'https://dqepsuecouvnvozcnjth.supabase.co';
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxZXBzdWVjb3V2bnZvemNuanRoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTgxODY3NCwiZXhwIjoyMTA1Mzk0Njc0fQ.yn1zGz8RIbyPKTkjw8YwTZr5cnTvyvd4Tp5COv046HE';
 
 let supabase;
 if (supabaseUrl && supabaseKey) {
@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (!supabase) {
-    console.error('Supabase not configured:', { url: !!supabaseUrl, key: !!supabaseKey });
+    console.error('[SUBMIT-TICKET] Supabase not configured:', { url: !!supabaseUrl, key: !!supabaseKey });
     return res.status(500).json({ error: 'Database not configured' });
   }
 
@@ -33,25 +33,25 @@ module.exports = async function handler(req, res) {
         body = JSON.parse(body);
       }
 
-      console.log('[PUBLIC-TICKET V2] Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model, request_type: body.request_type, timestamp: new Date().toISOString() });
+      console.log('[SUBMIT-TICKET] Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model, request_type: body.request_type, timestamp: new Date().toISOString() });
 
       const { customer, device, request_type, priority = 'medium', description, files = [] } = body || {};
 
-      console.log('Parsed request data:', { customer, device, request_type, priority, description });
+      console.log('[SUBMIT-TICKET] Parsed request data:', { customer, device, request_type, priority, description });
 
       // Validate required fields
       if (!request_type) {
-        console.error('Missing request_type in request body:', body);
+        console.error('[SUBMIT-TICKET] Missing request_type in request body:', body);
         return res.status(400).json({ error: 'request_type is required' });
       }
 
       if (!customer || !customer.name || !customer.phone) {
-        console.error('Missing customer data:', customer);
+        console.error('[SUBMIT-TICKET] Missing customer data:', customer);
         return res.status(400).json({ error: 'Customer name and phone are required' });
       }
 
       if (!device || !device.model) {
-        console.error('Missing device data:', device);
+        console.error('[SUBMIT-TICKET] Missing device data:', device);
         return res.status(400).json({ error: 'Device model is required' });
       }
 
@@ -73,14 +73,14 @@ module.exports = async function handler(req, res) {
           .single();
 
         if (result.error) {
-          console.error('Customer creation error:', result.error);
+          console.error('[SUBMIT-TICKET] Customer creation error:', result.error);
           throw result.error;
         }
 
         newCustomer = result.data;
-        console.log('Customer created:', newCustomer.id);
+        console.log('[SUBMIT-TICKET] Customer created:', newCustomer.id);
       } catch (error) {
-        console.error('Customer creation exception:', error);
+        console.error('[SUBMIT-TICKET] Customer creation exception:', error);
         return res.status(500).json({ error: 'Failed to create customer', details: error.message });
       }
 
@@ -102,18 +102,18 @@ module.exports = async function handler(req, res) {
           .single();
 
         if (result.error) {
-          console.error('Device creation error:', result.error);
+          console.error('[SUBMIT-TICKET] Device creation error:', result.error);
           throw result.error;
         }
 
         newDevice = result.data;
-        console.log('Device created:', newDevice.id);
+        console.log('[SUBMIT-TICKET] Device created:', newDevice.id);
       } catch (error) {
-        console.error('Device creation exception:', error);
+        console.error('[SUBMIT-TICKET] Device creation exception:', error);
         return res.status(500).json({ error: 'Failed to create device', details: error.message });
       }
 
-      // Generate ticket number with retry logic to avoid duplicates
+      // Generate ticket number with retry logic
       let finalTicketNumber;
       let attempts = 0;
       const maxAttempts = 10;
@@ -132,7 +132,7 @@ module.exports = async function handler(req, res) {
         // Start from lastNumber + 1 + attempts to find next available
         const ticketNumber = `YAS-SUP-${lastNumber + 1 + attempts}`;
 
-        console.log(`[PUBLIC-TICKET] Attempt ${attempts + 1}: Generated ticket number: ${ticketNumber} (last was: ${lastNumber})`);
+        console.log(`[SUBMIT-TICKET] Attempt ${attempts + 1}: Generated ticket number: ${ticketNumber} (last was: ${lastNumber})`);
 
         // Check if this ticket number already exists
         const { data: existingTicket } = await supabase
@@ -143,11 +143,11 @@ module.exports = async function handler(req, res) {
 
         if (!existingTicket) {
           finalTicketNumber = ticketNumber;
-          console.log(`[PUBLIC-TICKET] Found unique ticket number: ${finalTicketNumber}`);
+          console.log(`[SUBMIT-TICKET] Found unique ticket number: ${finalTicketNumber}`);
           break;
         }
 
-        console.log(`[PUBLIC-TICKET] Ticket number ${ticketNumber} already exists, trying next...`);
+        console.log(`[SUBMIT-TICKET] Ticket number ${ticketNumber} already exists, trying next...`);
         attempts++;
       }
 
@@ -155,10 +155,12 @@ module.exports = async function handler(req, res) {
         throw new Error('Failed to generate unique ticket number after multiple attempts');
       }
 
+      console.log('[SUBMIT-TICKET] Final ticket number:', finalTicketNumber);
+
       // Create ticket
       let ticket;
       try {
-        console.log('[PUBLIC-TICKET] About to create ticket with data:', {
+        console.log('[SUBMIT-TICKET] About to create ticket with data:', {
           ticket_number: finalTicketNumber,
           customer_id: newCustomer.id,
           device_id: newDevice.id,
@@ -182,21 +184,20 @@ module.exports = async function handler(req, res) {
           .select(`
             *,
             customer:customers(*),
-            device:devices(*),
-            assigned_user:users(id, name, email, role)
+            device:devices(*)
           `)
           .single();
 
-        console.log('[PUBLIC-TICKET] Supabase insert result:', result);
+        console.log('[SUBMIT-TICKET] Supabase insert result:', result);
 
         if (result.error) {
-          console.error('[PUBLIC-TICKET] Ticket creation error:', result.error);
+          console.error('[SUBMIT-TICKET] Ticket creation error:', result.error);
           throw result.error;
         }
 
         ticket = result.data;
-        console.log('[PUBLIC-TICKET] Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
-        console.log('[PUBLIC-TICKET] Full ticket object:', JSON.stringify(ticket, null, 2));
+        console.log('[SUBMIT-TICKET] Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
+        console.log('[SUBMIT-TICKET] Full ticket object:', JSON.stringify(ticket, null, 2));
 
         res.status(201).json({
           success: true,
@@ -204,11 +205,11 @@ module.exports = async function handler(req, res) {
           data: ticket
         });
       } catch (error) {
-        console.error('[PUBLIC-TICKET] Ticket creation exception:', error);
+        console.error('[SUBMIT-TICKET] Ticket creation exception:', error);
         return res.status(500).json({ error: 'Failed to create ticket', details: error.message });
       }
     } catch (error) {
-      console.error('Create ticket error:', error);
+      console.error('[SUBMIT-TICKET] Create ticket error:', error);
       res.status(500).json({ error: 'Failed to create ticket', details: error.message });
     }
   } else {
