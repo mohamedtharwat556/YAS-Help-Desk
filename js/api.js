@@ -336,7 +336,15 @@ const YAS_API = {
 
     console.log('[API] Transformed API data:', apiData);
 
-    const response = await this.post('/public-ticket', apiData);
+    // Try new endpoint first, fallback to old
+    let response;
+    try {
+      response = await this.post('/public-ticket-v2', apiData);
+      console.log('[API] Used new endpoint /public-ticket-v2');
+    } catch (error) {
+      console.log('[API] New endpoint failed, trying old endpoint /public-ticket');
+      response = await this.post('/public-ticket', apiData);
+    }
     console.log('[API] Public ticket response:', response);
 
     if (response.success) {
