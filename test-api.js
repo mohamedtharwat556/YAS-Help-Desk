@@ -6,7 +6,7 @@ const fetch = global.fetch || require('node-fetch');
 
 // Configuration - Update this with your Vercel URL
 // Replace with your actual Vercel deployment URL
-const BASE_URL = process.env.API_URL || 'https://your-app.vercel.app/api';
+const BASE_URL = process.env.API_URL || 'https://yas-help-desk-eaquxlwxw-projs-projects-5ba5cc35.vercel.app/api';
 // For local testing: const BASE_URL = 'http://localhost:3001/api';
 
 // Test credentials (update with valid credentials)
