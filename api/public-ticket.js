@@ -1,4 +1,4 @@
-// Public ticket creation endpoint (no auth required)
+// Public ticket creation endpoint (no auth required) - FIXED VERSION
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -33,7 +33,7 @@ module.exports = async function handler(req, res) {
         body = JSON.parse(body);
       }
 
-      console.log('[PUBLIC-TICKET] Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model, request_type: body.request_type });
+      console.log('[PUBLIC-TICKET V2] Creating ticket with data:', { customer: body.customer?.name, device: body.device?.model, request_type: body.request_type, timestamp: new Date().toISOString() });
 
       const { customer, device, request_type, priority = 'medium', description, files = [] } = body || {};
 
