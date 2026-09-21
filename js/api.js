@@ -48,8 +48,8 @@ const YAS_API = {
       // For Vercel, the api/ folder becomes serverless functions
       // The files in api/ folder are automatically served as /api/filename
       // No .js suffix needed for Vercel serverless functions
-      if (endpoint.includes('public-ticket')) {
-        url = `/api/public-ticket`;
+      if (endpoint.includes('submit-ticket')) {
+        url = `/api/submit-ticket`;
       } else if (endpoint.startsWith('/api')) {
         url = endpoint;
       } else {
