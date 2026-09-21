@@ -156,6 +156,15 @@ module.exports = async function handler(req, res) {
       // Create ticket
       let ticket;
       try {
+        console.log('[PUBLIC-TICKET] About to create ticket with data:', {
+          ticket_number: finalTicketNumber,
+          customer_id: newCustomer.id,
+          device_id: newDevice.id,
+          request_type,
+          priority,
+          description
+        });
+
         const result = await supabase
           .from('tickets')
           .insert({
@@ -176,14 +185,16 @@ module.exports = async function handler(req, res) {
           `)
           .single();
 
+        console.log('[PUBLIC-TICKET] Supabase insert result:', result);
+
         if (result.error) {
-          console.error('Ticket creation error:', result.error);
+          console.error('[PUBLIC-TICKET] Ticket creation error:', result.error);
           throw result.error;
         }
 
         ticket = result.data;
-        console.log('Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
-        console.log('Full ticket object:', JSON.stringify(ticket, null, 2));
+        console.log('[PUBLIC-TICKET] Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
+        console.log('[PUBLIC-TICKET] Full ticket object:', JSON.stringify(ticket, null, 2));
 
         res.status(201).json({
           success: true,
@@ -191,7 +202,7 @@ module.exports = async function handler(req, res) {
           data: ticket
         });
       } catch (error) {
-        console.error('Ticket creation exception:', error);
+        console.error('[PUBLIC-TICKET] Ticket creation exception:', error);
         return res.status(500).json({ error: 'Failed to create ticket', details: error.message });
       }
     } catch (error) {
