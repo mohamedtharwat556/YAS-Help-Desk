@@ -1,4 +1,4 @@
-// Public ticket creation endpoint (no auth required) - FINAL WORKING VERSION
+// Public ticket creation endpoint (no auth required) - FINAL WORKING VERSION - Sept 21 2026
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL;
