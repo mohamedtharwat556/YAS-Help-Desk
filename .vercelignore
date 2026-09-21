@@ -1,4 +1,4 @@
-# Force Vercel to redeploy by adding this file
+# Force Vercel to redeploy by ignoring cache
+*.log
 node_modules
 .env
-.git
