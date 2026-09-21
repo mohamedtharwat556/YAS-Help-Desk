@@ -183,6 +183,19 @@ const YAS_API = {
     // Use fresh endpoint to bypass Vercel caching
     const response = await this.get('/get-tickets', params);
     if (response.success) {
+      // Get all customers and devices to enrich ticket data
+      const [customersResponse, devicesResponse] = await Promise.all([
+        this.getCustomers(),
+        this.getDevices()
+      ]);
+
+      const customersMap = new Map(
+        (customersResponse.success ? customersResponse.data : []).map(c => [c.id, c])
+      );
+      const devicesMap = new Map(
+        (devicesResponse.success ? devicesResponse.data : []).map(d => [d.id, d])
+      );
+
       // Transform API response to match frontend expected format
       const transformedTickets = response.data.map(ticket => ({
         id: ticket.id,
@@ -195,8 +208,9 @@ const YAS_API = {
           priority: ticket.priority,
           description: ticket.description
         },
-        customer: ticket.customer || { name: 'Unknown', phone: '—' },
-        device: ticket.device || { type: 'unknown', model: 'Unknown' },
+        // Use customer/device data from the maps
+        customer: customersMap.get(ticket.customer_id) || { name: 'Unknown', phone: '—' },
+        device: devicesMap.get(ticket.device_id) || { type: 'unknown', model: 'Unknown' },
         assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
         assigned_user: ticket.assigned_user,
         assigned_to: ticket.assigned_to,

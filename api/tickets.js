@@ -63,29 +63,10 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-      // Fetch tickets with related data using simpler approach
+      // Fetch tickets without relations to avoid Supabase relationship errors
       const { data: tickets, error } = await supabase
         .from('tickets')
-        .select(`
-          id,
-          ticket_number,
-          customer_id,
-          device_id,
-          assigned_to,
-          assigned_user_id,
-          request_type,
-          priority,
-          description,
-          status,
-          files,
-          created_at,
-          updated_at,
-          resolved_at,
-          closed_at,
-          customer:customers(id, name, phone, email, company),
-          device:devices(id, type, brand, model),
-          assigned_user:users(id, name, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
