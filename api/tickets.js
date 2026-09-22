@@ -190,6 +190,10 @@ module.exports = async function handler(req, res) {
         let ticket;
         let error;
 
+        console.log('[Tickets API] Public tracking request');
+        console.log('[Tickets API] ticket_number:', ticketNumber);
+        console.log('[Tickets API] id:', id);
+
         // Try to search by ticket_number first (for public tracking)
         if (ticketNumber) {
           // Normalize ticket number
@@ -211,6 +215,7 @@ module.exports = async function handler(req, res) {
             .eq('ticket_number', normalizedTicketNumber)
             .single();
 
+          console.log('[Tickets API] Tracking result:', result);
           ticket = result.data;
           error = result.error;
         } else if (id) {
@@ -228,6 +233,7 @@ module.exports = async function handler(req, res) {
             .eq('id', id)
             .single();
 
+          console.log('[Tickets API] Tracking by ID result:', result);
           ticket = result.data;
           error = result.error;
         }
