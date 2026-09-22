@@ -553,7 +553,7 @@ const TicketDetails = {
         }
 
         YASStorage.updateTicketStatus(ticketId, newStatus, note);
-        this.ticket = YASStorage.getTicketById(ticketId);
+        this.ticket = await YASStorage.getTicketById(ticketId);
 
         // Refresh status badge
         this.setHTML('detail-status', YAS.statusBadge(this.ticket.status));
@@ -592,7 +592,7 @@ const TicketDetails = {
         }
 
         YASStorage.addTicketNote(ticketId, text);
-        this.ticket = YASStorage.getTicketById(ticketId);
+        this.ticket = await YASStorage.getTicketById(ticketId);
         this.renderNotes();
         this.renderActivities();
 
