@@ -454,42 +454,65 @@ const YAS_API = {
     // Check if it's a UUID (starts with letter and has hyphens) or ticket number
     const isUUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(ticketNumberOrId);
 
-    const params = isUUID
-      ? { id: ticketNumberOrId }
-      : { ticket_number: ticketNumberOrId };
+    if (isUUID) {
+      // For UUID, use the authenticated tickets endpoint
+      const response = await this.get('/tickets', { id: ticketNumberOrId });
+      console.log('[API] Track ticket response (UUID):', response);
 
-    // Use the existing tickets endpoint for tracking
-    const response = await this.get('/tickets', params);
-    console.log('[API] Track ticket response:', response);
-
-    if (response.success) {
-      // Transform response to match frontend format
-      const ticket = response.data;
-      const transformedTicket = {
-        ...ticket,
-        request: {
-          type: ticket.request_type,
+      if (response.success) {
+        const ticket = response.data;
+        const transformedTicket = {
+          ...ticket,
+          request: {
+            type: ticket.request_type,
+            priority: ticket.priority,
+            description: ticket.description
+          },
+          customer: ticket.customer || { name: 'Unknown', phone: '—' },
+          device: ticket.device || { type: 'unknown', model: 'Unknown' },
+          assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
+          assigned_user: ticket.assigned_user,
+          assigned_to: ticket.assigned_to,
+          request_type: ticket.request_type,
           priority: ticket.priority,
-          description: ticket.description
-        },
-        customer: ticket.customer || { name: 'Unknown', phone: '—' },
-        device: ticket.device || { type: 'unknown', model: 'Unknown' },
-        assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
-        assigned_user: ticket.assigned_user,
-        assigned_to: ticket.assigned_to,
-        // Keep original fields for backward compatibility
-        request_type: ticket.request_type,
-        priority: ticket.priority,
-        description: ticket.description,
-        // Add activities array for timeline (will be empty in Supabase)
-        activities: ticket.activities || [],
-        notes: ticket.notes || [],
-        // Add empty arrays if not present
-        files: ticket.files || []
-      };
-      return { success: true, data: transformedTicket };
+          description: ticket.description,
+          activities: ticket.activities || [],
+          notes: ticket.notes || [],
+          files: ticket.files || []
+        };
+        return { success: true, data: transformedTicket };
+      }
+      return response;
+    } else {
+      // For ticket_number, use the dedicated track endpoint
+      const response = await this.get('/track', { ticket_number: ticketNumberOrId });
+      console.log('[API] Track ticket response (track endpoint):', response);
+
+      if (response.success) {
+        const ticket = response.data;
+        const transformedTicket = {
+          ...ticket,
+          request: {
+            type: ticket.request_type,
+            priority: ticket.priority,
+            description: ticket.description
+          },
+          customer: ticket.customer || { name: 'Unknown', phone: '—' },
+          device: ticket.device || { type: 'unknown', model: 'Unknown' },
+          assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
+          assigned_user: ticket.assigned_user,
+          assigned_to: ticket.assigned_to,
+          request_type: ticket.request_type,
+          priority: ticket.priority,
+          description: ticket.description,
+          activities: ticket.activities || [],
+          notes: ticket.notes || [],
+          files: ticket.files || []
+        };
+        return { success: true, data: transformedTicket };
+      }
+      return response;
     }
-    return response;
   },
 
   /**
