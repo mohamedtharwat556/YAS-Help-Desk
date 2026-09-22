@@ -42,10 +42,15 @@ module.exports = async function handler(req, res) {
 
   const path = req.url.replace('/api/get-tickets', '');
 
+  console.log('[GetTickets API] Request path:', path);
+  console.log('[GetTickets API] Request URL:', req.url);
+
   // GET /api/get-tickets
   if ((path === '' || path.startsWith('?')) && req.method === 'GET') {
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
     const ticketNumber = urlParams.get('ticket_number');
+
+    console.log('[GetTickets API] ticket_number param:', ticketNumber);
 
     // Public tracking by ticket_number (no auth required) - check FIRST
     if (ticketNumber) {
