@@ -70,7 +70,7 @@ const YAS_API = {
       }
     };
 
-    console.log('[API] Request:', url, config.method);
+    console.log('[API] Request:', url, config.method, 'with body:', !!config.body);
 
     try {
       const response = await fetch(url, config);
@@ -149,17 +149,15 @@ const YAS_API = {
    * PUT request
    */
   async put(endpoint, data = {}, params = {}) {
-    const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
-    let url;
+    let url = endpoint;
 
-    if (isVercel) {
-      // For Vercel, add query params to the endpoint
-      const queryString = new URLSearchParams(params).toString();
-      url = queryString ? `${endpoint}?${queryString}` : endpoint;
-    } else {
+    // Always add query params to the endpoint (for both local and Vercel)
+    if (params && Object.keys(params).length > 0) {
       const queryString = new URLSearchParams(params).toString();
       url = queryString ? `${endpoint}?${queryString}` : endpoint;
     }
+
+    console.log('[API] PUT request constructed:', { endpoint, params, url });
 
     return this.request(url, {
       method: 'PUT',
