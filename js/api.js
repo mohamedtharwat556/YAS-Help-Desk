@@ -321,16 +321,16 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    // Use dedicated update-ticket endpoint for Vercel with query parameter
-    return this.put('/update-ticket', updates, { id });
+    // Use the existing tickets endpoint with query parameter
+    return this.put('/tickets', updates, { id });
   },
 
   /**
    * Update ticket status
    */
   async updateTicketStatus(id, status, note = '') {
-    // Use dedicated update-ticket endpoint for Vercel with query parameter
-    return this.put('/update-ticket', { status, note }, { id });
+    // Use the existing tickets endpoint with query parameter
+    return this.put('/tickets', { status, note }, { id });
   },
 
   // ============================================================
@@ -458,7 +458,8 @@ const YAS_API = {
       ? { id: ticketNumberOrId }
       : { ticket_number: ticketNumberOrId };
 
-    const response = await this.get('/track-ticket', params);
+    // Use the existing tickets endpoint for tracking
+    const response = await this.get('/tickets', params);
     console.log('[API] Track ticket response:', response);
 
     if (response.success) {
@@ -499,7 +500,7 @@ const YAS_API = {
 
     // For now, we'll use the general update endpoint
     // In the future, we might want a dedicated notes endpoint
-    const response = await this.put('/update-ticket', {
+    const response = await this.put('/tickets', {
       note: noteText,
       is_internal: isInternal
     }, { id });
