@@ -126,8 +126,20 @@ const YAS_API = {
   /**
    * POST request
    */
-  async post(endpoint, data = {}) {
-    return this.request(endpoint, {
+  async post(endpoint, data = {}, params = {}) {
+    const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    let url;
+
+    if (isVercel) {
+      // For Vercel, add query params to the endpoint
+      const queryString = new URLSearchParams(params).toString();
+      url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    } else {
+      const queryString = new URLSearchParams(params).toString();
+      url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    }
+
+    return this.request(url, {
       method: 'POST',
       body: JSON.stringify(data)
     });
@@ -321,8 +333,8 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    // Use tickets endpoint with POST method for Vercel compatibility
-    return this.post('/tickets', { ...updates, _method: 'PUT', _id: id });
+    // Use dedicated update endpoint with POST method
+    return this.post('/update', updates, { id });
   },
 
   /**
