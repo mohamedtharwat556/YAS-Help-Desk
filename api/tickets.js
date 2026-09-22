@@ -51,6 +51,7 @@ module.exports = async function handler(req, res) {
     const id = urlParams.get('id');
 
     console.log('[Tickets API] PUT request received');
+    console.log('[Tickets API] Full URL:', req.url);
     console.log('[Tickets API] Query params:', Object.fromEntries(urlParams));
     console.log('[Tickets API] Ticket ID from query:', id);
 
@@ -89,6 +90,8 @@ module.exports = async function handler(req, res) {
           .eq('id', id)
           .single();
 
+        console.log('[Tickets API] Current ticket for merge:', currentTicket);
+
         if (currentTicket) {
           if (body.activities) {
             updateData.activities = [...(currentTicket.activities || []), ...body.activities];
@@ -113,6 +116,8 @@ module.exports = async function handler(req, res) {
           assigned_user:users(id, name, email, role)
         `)
         .single();
+
+      console.log('[Tickets API] Update result:', { ticket, error });
 
       if (error || !ticket) {
         console.error('[Tickets API] Update error:', error);

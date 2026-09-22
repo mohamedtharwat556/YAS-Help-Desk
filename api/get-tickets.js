@@ -245,6 +245,11 @@ module.exports = async function handler(req, res) {
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
     const id = urlParams.get('id');
 
+    console.log('[GetTickets API] PUT request received');
+    console.log('[GetTickets API] Full URL:', req.url);
+    console.log('[GetTickets API] Query params:', Object.fromEntries(urlParams));
+    console.log('[GetTickets API] Ticket ID from query:', id);
+
     if (!id) {
       return res.status(400).json({ error: 'Ticket ID is required' });
     }
@@ -266,7 +271,6 @@ module.exports = async function handler(req, res) {
         body = JSON.parse(body);
       }
 
-      console.log('[GetTickets API] Updating ticket:', id);
       console.log('[GetTickets API] Update data:', body);
 
       // Handle arrays (activities, notes) properly
@@ -279,6 +283,8 @@ module.exports = async function handler(req, res) {
           .select('activities, notes')
           .eq('id', id)
           .single();
+
+        console.log('[GetTickets API] Current ticket for merge:', currentTicket);
 
         if (currentTicket) {
           if (body.activities) {
@@ -304,6 +310,8 @@ module.exports = async function handler(req, res) {
           assigned_user:users(id, name, email, role)
         `)
         .single();
+
+      console.log('[GetTickets API] Update result:', { ticket, error });
 
       if (error || !ticket) {
         console.error('[GetTickets API] Update error:', error);
