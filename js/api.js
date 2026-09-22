@@ -321,8 +321,8 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    // Use dedicated update endpoint for Vercel
-    return this.put('/update', updates, { id });
+    // Use tickets endpoint with POST method for Vercel compatibility
+    return this.post('/tickets', { ...updates, _method: 'PUT', _id: id });
   },
 
   /**
