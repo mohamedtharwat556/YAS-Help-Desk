@@ -339,16 +339,12 @@ const YAS_API = {
     console.log('[API] updateTicket called with id:', id);
     console.log('[API] updates:', updates);
     
-    // If we're sending arrays, they should be merged on server side
-    // Send them as arrays to be merged
-    const updatePayload = updates;
-    
     // Construct URL directly to ensure params are included
     const url = `/get-tickets?id=${id}`;
     console.log('[API] Constructed URL:', url);
     return this.request(url, {
       method: 'PUT',
-      body: JSON.stringify(updatePayload)
+      body: JSON.stringify(updates)
     });
   },
 

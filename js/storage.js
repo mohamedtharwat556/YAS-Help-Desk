@@ -274,7 +274,7 @@ async function updateTicketStatus(id, newStatus, note = '') {
       // Update ticket with new status and activities as array to be merged
       const response = await YAS_API.updateTicket(id, {
         status: newStatus,
-        activities: [activity]
+        activities: [...(currentTicket.activities || []), activity]
       });
 
       if (response.success) {
