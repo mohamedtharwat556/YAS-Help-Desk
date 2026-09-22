@@ -396,22 +396,28 @@ const TicketTracking = {
     });
   },
 
-  searchTicket(id, resultDiv) {
+  async searchTicket(id, resultDiv) {
     // Normalize ID
     let normalized = id;
     if (!normalized.startsWith('YAS-SUP-') && /^\d+$/.test(normalized)) {
       normalized = 'YAS-SUP-' + normalized;
     }
 
-    const ticket = YASStorage.getTicketById(normalized);
+    try {
+      const ticket = await YASStorage.getTicketById(normalized);
 
-    if (!ticket) {
-      YAS.showToast('رقم الطلب غير موجود. تحقق من الرقم وحاول مرة أخرى.', 'error');
+      if (!ticket) {
+        YAS.showToast('رقم الطلب غير موجود. تحقق من الرقم وحاول مرة أخرى.', 'error');
+        if (resultDiv) resultDiv.classList.remove('show');
+        return;
+      }
+
+      this.renderTicket(ticket, resultDiv);
+    } catch (error) {
+      console.error('[TicketTracking] Error searching ticket:', error);
+      YAS.showToast('حدث خطأ أثناء البحث عن الطلب. حاول مرة أخرى.', 'error');
       if (resultDiv) resultDiv.classList.remove('show');
-      return;
     }
-
-    this.renderTicket(ticket, resultDiv);
   },
 
   renderTicket(ticket, container) {

@@ -88,18 +88,28 @@ function saveAllTickets(tickets) {
 async function getTicketById(id) {
   if (USE_API) {
     try {
-      const response = await YAS_API.getTicket(id);
+      // Try to use public tracking endpoint first (no auth required)
+      const response = await YAS_API.trackTicket(id);
       if (response.success) {
         return response.data;
       }
     } catch (error) {
-      console.error('API error, falling back to LocalStorage:', error);
+      console.error('Public API error, trying authenticated endpoint:', error);
+      try {
+        // Fallback to authenticated endpoint
+        const response = await YAS_API.getTicket(id);
+        if (response.success) {
+          return response.data;
+        }
+      } catch (authError) {
+        console.error('Auth API error, falling back to LocalStorage:', authError);
+      }
     }
   }
   
   // Fallback to LocalStorage
   const tickets = await getAllTickets();
-  return tickets.find(t => t.id === id) || null;
+  return tickets.find(t => t.id === id || t.ticket_number === id) || null;
 }
 
 async function createTicket(ticketData) {

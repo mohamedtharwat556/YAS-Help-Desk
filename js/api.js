@@ -429,6 +429,45 @@ const YAS_API = {
       return { success: true, data: transformedTicket };
     }
     return response;
+  },
+
+  /**
+   * Track ticket by ticket number (no auth required)
+   */
+  async trackTicket(ticketNumber) {
+    console.log('[API] Tracking ticket:', ticketNumber);
+
+    const response = await this.get('/track-ticket', { ticket_number: ticketNumber });
+    console.log('[API] Track ticket response:', response);
+
+    if (response.success) {
+      // Transform response to match frontend format
+      const ticket = response.data;
+      const transformedTicket = {
+        ...ticket,
+        request: {
+          type: ticket.request_type,
+          priority: ticket.priority,
+          description: ticket.description
+        },
+        customer: ticket.customer || { name: 'Unknown', phone: '—' },
+        device: ticket.device || { type: 'unknown', model: 'Unknown' },
+        assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
+        assigned_user: ticket.assigned_user,
+        assigned_to: ticket.assigned_to,
+        // Keep original fields for backward compatibility
+        request_type: ticket.request_type,
+        priority: ticket.priority,
+        description: ticket.description,
+        // Add activities array for timeline (will be empty in Supabase)
+        activities: ticket.activities || [],
+        notes: ticket.notes || [],
+        // Add empty arrays if not present
+        files: ticket.files || []
+      };
+      return { success: true, data: transformedTicket };
+    }
+    return response;
   }
 };
 
