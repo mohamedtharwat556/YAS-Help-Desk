@@ -45,62 +45,8 @@ module.exports = async function handler(req, res) {
   console.log('[Tickets API] Request path:', path);
   console.log('[Tickets API] Request method:', req.method);
 
-  // GET /api/tickets?id=... (single ticket via query param)
-  if (path.includes('?id=') && req.method === 'GET') {
-    const urlParams = new URLSearchParams(req.url.split('?')[1]);
-    const id = urlParams.get('id');
-
-    if (!id) {
-      return res.status(400).json({ error: 'Ticket ID is required' });
-    }
-
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const token = authHeader.substring(7);
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
-
-    try {
-      // Fetch ticket without relations first
-      const { data: ticket, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .eq('id', id)
-        .single();
-
-      if (error || !ticket) {
-        return res.status(404).json({ error: 'Ticket not found' });
-      }
-
-      // Fetch customer and device separately
-      const [customerResult, deviceResult] = await Promise.all([
-        supabase.from('customers').select('*').eq('id', ticket.customer_id).single(),
-        supabase.from('devices').select('*').eq('id', ticket.device_id).single()
-      ]);
-
-      // Build enriched ticket object
-      const enrichedTicket = {
-        ...ticket,
-        customer: customerResult.data || null,
-        device: deviceResult.data || null
-      };
-
-      res.status(200).json({
-        success: true,
-        data: enrichedTicket
-      });
-    } catch (error) {
-      console.error('Get ticket error:', error);
-      res.status(500).json({ error: 'Failed to fetch ticket', details: error.message });
-    }
-  }
-  // PUT /api/tickets (update ticket via query param)
-  else if (path.includes('?id=') && req.method === 'PUT') {
+  // PUT /api/tickets (update ticket via query param) - check FIRST
+  if (req.method === 'PUT') {
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
     const id = urlParams.get('id');
 
@@ -183,15 +129,61 @@ module.exports = async function handler(req, res) {
       res.status(500).json({ error: 'Internal server error', details: error.message });
     }
   }
-  // GET /api/tickets (list all)
-  else if ((path === '' || path.startsWith('?')) && req.method === 'GET') {
-    // Check if this is a track request with ticket_number
+  // GET /api/tickets (list all or single)
+  else if (req.method === 'GET') {
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
+    const id = urlParams.get('id');
     const ticketNumber = urlParams.get('ticket_number');
-    const trackId = urlParams.get('id');
 
-    // Handle public tracking (no auth required)
-    if (ticketNumber || trackId) {
+    // Single ticket by ID (authenticated)
+    if (id && !ticketNumber) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const token = authHeader.substring(7);
+      const decoded = verifyToken(token);
+      if (!decoded) {
+        return res.status(401).json({ error: 'Invalid token' });
+      }
+
+      try {
+        // Fetch ticket without relations first
+        const { data: ticket, error } = await supabase
+          .from('tickets')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (error || !ticket) {
+          return res.status(404).json({ error: 'Ticket not found' });
+        }
+
+        // Fetch customer and device separately
+        const [customerResult, deviceResult] = await Promise.all([
+          supabase.from('customers').select('*').eq('id', ticket.customer_id).single(),
+          supabase.from('devices').select('*').eq('id', ticket.device_id).single()
+        ]);
+
+        // Build enriched ticket object
+        const enrichedTicket = {
+          ...ticket,
+          customer: customerResult.data || null,
+          device: deviceResult.data || null
+        };
+
+        res.status(200).json({
+          success: true,
+          data: enrichedTicket
+        });
+      } catch (error) {
+        console.error('Get ticket error:', error);
+        res.status(500).json({ error: 'Failed to fetch ticket', details: error.message });
+      }
+    }
+    // Public tracking by ticket_number or ID
+    else if (ticketNumber || id) {
       try {
         let ticket;
         let error;
@@ -219,9 +211,9 @@ module.exports = async function handler(req, res) {
 
           ticket = result.data;
           error = result.error;
-        } else if (trackId) {
+        } else if (id) {
           // Try to search by UUID (for authenticated endpoints)
-          console.log('[Tickets API] Tracking by ID:', trackId);
+          console.log('[Tickets API] Tracking by ID:', id);
 
           const result = await supabase
             .from('tickets')
@@ -231,7 +223,7 @@ module.exports = async function handler(req, res) {
               device:devices(*),
               assigned_user:users(id, name, email, role)
             `)
-            .eq('id', trackId)
+            .eq('id', id)
             .single();
 
           ticket = result.data;
@@ -256,42 +248,45 @@ module.exports = async function handler(req, res) {
         return;
       }
     }
-    const authHeader = req.headers.authorization;
-    console.log('[Tickets API] Auth header:', authHeader ? 'Present' : 'Missing');
+    // List all tickets (authenticated)
+    else {
+      const authHeader = req.headers.authorization;
+      console.log('[Tickets API] Auth header:', authHeader ? 'Present' : 'Missing');
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      console.log('[Tickets API] Unauthorized - missing or invalid auth header');
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        console.log('[Tickets API] Unauthorized - missing or invalid auth header');
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
 
-    const token = authHeader.substring(7);
-    console.log('[Tickets API] Token length:', token.length);
-    const decoded = verifyToken(token);
-    console.log('[Tickets API] Token decoded:', !!decoded);
+      const token = authHeader.substring(7);
+      console.log('[Tickets API] Token length:', token.length);
+      const decoded = verifyToken(token);
+      console.log('[Tickets API] Token decoded:', !!decoded);
 
-    if (!decoded) {
-      console.log('[Tickets API] Invalid token');
-      return res.status(401).json({ error: 'Invalid token' });
-    }
+      if (!decoded) {
+        console.log('[Tickets API] Invalid token');
+        return res.status(401).json({ error: 'Invalid token' });
+      }
 
-    try {
-      // Fetch tickets without relations to avoid Supabase relationship errors
-      const { data: tickets, error } = await supabase
-        .from('tickets')
-        .select('*')
-        .order('created_at', { ascending: false });
+      try {
+        // Fetch tickets without relations to avoid Supabase relationship errors
+        const { data: tickets, error } = await supabase
+          .from('tickets')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      console.log('[Tickets API] Fetched tickets count:', tickets?.length || 0);
+        console.log('[Tickets API] Fetched tickets count:', tickets?.length || 0);
 
-      res.status(200).json({
-        success: true,
-        data: tickets || []
-      });
-    } catch (error) {
-      console.error('Get tickets error:', error);
-      res.status(500).json({ error: 'Failed to fetch tickets', details: error.message });
+        res.status(200).json({
+          success: true,
+          data: tickets || []
+        });
+      } catch (error) {
+        console.error('Get tickets error:', error);
+        res.status(500).json({ error: 'Failed to fetch tickets', details: error.message });
+      }
     }
   } 
   // POST /api/tickets
@@ -392,52 +387,6 @@ module.exports = async function handler(req, res) {
     } catch (error) {
       console.error('Create ticket error:', error);
       res.status(500).json({ error: 'Failed to create ticket' });
-    }
-  }
-  // PUT /api/tickets/:id
-  else if (path.match(/^\/\w+/) && req.method === 'PUT') {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
-
-    const token = authHeader.substring(7);
-    const decoded = verifyToken(token);
-    if (!decoded) {
-      return res.status(401).json({ error: 'Invalid token' });
-    }
-
-    try {
-      const id = path.replace('/', '');
-      let body = req.body;
-      if (typeof body === 'string') {
-        body = JSON.parse(body);
-      }
-
-      const { data: ticket, error } = await supabase
-        .from('tickets')
-        .update(body)
-        .eq('id', id)
-        .select(`
-          *,
-          customer:customers(*),
-          device:devices(*),
-          assigned_user:users(id, name, email, role)
-        `)
-        .single();
-
-      if (error || !ticket) {
-        return res.status(404).json({ error: 'Ticket not found' });
-      }
-
-      res.status(200).json({
-        success: true,
-        message: 'Ticket updated successfully',
-        data: ticket
-      });
-    } catch (error) {
-      console.error('Update ticket error:', error);
-      res.status(500).json({ error: 'Internal server error' });
     }
   }
   else {
