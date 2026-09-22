@@ -446,7 +446,8 @@ const TicketDetails = {
       waBtn.href = YAS.buildWhatsAppLink(waNumber, waMsg);
       waBtn.target = '_blank';
       waBtn.addEventListener('click', () => {
-        YASStorage.addTicketActivity(t.id, 'تم التواصل عبر WhatsApp', `تواصل الفني مع العميل ${t.customer.name} عبر واتساب`, 'contact');
+        const ticketId = t.id || t.ticket_number;
+        YASStorage.addTicketActivity(ticketId, 'تم التواصل عبر WhatsApp', `تواصل الفني مع العميل ${t.customer.name} عبر واتساب`, 'contact');
         YAS.showToast('تم التواصل عبر واتساب', 'success');
         this.refreshActivities();
       });
@@ -455,13 +456,15 @@ const TicketDetails = {
     if (phoneBtn) {
       phoneBtn.href = `tel:${t.customer.phone}`;
       phoneBtn.addEventListener('click', () => {
-        YASStorage.addTicketActivity(t.id, 'تم الاتصال الهاتفي', `تواصل الفني مع العميل ${t.customer.name} هاتفياً`, 'contact');
+        const ticketId = t.id || t.ticket_number;
+        YASStorage.addTicketActivity(ticketId, 'تم الاتصال الهاتفي', `تواصل الفني مع العميل ${t.customer.name} هاتفياً`, 'contact');
         this.refreshActivities();
       });
     }
 
     if (emailBtn && t.customer.email) {
-      emailBtn.href = `mailto:${t.customer.email}?subject=طلب الدعم ${t.id}&body=مرحباً ${t.customer.name}`;
+      const ticketId = t.id || t.ticket_number;
+      emailBtn.href = `mailto:${t.customer.email}?subject=طلب الدعم ${ticketId}&body=مرحباً ${t.customer.name}`;
     }
 
     // Notes
@@ -537,8 +540,15 @@ const TicketDetails = {
           return;
         }
 
-        YASStorage.updateTicketStatus(this.ticket.id, newStatus, note);
-        this.ticket = YASStorage.getTicketById(this.ticket.id);
+        // Use ticket.id or ticket.ticket_number (UUID)
+        const ticketId = this.ticket.id || this.ticket.ticket_number;
+        if (!ticketId) {
+          YAS.showToast('خطأ: معرف التذكرة غير موجود', 'error');
+          return;
+        }
+
+        YASStorage.updateTicketStatus(ticketId, newStatus, note);
+        this.ticket = YASStorage.getTicketById(ticketId);
 
         // Refresh status badge
         this.setHTML('detail-status', YAS.statusBadge(this.ticket.status));
@@ -569,8 +579,15 @@ const TicketDetails = {
           return;
         }
 
-        YASStorage.addTicketNote(this.ticket.id, text);
-        this.ticket = YASStorage.getTicketById(this.ticket.id);
+        // Use ticket.id or ticket.ticket_number (UUID)
+        const ticketId = this.ticket.id || this.ticket.ticket_number;
+        if (!ticketId) {
+          YAS.showToast('خطأ: معرف التذكرة غير موجود', 'error');
+          return;
+        }
+
+        YASStorage.addTicketNote(ticketId, text);
+        this.ticket = YASStorage.getTicketById(ticketId);
         this.renderNotes();
         this.renderActivities();
 
@@ -590,8 +607,8 @@ const TicketDetails = {
           confirmText: 'نعم، إغلاق',
           type:        'warning',
           onConfirm: () => {
-            YASStorage.updateTicketStatus(this.ticket.id, 'closed', 'تم إغلاق الطلب');
-            this.ticket = YASStorage.getTicketById(this.ticket.id);
+            YASStorage.updateTicketStatus(ticketId, 'closed', 'تم إغلاق الطلب');
+            this.ticket = YASStorage.getTicketById(ticketId);
             this.setHTML('detail-status', YAS.statusBadge(this.ticket.status));
             this.renderActivities();
             YAS.showToast('تم إغلاق الطلب', 'success');
@@ -602,7 +619,8 @@ const TicketDetails = {
   },
 
   refreshActivities() {
-    this.ticket = YASStorage.getTicketById(this.ticket.id);
+    const ticketId = this.ticket.id || this.ticket.ticket_number;
+    this.ticket = YASStorage.getTicketById(ticketId);
     this.renderActivities();
   },
 
