@@ -152,11 +152,14 @@ const YAS_API = {
     let url = endpoint;
 
     console.log('[API] put() called with:', { endpoint, data, params });
+    console.log('[API] params keys:', params ? Object.keys(params) : 'null');
+    console.log('[API] params values:', params);
 
     // Always add query params to the endpoint (for both local and Vercel)
     if (params && Object.keys(params).length > 0) {
       const queryString = new URLSearchParams(params).toString();
       url = queryString ? `${endpoint}?${queryString}` : endpoint;
+      console.log('[API] Query string:', queryString);
     }
 
     console.log('[API] PUT request constructed:', { endpoint, params, url });
@@ -333,7 +336,9 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    console.log('[API] updateTicket called with id:', id, 'updates:', updates);
+    console.log('[API] updateTicket called');
+    console.log('[API] id type:', typeof id, 'id value:', id);
+    console.log('[API] updates:', updates);
     // Use get-tickets endpoint with PUT which is confirmed to work on Vercel
     return this.put('/get-tickets', updates, { id });
   },
