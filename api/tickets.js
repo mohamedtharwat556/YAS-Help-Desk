@@ -50,7 +50,12 @@ module.exports = async function handler(req, res) {
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
     const id = urlParams.get('id');
 
+    console.log('[Tickets API] PUT request received');
+    console.log('[Tickets API] Query params:', Object.fromEntries(urlParams));
+    console.log('[Tickets API] Ticket ID from query:', id);
+
     if (!id) {
+      console.log('[Tickets API] No ID provided');
       return res.status(400).json({ error: 'Ticket ID is required' });
     }
 
@@ -71,12 +76,7 @@ module.exports = async function handler(req, res) {
         body = JSON.parse(body);
       }
 
-      console.log('[Tickets API] Updating ticket:', id);
       console.log('[Tickets API] Update data:', body);
-
-      // Extract id from body if present (for frontend compatibility)
-      const ticketId = body.id || id;
-      delete body.id; // Remove id from the update data
 
       // Handle arrays (activities, notes) properly
       let updateData = { ...body };
@@ -86,7 +86,7 @@ module.exports = async function handler(req, res) {
         const { data: currentTicket } = await supabase
           .from('tickets')
           .select('activities, notes')
-          .eq('id', ticketId)
+          .eq('id', id)
           .single();
 
         if (currentTicket) {
@@ -99,11 +99,13 @@ module.exports = async function handler(req, res) {
         }
       }
 
+      console.log('[Tickets API] Final update data:', updateData);
+
       // Update ticket
       const { data: ticket, error } = await supabase
         .from('tickets')
         .update(updateData)
-        .eq('id', ticketId)
+        .eq('id', id)
         .select(`
           *,
           customer:customers(*),

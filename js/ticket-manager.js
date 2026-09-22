@@ -394,6 +394,10 @@ const TicketDetails = {
   render() {
     const t = this.ticket;
 
+    console.log('[TicketDetails] Rendering ticket:', t);
+    console.log('[TicketDetails] Ticket ID:', t.id);
+    console.log('[TicketDetails] Ticket Number:', t.ticket_number);
+
     // Handle both API format (ticket_number) and LocalStorage format (id)
     const ticketId = t.ticket_number || t.id;
     const createdAt = t.createdAt || t.created_at;

@@ -233,10 +233,13 @@ async function updateTicket(id, updates) {
 }
 
 async function updateTicketStatus(id, newStatus, note = '') {
+  console.log('[Storage] updateTicketStatus called with id:', id, 'status:', newStatus);
+
   if (USE_API) {
     try {
       // For API, we need to fetch the current ticket first to get activities array
       const currentTicket = await getTicketById(id);
+      console.log('[Storage] Current ticket found:', !!currentTicket);
       if (!currentTicket) return null;
 
       const statusLabels = {
@@ -259,6 +262,7 @@ async function updateTicketStatus(id, newStatus, note = '') {
         type:  'status'
       };
 
+      console.log('[Storage] Calling API updateTicket with id:', id);
       // Update ticket with new status and activities as array to be merged
       const response = await YAS_API.updateTicket(id, {
         status: newStatus,
