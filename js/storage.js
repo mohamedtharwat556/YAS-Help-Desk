@@ -253,7 +253,7 @@ async function updateTicketStatus(id, newStatus, note = '') {
         closed:      'مغلق'
       };
 
-      const activityLabel = statusLabels[newStatus] || newStatus;
+      const activityLabel = statusLabels[newStatus] || newStatus || 'غير محدد';
 
       const activity = {
         time:  new Date().toISOString(),
@@ -300,7 +300,7 @@ async function updateTicketStatus(id, newStatus, note = '') {
     closed:      'مغلق'
   };
 
-  const activityLabel = statusLabels[newStatus] || newStatus;
+  const activityLabel = statusLabels[newStatus] || newStatus || 'غير محدد';
 
   const activity = {
     time:  new Date().toISOString(),

@@ -512,7 +512,7 @@ const TicketTracking = {
 
       // Find activity time for this step
       const act = activities && activities.find(a =>
-        a.type === step.key || (step.status && a.label.includes(YAS.StatusLabels[step.status] || ''))
+        a.type === step.key || (step.status && a.label && a.label.includes && a.label.includes(YAS.StatusLabels[step.status] || ''))
       );
 
       return `
