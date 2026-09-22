@@ -309,14 +309,16 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    return this.put(`/tickets/${id}`, updates);
+    // Use dedicated update-ticket endpoint for Vercel
+    return this.put(`/update-ticket/${id}`, updates);
   },
 
   /**
    * Update ticket status
    */
   async updateTicketStatus(id, status, note = '') {
-    return this.put(`/tickets/${id}`, { status, note });
+    // Use dedicated update-ticket endpoint for Vercel
+    return this.put(`/update-ticket/${id}`, { status, note });
   },
 
   // ============================================================
@@ -466,6 +468,25 @@ const YAS_API = {
         files: ticket.files || []
       };
       return { success: true, data: transformedTicket };
+    }
+    return response;
+  },
+
+  /**
+   * Add ticket note
+   */
+  async addTicketNote(id, noteText, isInternal = false) {
+    console.log('[API] Adding note to ticket:', id);
+
+    // For now, we'll use the general update endpoint
+    // In the future, we might want a dedicated notes endpoint
+    const response = await this.put(`/update-ticket/${id}`, {
+      note: noteText,
+      is_internal: isInternal
+    });
+
+    if (response.success) {
+      return response.data;
     }
     return response;
   }

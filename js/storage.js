@@ -215,7 +215,7 @@ async function updateTicket(id, updates) {
       console.error('API error, falling back to LocalStorage:', error);
     }
   }
-  
+
   // Fallback to LocalStorage
   const tickets = await getAllTickets();
   const idx = tickets.findIndex(t => t.id === id);
@@ -234,15 +234,54 @@ async function updateTicket(id, updates) {
 async function updateTicketStatus(id, newStatus, note = '') {
   if (USE_API) {
     try {
-      const response = await YAS_API.updateTicketStatus(id, newStatus, note);
+      // For API, we need to fetch the current ticket first to get activities array
+      const currentTicket = await getTicketById(id);
+      if (!currentTicket) return null;
+
+      const statusLabels = {
+        received:    'تم الاستلام',
+        reviewing:   'قيد المراجعة',
+        contacting:  'جاري التواصل',
+        diagnosing:  'جاري الفحص',
+        maintenance: 'قيد الصيانة',
+        waiting:     'بانتظار العميل',
+        resolved:    'تم الحل',
+        closed:      'مغلق'
+      };
+
+      const activityLabel = statusLabels[newStatus] || newStatus;
+
+      const activity = {
+        time:  new Date().toISOString(),
+        label: `تحديث الحالة: ${activityLabel}`,
+        desc:  note || `تم تحديث حالة الطلب إلى "${activityLabel}"`,
+        type:  'status'
+      };
+
+      const updatedActivities = [...(currentTicket.activities || []), activity];
+
+      // Update ticket with new status and activities
+      const response = await YAS_API.updateTicket(id, {
+        status: newStatus,
+        activities: updatedActivities
+      });
+
       if (response.success) {
+        if (newStatus === 'resolved' || newStatus === 'closed') {
+          addNotification({
+            type:    'resolved',
+            title:   'تم حل الطلب',
+            message: `تم تحديث الطلب ${id} إلى "${activityLabel}"`,
+            ticketId: id
+          });
+        }
         return response.data;
       }
     } catch (error) {
       console.error('API error, falling back to LocalStorage:', error);
     }
   }
-  
+
   // Fallback to LocalStorage
   const ticket = await getTicketById(id);
   if (!ticket) return null;
@@ -287,7 +326,34 @@ async function updateTicketStatus(id, newStatus, note = '') {
 async function addTicketNote(id, noteText) {
   if (USE_API) {
     try {
-      const response = await YAS_API.addTicketNote(id, noteText, true);
+      // For API, we need to fetch the current ticket first to get notes array
+      const currentTicket = await getTicketById(id);
+      if (!currentTicket) return null;
+
+      const newNote = {
+        id: Date.now(),
+        author: 'Eng. Adam Farouk',
+        text: noteText,
+        time: new Date().toISOString()
+      };
+
+      const updatedNotes = [...(currentTicket.notes || []), newNote];
+
+      const activity = {
+        time: new Date().toISOString(),
+        label: 'تمت إضافة ملاحظة داخلية',
+        desc: noteText.substring(0, 80) + (noteText.length > 80 ? '...' : ''),
+        type: 'note'
+      };
+
+      const updatedActivities = [...(currentTicket.activities || []), activity];
+
+      // Update ticket with new notes and activities
+      const response = await YAS_API.updateTicket(id, {
+        notes: updatedNotes,
+        activities: updatedActivities
+      });
+
       if (response.success) {
         return response.data;
       }
@@ -295,7 +361,7 @@ async function addTicketNote(id, noteText) {
       console.error('API error, falling back to LocalStorage:', error);
     }
   }
-  
+
   // Fallback to LocalStorage
   const ticket = await getTicketById(id);
   if (!ticket) return null;
@@ -320,8 +386,8 @@ async function addTicketNote(id, noteText) {
   });
 }
 
-function addTicketActivity(id, label, desc, type = 'action') {
-  const ticket = getTicketById(id);
+async function addTicketActivity(id, label, desc, type = 'action') {
+  const ticket = await getTicketById(id);
   if (!ticket) return null;
 
   const activity = {
@@ -331,7 +397,7 @@ function addTicketActivity(id, label, desc, type = 'action') {
     type
   };
 
-  return updateTicket(id, {
+  return await updateTicket(id, {
     activities: [...ticket.activities, activity]
   });
 }
