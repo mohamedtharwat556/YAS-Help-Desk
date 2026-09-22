@@ -241,7 +241,9 @@ module.exports = async function handler(req, res) {
     }
   }
   // PUT /api/get-tickets (update ticket via query param)
-  else if (path.includes('?id=') && req.method === 'PUT') {
+  else if (req.method === 'PUT') {
+    const urlParams = new URLSearchParams(req.url.split('?')[1]);
+    const id = urlParams.get('id');
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
     const id = urlParams.get('id');
 
