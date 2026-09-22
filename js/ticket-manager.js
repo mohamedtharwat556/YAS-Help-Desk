@@ -397,6 +397,7 @@ const TicketDetails = {
     console.log('[TicketDetails] Rendering ticket:', t);
     console.log('[TicketDetails] Ticket ID:', t.id);
     console.log('[TicketDetails] Ticket Number:', t.ticket_number);
+    console.log('[TicketDetails] Full ticket object:', JSON.stringify(t, null, 2));
 
     // Handle both API format (ticket_number) and LocalStorage format (id)
     const ticketId = t.ticket_number || t.id;

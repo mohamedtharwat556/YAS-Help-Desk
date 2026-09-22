@@ -86,12 +86,16 @@ function saveAllTickets(tickets) {
 }
 
 async function getTicketById(id) {
+  console.log('[Storage] getTicketById called with id:', id);
+
   if (USE_API) {
     try {
       // Try to use public tracking endpoint first (no auth required)
       // This endpoint now supports both ticket_number and UUID
       const response = await YAS_API.trackTicket(id);
+      console.log('[Storage] trackTicket response:', response);
       if (response.success) {
+        console.log('[Storage] Ticket found via public tracking:', response.data.id);
         return response.data;
       }
     } catch (error) {
@@ -99,7 +103,9 @@ async function getTicketById(id) {
       try {
         // Fallback to authenticated endpoint
         const response = await YAS_API.getTicket(id);
+        console.log('[Storage] getTicket response:', response);
         if (response.success) {
+          console.log('[Storage] Ticket found via authenticated endpoint:', response.data.id);
           return response.data;
         }
       } catch (authError) {
@@ -110,7 +116,9 @@ async function getTicketById(id) {
 
   // Fallback to LocalStorage
   const tickets = await getAllTickets();
-  return tickets.find(t => t.id === id || t.ticket_number === id) || null;
+  const ticket = tickets.find(t => t.id === id || t.ticket_number === id);
+  console.log('[Storage] Ticket from LocalStorage:', ticket ? ticket.id : 'not found');
+  return ticket || null;
 }
 
 async function createTicket(ticketData) {
