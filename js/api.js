@@ -333,7 +333,7 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    // Use get-tickets endpoint which is known to work on Vercel
+    // Use get-tickets endpoint with PUT which is confirmed to work on Vercel
     return this.put('/get-tickets', updates, { id });
   },
 
