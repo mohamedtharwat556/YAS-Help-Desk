@@ -198,6 +198,20 @@ module.exports = async function handler(req, res) {
 
       console.log('[GetTickets API] Final update data:', updateData);
 
+      // First, check if ticket exists
+      const { data: existingTicket, error: checkError } = await supabase
+        .from('tickets')
+        .select('id, ticket_number, status')
+        .eq('id', id)
+        .single();
+
+      console.log('[GetTickets API] Existing ticket check:', { existingTicket, checkError });
+
+      if (checkError || !existingTicket) {
+        console.error('[GetTickets API] Ticket does not exist:', checkError);
+        return res.status(404).json({ error: 'Ticket not found', details: checkError?.message });
+      }
+
       // Update ticket
       const { data: ticket, error } = await supabase
         .from('tickets')
