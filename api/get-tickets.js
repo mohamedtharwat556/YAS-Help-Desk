@@ -217,12 +217,7 @@ module.exports = async function handler(req, res) {
         .from('tickets')
         .update(updateData)
         .eq('id', id)
-        .select(`
-          *,
-          customer:customers(*),
-          device:devices(*),
-          assigned_user:users(id, name, email, role)
-        `)
+        .select('*')
         .single();
 
       console.log('[GetTickets API] Update result:', { ticket, error });
