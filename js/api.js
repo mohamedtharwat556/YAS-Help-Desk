@@ -101,10 +101,16 @@ const YAS_API = {
     const allParams = { ...params, ...cacheBuster };
 
     if (isVercel) {
-      // For Vercel, no .js suffix needed for serverless functions
-      const queryString = new URLSearchParams(allParams).toString();
-      const baseEndpoint = endpoint;
-      url = queryString ? `${baseEndpoint}?${queryString}` : baseEndpoint;
+      // For Vercel, handle single ticket endpoints specially
+      if (endpoint.match(/^\/tickets\/[\w-]+$/)) {
+        // Single ticket endpoint - don't add params to avoid conflicts
+        url = endpoint;
+      } else {
+        // List endpoint - add query params
+        const queryString = new URLSearchParams(allParams).toString();
+        const baseEndpoint = endpoint;
+        url = queryString ? `${baseEndpoint}?${queryString}` : baseEndpoint;
+      }
     } else {
       const queryString = new URLSearchParams(allParams).toString();
       url = queryString ? `${endpoint}?${queryString}` : endpoint;
@@ -223,6 +229,39 @@ const YAS_API = {
         notes: []
       }));
       return { success: true, data: transformedTickets };
+    }
+    return response;
+  },
+
+  /**
+   * Get single ticket by ID
+   */
+  async getTicket(id) {
+    const response = await this.get(`/tickets/${id}`);
+    if (response.success) {
+      // Transform API response to match frontend expected format
+      const ticket = response.data;
+      const transformedTicket = {
+        ...ticket,
+        request: {
+          type: ticket.request_type,
+          priority: ticket.priority,
+          description: ticket.description
+        },
+        customer: ticket.customer || { name: 'Unknown', phone: '—' },
+        device: ticket.device || { type: 'unknown', model: 'Unknown' },
+        assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
+        assigned_user: ticket.assigned_user,
+        assigned_to: ticket.assigned_to,
+        // Keep original fields for backward compatibility
+        request_type: ticket.request_type,
+        priority: ticket.priority,
+        description: ticket.description,
+        // Add activities array for timeline
+        activities: ticket.activities || [],
+        notes: ticket.notes || []
+      };
+      return { success: true, data: transformedTicket };
     }
     return response;
   },

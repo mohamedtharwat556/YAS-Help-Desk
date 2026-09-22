@@ -42,8 +42,57 @@ module.exports = async function handler(req, res) {
 
   const path = req.url.replace('/api/tickets', '');
 
-  // GET /api/tickets
-  if ((path === '' || path.startsWith('?')) && req.method === 'GET') {
+  // GET /api/tickets/:id (single ticket)
+  else if (path.match(/^\/\w+/) && req.method === 'GET') {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const token = authHeader.substring(7);
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+
+    try {
+      const id = path.replace('/', '');
+
+      // Fetch ticket without relations first
+      const { data: ticket, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error || !ticket) {
+        return res.status(404).json({ error: 'Ticket not found' });
+      }
+
+      // Fetch customer and device separately
+      const [customerResult, deviceResult] = await Promise.all([
+        supabase.from('customers').select('*').eq('id', ticket.customer_id).single(),
+        supabase.from('devices').select('*').eq('id', ticket.device_id).single()
+      ]);
+
+      // Build enriched ticket object
+      const enrichedTicket = {
+        ...ticket,
+        customer: customerResult.data || null,
+        device: deviceResult.data || null
+      };
+
+      res.status(200).json({
+        success: true,
+        data: enrichedTicket
+      });
+    } catch (error) {
+      console.error('Get ticket error:', error);
+      res.status(500).json({ error: 'Failed to fetch ticket', details: error.message });
+    }
+  }
+  // GET /api/tickets (list all)
+  else if ((path === '' || path.startsWith('?')) && req.method === 'GET') {
     const authHeader = req.headers.authorization;
     console.log('[Tickets API] Auth header:', authHeader ? 'Present' : 'Missing');
 
