@@ -244,8 +244,6 @@ module.exports = async function handler(req, res) {
   else if (req.method === 'PUT') {
     const urlParams = new URLSearchParams(req.url.split('?')[1]);
     const id = urlParams.get('id');
-    const urlParams = new URLSearchParams(req.url.split('?')[1]);
-    const id = urlParams.get('id');
 
     console.log('[GetTickets API] PUT request received');
     console.log('[GetTickets API] Full URL:', req.url);
