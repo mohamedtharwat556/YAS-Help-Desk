@@ -309,65 +309,130 @@ module.exports = async function handler(req, res) {
       if (customerError) throw customerError;
 
       // Create device
+      const deviceData = {
+        customer_id: newCustomer.id,
+        type: device.type,
+        brand: device.brand,
+        model: device.model,
+        warranty_status: device.warranty_status || 'unknown'
+      };
+
+      // Only add serial_number and purchase_date if they exist
+      if (device.serial_number) {
+        deviceData.serial_number = device.serial_number;
+      }
+      if (device.purchase_date) {
+        deviceData.purchase_date = device.purchase_date;
+      }
+
+      console.log('[Tickets API] Device data to insert:', deviceData);
+
       const { data: newDevice, error: deviceError } = await supabase
         .from('devices')
-        .insert({
-          customer_id: newCustomer.id,
-          type: device.type,
-          brand: device.brand,
-          model: device.model,
-          serial_number: device.serial_number,
-          purchase_date: device.purchase_date,
-          warranty_status: device.warranty_status || 'unknown'
-        })
+        .insert(deviceData)
         .select()
         .single();
 
       if (deviceError) throw deviceError;
 
-      // Generate ticket number
-      const { data: lastTicket } = await supabase
-        .from('tickets')
-        .select('ticket_number')
-        .order('created_at', { ascending: false })
-        .limit(1);
+      // Generate ticket number with retry logic
+      let finalTicketNumber;
+      let attempts = 0;
+      const maxAttempts = 10;
 
-      const lastNumber = lastTicket && lastTicket.length > 0
-        ? parseInt(lastTicket[0].ticket_number.replace('YAS-SUP-', ''))
-        : 10480;
-      const ticketNumber = `YAS-SUP-${lastNumber + 1}`;
+      while (attempts < maxAttempts) {
+        const { data: lastTicket } = await supabase
+          .from('tickets')
+          .select('ticket_number')
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        const lastNumber = lastTicket && lastTicket.length > 0
+          ? parseInt(lastTicket[0].ticket_number.replace('YAS-SUP-', ''))
+          : 10480;
+
+        // Start from lastNumber + 1 + attempts to find next available
+        const ticketNumber = `YAS-SUP-${lastNumber + 1 + attempts}`;
+
+        console.log(`[Tickets API] Attempt ${attempts + 1}: Generated ticket number: ${ticketNumber} (last was: ${lastNumber})`);
+
+        // Check if this ticket number already exists
+        const { data: existingTicket } = await supabase
+          .from('tickets')
+          .select('id')
+          .eq('ticket_number', ticketNumber)
+          .single();
+
+        if (!existingTicket) {
+          finalTicketNumber = ticketNumber;
+          console.log(`[Tickets API] Found unique ticket number: ${finalTicketNumber}`);
+          break;
+        }
+
+        console.log(`[Tickets API] Ticket number ${ticketNumber} already exists, trying next...`);
+        attempts++;
+      }
+
+      if (!finalTicketNumber) {
+        throw new Error('Failed to generate unique ticket number after multiple attempts');
+      }
+
+      console.log('[Tickets API] Final ticket number:', finalTicketNumber);
 
       // Create ticket
-      const { data: ticket, error: ticketError } = await supabase
-        .from('tickets')
-        .insert({
-          ticket_number: ticketNumber,
+      let ticket;
+      try {
+        console.log('[Tickets API] About to create ticket with data:', {
+          ticket_number: finalTicketNumber,
           customer_id: newCustomer.id,
           device_id: newDevice.id,
           request_type,
           priority,
-          description,
-          files,
-          status: 'received'
-        })
-        .select(`
-          *,
-          customer:customers(*),
-          device:devices(*),
-          assigned_user:users(id, name, email, role)
-        `)
-        .single();
+          description
+        });
 
-      if (ticketError) throw ticketError;
+        const result = await supabase
+          .from('tickets')
+          .insert({
+            ticket_number: finalTicketNumber,
+            customer_id: newCustomer.id,
+            device_id: newDevice.id,
+            request_type,
+            priority,
+            description,
+            files,
+            status: 'received'
+          })
+          .select(`
+            *,
+            customer:customers(*),
+            device:devices(*)
+          `)
+          .single();
 
-      res.status(201).json({
-        success: true,
-        message: 'Ticket created successfully',
-        data: ticket
-      });
+        console.log('[Tickets API] Supabase insert result:', result);
+
+        if (result.error) {
+          console.error('[Tickets API] Ticket creation error:', result.error);
+          throw result.error;
+        }
+
+        ticket = result.data;
+        console.log('[Tickets API] Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
+        console.log('[Tickets API] Full ticket object:', JSON.stringify(ticket, null, 2));
+
+        res.status(201).json({
+          success: true,
+          message: 'Ticket created successfully',
+          data: ticket
+        });
+      } catch (error) {
+        console.error('[Tickets API] Ticket creation exception:', error);
+        return res.status(500).json({ error: 'Failed to create ticket', details: error.message });
+      }
     } catch (error) {
-      console.error('Create ticket error:', error);
-      res.status(500).json({ error: 'Failed to create ticket' });
+      console.error('[Tickets API] Create ticket error:', error);
+      res.status(500).json({ error: 'Failed to create ticket', details: error.message });
     }
   }
   else {
