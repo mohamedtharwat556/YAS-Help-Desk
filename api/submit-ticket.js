@@ -87,17 +87,27 @@ module.exports = async function handler(req, res) {
       // Create device
       let newDevice;
       try {
+        const deviceData = {
+          customer_id: newCustomer.id,
+          type: device.type,
+          brand: device.brand,
+          model: device.model,
+          warranty_status: device.warranty_status || 'unknown'
+        };
+
+        // Only add serial_number and purchase_date if they exist
+        if (device.serial_number) {
+          deviceData.serial_number = device.serial_number;
+        }
+        if (device.purchase_date) {
+          deviceData.purchase_date = device.purchase_date;
+        }
+
+        console.log('[SUBMIT-TICKET] Device data to insert:', deviceData);
+
         const result = await supabase
           .from('devices')
-          .insert({
-            customer_id: newCustomer.id,
-            type: device.type,
-            brand: device.brand,
-            model: device.model,
-            serial_number: device.serial_number,
-            purchase_date: device.purchase_date,
-            warranty_status: device.warranty_status || 'unknown'
-          })
+          .insert(deviceData)
           .select()
           .single();
 
