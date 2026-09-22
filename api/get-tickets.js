@@ -182,8 +182,15 @@ module.exports = async function handler(req, res) {
       res.status(500).json({ error: 'Failed to create ticket' });
     }
   }
-  // PUT /api/tickets/:id
-  else if (path.match(/^\/\w+/) && req.method === 'PUT') {
+  // PUT /api/get-tickets (update ticket via query param)
+  else if (path.includes('?id=') && req.method === 'PUT') {
+    const urlParams = new URLSearchParams(req.url.split('?')[1]);
+    const id = urlParams.get('id');
+
+    if (!id) {
+      return res.status(400).json({ error: 'Ticket ID is required' });
+    }
+
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -196,15 +203,41 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-      const id = path.replace('/', '');
       let body = req.body;
       if (typeof body === 'string') {
         body = JSON.parse(body);
       }
 
+      console.log('[GetTickets API] Updating ticket:', id);
+      console.log('[GetTickets API] Update data:', body);
+
+      // Handle arrays (activities, notes) properly
+      let updateData = { ...body };
+
+      // If we're updating activities or notes, we need to fetch current values first
+      if (body.activities || body.notes) {
+        const { data: currentTicket } = await supabase
+          .from('tickets')
+          .select('activities, notes')
+          .eq('id', id)
+          .single();
+
+        if (currentTicket) {
+          if (body.activities) {
+            updateData.activities = [...(currentTicket.activities || []), ...body.activities];
+          }
+          if (body.notes) {
+            updateData.notes = [...(currentTicket.notes || []), ...body.notes];
+          }
+        }
+      }
+
+      console.log('[GetTickets API] Final update data:', updateData);
+
+      // Update ticket
       const { data: ticket, error } = await supabase
         .from('tickets')
-        .update(body)
+        .update(updateData)
         .eq('id', id)
         .select(`
           *,
@@ -215,8 +248,11 @@ module.exports = async function handler(req, res) {
         .single();
 
       if (error || !ticket) {
-        return res.status(404).json({ error: 'Ticket not found' });
+        console.error('[GetTickets API] Update error:', error);
+        return res.status(404).json({ error: 'Ticket not found or update failed' });
       }
+
+      console.log('[GetTickets API] Updated successfully:', ticket.ticket_number);
 
       res.status(200).json({
         success: true,
@@ -224,8 +260,61 @@ module.exports = async function handler(req, res) {
         data: ticket
       });
     } catch (error) {
-      console.error('Update ticket error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      console.error('[GetTickets API] Update error:', error);
+      res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+  }
+  // GET /api/get-tickets?ticket_number=... (public tracking)
+  else if (path.includes('?ticket_number=') && req.method === 'GET') {
+    const urlParams = new URLSearchParams(req.url.split('?')[1]);
+    const ticketNumber = urlParams.get('ticket_number');
+
+    if (!ticketNumber) {
+      return res.status(400).json({ error: 'Ticket number is required' });
+    }
+
+    try {
+      // Normalize ticket number
+      let normalizedTicketNumber = ticketNumber.trim().toUpperCase();
+      if (!normalizedTicketNumber.startsWith('YAS-SUP-')) {
+        normalizedTicketNumber = `YAS-SUP-${normalizedTicketNumber}`;
+      }
+
+      console.log('[GetTickets API] Public tracking by ticket_number:', normalizedTicketNumber);
+
+      // Simple query without relations first
+      const { data: ticket, error } = await supabase
+        .from('tickets')
+        .select('*')
+        .eq('ticket_number', normalizedTicketNumber)
+        .single();
+
+      if (error || !ticket) {
+        console.log('[GetTickets API] Track not found:', error);
+        return res.status(404).json({ error: 'Ticket not found' });
+      }
+
+      console.log('[GetTickets API] Track found:', ticket.ticket_number);
+
+      // Fetch customer and device separately
+      const [customerResult, deviceResult] = await Promise.all([
+        supabase.from('customers').select('*').eq('id', ticket.customer_id).single(),
+        supabase.from('devices').select('*').eq('id', ticket.device_id).single()
+      ]);
+
+      const enrichedTicket = {
+        ...ticket,
+        customer: customerResult.data || null,
+        device: deviceResult.data || null
+      };
+
+      res.status(200).json({
+        success: true,
+        data: enrichedTicket
+      });
+    } catch (error) {
+      console.error('[GetTickets API] Track error:', error);
+      res.status(500).json({ error: 'Failed to track ticket', details: error.message });
     }
   }
   else {

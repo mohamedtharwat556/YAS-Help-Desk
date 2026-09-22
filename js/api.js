@@ -333,8 +333,8 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    // Use dedicated update endpoint with POST method
-    return this.post('/update', updates, { id });
+    // Use get-tickets endpoint which is known to work on Vercel
+    return this.put('/get-tickets', updates, { id });
   },
 
   /**
@@ -496,9 +496,9 @@ const YAS_API = {
       }
       return response;
     } else {
-      // For ticket_number, use the dedicated track endpoint
-      const response = await this.get('/track', { ticket_number: ticketNumberOrId });
-      console.log('[API] Track ticket response (track endpoint):', response);
+      // For ticket_number, use the get-tickets endpoint which is confirmed to work
+      const response = await this.get('/get-tickets', { ticket_number: ticketNumberOrId });
+      console.log('[API] Track ticket response (get-tickets endpoint):', response);
 
       if (response.success) {
         const ticket = response.data;
