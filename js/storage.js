@@ -259,12 +259,10 @@ async function updateTicketStatus(id, newStatus, note = '') {
         type:  'status'
       };
 
-      const updatedActivities = [...(currentTicket.activities || []), activity];
-
-      // Update ticket with new status and activities
+      // Update ticket with new status and activities as array to be merged
       const response = await YAS_API.updateTicket(id, {
         status: newStatus,
-        activities: updatedActivities
+        activities: [activity]
       });
 
       if (response.success) {
@@ -349,10 +347,10 @@ async function addTicketNote(id, noteText) {
 
       const updatedActivities = [...(currentTicket.activities || []), activity];
 
-      // Update ticket with new notes and activities
+      // Update ticket with new notes and activities as arrays to be merged
       const response = await YAS_API.updateTicket(id, {
-        notes: updatedNotes,
-        activities: updatedActivities
+        notes: [newNote],
+        activities: [activity]
       });
 
       if (response.success) {
