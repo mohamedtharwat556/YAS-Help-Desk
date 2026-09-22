@@ -336,11 +336,14 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    console.log('[API] updateTicket called');
-    console.log('[API] id type:', typeof id, 'id value:', id);
-    console.log('[API] updates:', updates);
-    // Use get-tickets endpoint with PUT which is confirmed to work on Vercel
-    return this.put('/get-tickets', updates, { id });
+    console.log('[API] updateTicket called with id:', id);
+    // Construct URL directly to ensure params are included
+    const url = `/get-tickets?id=${id}`;
+    console.log('[API] Constructed URL:', url);
+    return this.request(url, {
+      method: 'PUT',
+      body: JSON.stringify(updates)
+    });
   },
 
   /**
