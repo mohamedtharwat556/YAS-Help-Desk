@@ -261,9 +261,11 @@ const YAS_API = {
         request_type: ticket.request_type,
         priority: ticket.priority,
         description: ticket.description,
-        // Add activities array for timeline
+        // Add activities array for timeline (will be empty in Supabase)
         activities: ticket.activities || [],
-        notes: ticket.notes || []
+        notes: ticket.notes || [],
+        // Add empty arrays if not present
+        files: ticket.files || []
       };
       return { success: true, data: transformedTicket };
     }

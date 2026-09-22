@@ -39,6 +39,28 @@ BEGIN
   END IF;
 END $$;
 
+-- Add notes column if it doesn't exist (for internal notes)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'tickets' AND column_name = 'notes'
+  ) THEN
+    ALTER TABLE tickets ADD COLUMN notes JSONB DEFAULT '[]'::jsonb;
+  END IF;
+END $$;
+
+-- Add activities column if it doesn't exist (for timeline)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'tickets' AND column_name = 'activities'
+  ) THEN
+    ALTER TABLE tickets ADD COLUMN activities JSONB DEFAULT '[]'::jsonb;
+  END IF;
+END $$;
+
 -- Check if there are any existing tickets without proper foreign keys
 SELECT
   t.id,

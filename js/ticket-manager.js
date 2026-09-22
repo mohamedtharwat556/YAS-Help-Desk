@@ -365,7 +365,7 @@ function deleteTicketAction(ticketId) {
 const TicketDetails = {
   ticket: null,
 
-  init() {
+  async init() {
     if (!document.getElementById('ticket-detail-container')) return;
     if (!YAS.requireAuth()) return;
     YAS.initDashboardSidebar();
@@ -380,7 +380,7 @@ const TicketDetails = {
       return;
     }
 
-    this.ticket = YASStorage.getTicketById(ticketId);
+    this.ticket = await YASStorage.getTicketById(ticketId);
 
     if (!this.ticket) {
       this.showNotFound();
