@@ -102,7 +102,11 @@ const YAS_API = {
 
     if (isVercel) {
       // For Vercel, handle single ticket endpoints specially
-      if (endpoint.match(/^\/tickets\/[\w-]+$/)) {
+      if (endpoint === '/tickets' && params.id) {
+        // Single ticket via query param
+        const queryString = new URLSearchParams(allParams).toString();
+        url = `${endpoint}?${queryString}`;
+      } else if (endpoint.match(/^\/tickets\/[\w-]+$/)) {
         // Single ticket endpoint - don't add params to avoid conflicts
         url = endpoint;
       } else {
@@ -237,7 +241,7 @@ const YAS_API = {
    * Get single ticket by ID
    */
   async getTicket(id) {
-    const response = await this.get(`/tickets/${id}`);
+    const response = await this.get('/tickets', { id });
     if (response.success) {
       // Transform API response to match frontend expected format
       const ticket = response.data;

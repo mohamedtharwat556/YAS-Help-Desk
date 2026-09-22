@@ -45,8 +45,15 @@ module.exports = async function handler(req, res) {
   console.log('[Tickets API] Request path:', path);
   console.log('[Tickets API] Request method:', req.method);
 
-  // GET /api/tickets/:id (single ticket) - check for UUID pattern
-  if (path.match(/^\/[a-f0-9-]+$/) && req.method === 'GET') {
+  // GET /api/tickets?id=... (single ticket via query param)
+  if (path.includes('?id=') && req.method === 'GET') {
+    const urlParams = new URLSearchParams(req.url.split('?')[1]);
+    const id = urlParams.get('id');
+
+    if (!id) {
+      return res.status(400).json({ error: 'Ticket ID is required' });
+    }
+
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Unauthorized' });
@@ -59,8 +66,6 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-      const id = path.replace('/', '');
-
       // Fetch ticket without relations first
       const { data: ticket, error } = await supabase
         .from('tickets')
