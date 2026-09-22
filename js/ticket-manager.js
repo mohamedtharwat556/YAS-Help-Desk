@@ -110,7 +110,7 @@ const TicketManager = {
         t.customer.name.toLowerCase().includes(q) ||
         t.customer.phone.includes(q) ||
         t.device.model.toLowerCase().includes(q) ||
-        t.device.serialNumber.toLowerCase().includes(q) ||
+        (t.device.serial_number || '').toLowerCase().includes(q) ||
         t.customer.company.toLowerCase().includes(q)
       );
     }
@@ -427,7 +427,7 @@ const TicketDetails = {
     this.setEl('dev-detail-type',    YAS.DeviceTypeLabels[t.device?.type] || t.device?.type || 'Unknown');
     this.setEl('dev-detail-brand',   t.device?.brand || '—');
     this.setEl('dev-detail-model',   t.device?.model || '—');
-    this.setEl('dev-detail-serial',  t.device?.serial_number || t.device?.serialNumber || '—');
+    this.setEl('dev-detail-serial',  t.device?.serial_number || '—');
     this.setEl('dev-detail-date',    t.device?.purchase_date || t.device?.purchaseDate ? YAS.formatDate(t.device?.purchase_date || t.device?.purchaseDate) : '—');
     this.setHTML('dev-detail-warranty', YAS.warrantyBadge(t.device?.warranty_status || t.device?.warranty || 'unknown'));
 

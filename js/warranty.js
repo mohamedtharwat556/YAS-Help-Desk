@@ -56,7 +56,7 @@ function renderWarrantyTable(filter = '', query = '') {
       t.id.toLowerCase().includes(q) ||
       t.customer.name.toLowerCase().includes(q) ||
       t.device.model.toLowerCase().includes(q) ||
-      (t.device.serialNumber || '').toLowerCase().includes(q)
+      (t.device.serial_number || '').toLowerCase().includes(q)
     );
   }
 
@@ -95,7 +95,7 @@ function renderWarrantyTable(filter = '', query = '') {
             </div>
           </div>
         </td>
-        <td style="font-family:var(--font-ui);font-size:0.8125rem">${t.device.serialNumber || '—'}</td>
+        <td style="font-family:var(--font-ui);font-size:0.8125rem">${t.device.serial_number || '—'}</td>
         <td style="font-size:0.8125rem">${t.device.purchaseDate ? YAS.formatDate(t.device.purchaseDate) : '—'}</td>
         <td>
           <span class="badge ${warrantyStatusClass}" style="padding:4px 12px">

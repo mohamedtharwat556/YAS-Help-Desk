@@ -237,7 +237,7 @@ const TicketForm = {
         type:         document.getElementById('device-type-hidden')?.value || '',
         brand:        document.getElementById('device-brand')?.value.trim() || '',
         model:        document.getElementById('device-model')?.value.trim() || '',
-        serialNumber: document.getElementById('device-serial')?.value.trim() || '',
+        serial_number: document.getElementById('device-serial')?.value.trim() || '',
         purchaseDate: document.getElementById('purchase-date')?.value || '',
         warranty:     document.getElementById('warranty-status')?.value || 'unknown'
       };
@@ -276,9 +276,9 @@ const TicketForm = {
     set('review-device-type',   YAS.DeviceTypeLabels[d.device.type] || d.device.type);
     set('review-device-brand',  d.device.brand);
     set('review-device-model',  d.device.model);
-    set('review-device-serial', d.device.serialNumber);
-    set('review-purchase-date', d.device.purchaseDate ? YAS.formatDate(d.device.purchaseDate) : '—');
-    setHTML('review-warranty', YAS.warrantyBadge(d.device.warranty));
+    set('review-device-serial', d.device.serial_number);
+    set('review-purchase-date', d.device.purchase_date ? YAS.formatDate(d.device.purchase_date) : '—');
+    setHTML('review-warranty', YAS.warrantyBadge(d.device.warranty_status));
 
     // Request
     set('review-req-type',  YAS.RequestTypeLabels[d.request.type] || d.request.type);

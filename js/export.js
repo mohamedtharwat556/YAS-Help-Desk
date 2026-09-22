@@ -71,7 +71,7 @@ function exportTicketsToCSV(tickets) {
     'نوع الجهاز': YAS.DeviceTypeLabels[t.device.type] || t.device.type,
     'الماركة': t.device.brand,
     'الموديل': t.device.model,
-    'الرقم التسلسلي': t.device.serialNumber,
+    'الرقم التسلسلي': t.device.serial_number,
     'نوع الطلب': YAS.RequestTypeLabels[t.request.type] || t.request.type,
     'الأولوية': YAS.PriorityLabels[t.request.priority] || t.request.priority,
     'الحالة': YAS.StatusLabels[t.status] || t.status,
@@ -124,7 +124,7 @@ function exportDevicesToCSV(devices) {
     'نوع الجهاز': YAS.DeviceTypeLabels[d.type] || d.type,
     'الماركة': d.brand,
     'الموديل': d.model,
-    'الرقم التسلسلي': d.serialNumber,
+    'الرقم التسلسلي': d.serial_number,
     'تاريخ الشراء': d.purchaseDate,
     'حالة الضمان': YAS.WarrantyLabels[d.warranty] || d.warranty,
     'رقم الطلب': d.ticketId || '—',
@@ -297,7 +297,7 @@ function exportTicketDetailsToPDF(ticketId) {
         </tr>
         <tr>
           <td style="background: #f5f5f5; font-weight: bold;">الرقم التسلسلي</td>
-          <td>${ticket.device.serialNumber || '—'}</td>
+          <td>${ticket.device.serial_number || '—'}</td>
         </tr>
         <tr>
           <td style="background: #f5f5f5; font-weight: bold;">تاريخ الشراء</td>

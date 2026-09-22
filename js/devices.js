@@ -27,7 +27,7 @@ const DevicesPage = {
     const map     = new Map();
 
     tickets.forEach(t => {
-      const key = t.device.serialNumber || `${t.device.brand}-${t.device.model}-${t.customer.phone}`;
+      const key = t.device.serial_number || `${t.device.brand}-${t.device.model}-${t.customer.phone}`;
       if (!map.has(key)) {
         map.set(key, {
           key,
@@ -87,7 +87,7 @@ const DevicesPage = {
       data = data.filter(d =>
         d.model.toLowerCase().includes(q) ||
         d.brand.toLowerCase().includes(q) ||
-        (d.serialNumber || '').toLowerCase().includes(q) ||
+        (d.serial_number || '').toLowerCase().includes(q) ||
         d.customer.name.toLowerCase().includes(q)
       );
     }
@@ -132,7 +132,7 @@ const DevicesPage = {
             </div>
           </td>
           <td style="font-size:0.875rem">${d.customer.name}</td>
-          <td style="font-family:var(--font-ui);font-size:0.8125rem">${YAS.highlightText(d.serialNumber || '—', q)}</td>
+          <td style="font-family:var(--font-ui);font-size:0.8125rem">${YAS.highlightText(d.serial_number || '—', q)}</td>
           <td style="font-size:0.8125rem">${d.purchaseDate ? YAS.formatDate(d.purchaseDate) : '—'}</td>
           <td>${YAS.warrantyBadge(d.warranty)}</td>
           <td>
@@ -166,7 +166,7 @@ const DeviceDetails = {
     if (!key) return this.showNotFound();
 
     const tickets = YASStorage.getAllTickets().filter(t => {
-      const k = t.device.serialNumber || `${t.device.brand}-${t.device.model}-${t.customer.phone}`;
+      const k = t.device.serial_number || `${t.device.brand}-${t.device.model}-${t.customer.phone}`;
       return k === key;
     });
 
@@ -193,7 +193,7 @@ const DeviceDetails = {
     setEl('dev-type-label',  YAS.DeviceTypeLabels[d.type] || d.type);
     setEl('dev-brand',       d.brand);
     setEl('dev-model',       d.model);
-    setEl('dev-serial',      d.serialNumber);
+    setEl('dev-serial',      d.serial_number);
     setEl('dev-purchase',    d.purchaseDate ? YAS.formatDate(d.purchaseDate) : '—');
     setHTML('dev-warranty',  YAS.warrantyBadge(d.warranty));
 

@@ -431,7 +431,7 @@ function initGlobalSearch() {
       t.customer.name.toLowerCase().includes(q) ||
       t.customer.phone.includes(q) ||
       t.device.model.toLowerCase().includes(q) ||
-      t.device.serialNumber.toLowerCase().includes(q)
+      t.device.serial_number.toLowerCase().includes(q)
     ).slice(0, 6);
 
     if (tickets.length === 0) {

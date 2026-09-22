@@ -153,7 +153,7 @@ async function createTicket(ticketData) {
       type:         ticketData.device.type         || '',
       brand:        ticketData.device.brand        || '',
       model:        ticketData.device.model        || '',
-      serialNumber: ticketData.device.serialNumber || '',
+      serialNumber: ticketData.device.serial_number || '',
       purchaseDate: ticketData.device.purchaseDate || '',
       warranty:     ticketData.device.warranty     || 'unknown'
     },
@@ -615,7 +615,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10482',
       customer: { name: 'محمد أحمد', phone: '0501234567', whatsapp: '0501234567', email: 'mohammed@example.com', company: 'شركة الأمل' },
-      device: { type: 'laptop', brand: 'Dell', model: 'Latitude 5420', serialNumber: 'DL5420-0012', purchaseDate: '2023-03-15', warranty: 'active' },
+      device: { type: 'laptop', brand: 'Dell', model: 'Latitude 5420', serial_number: 'DL5420-0012', purchase_date: '2023-03-15', warranty_status: 'active' },
       request: { type: 'technical', priority: 'high', description: 'الجهاز يُعيد التشغيل بشكل عشوائي أثناء العمل. المشكلة بدأت بعد تحديث Windows الأخير. تمت محاولة إعادة التشغيل عدة مرات دون جدوى.' },
       status: 'reviewing', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
@@ -630,7 +630,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10483',
       customer: { name: 'سارة العمري', phone: '0559876543', whatsapp: '0559876543', email: 'sara@techcorp.sa', company: 'تيك كورب' },
-      device: { type: 'pos', brand: 'Epson', model: 'TM-T88VI', serialNumber: 'EP88VI-5521', purchaseDate: '2022-11-01', warranty: 'active' },
+      device: { type: 'pos', brand: 'Epson', model: 'TM-T88VI', serial_number: 'EP88VI-5521', purchase_date: '2022-11-01', warranty_status: 'active' },
       request: { type: 'maintenance', priority: 'critical', description: 'جهاز الكاشير لا يطبع الفواتير بشكل صحيح. الطابعة تصدر صوتاً ثم تتوقف. هذا يؤثر على سير العمل اليومي بشكل كامل.' },
       status: 'contacting', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
@@ -645,7 +645,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10484',
       customer: { name: 'خالد الزهراني', phone: '0533210987', whatsapp: '0533210987', email: 'khalid.z@gmail.com', company: '' },
-      device: { type: 'desktop', brand: 'HP', model: 'ProDesk 400 G7', serialNumber: 'HP400-G7-9921', purchaseDate: '2021-06-20', warranty: 'expired' },
+      device: { type: 'desktop', brand: 'HP', model: 'ProDesk 400 G7', serial_number: 'HP400-G7-9921', purchase_date: '2021-06-20', warranty_status: 'expired' },
       request: { type: 'warranty', priority: 'medium', description: 'الجهاز لا يشتغل تماماً. عند الضغط على زر التشغيل لا يحدث شيء. الضمان منتهي لكن أريد معرفة تكلفة الإصلاح.' },
       status: 'diagnosing', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
@@ -661,7 +661,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10485',
       customer: { name: 'نورة المنصور', phone: '0505551234', whatsapp: '0505551234', email: 'noura@company.com', company: 'مؤسسة النور' },
-      device: { type: 'hikvision', brand: 'Hikvision', model: 'DS-2CD2143G2-I', serialNumber: 'HIK-CAM-3312', purchaseDate: '2023-08-10', warranty: 'active' },
+      device: { type: 'hikvision', brand: 'Hikvision', model: 'DS-2CD2143G2-I', serial_number: 'HIK-CAM-3312', purchase_date: '2023-08-10', warranty_status: 'active' },
       request: { type: 'installation', priority: 'medium', description: 'طلب تركيب 4 كاميرات مراقبة إضافية في المستودع. لدينا نظام Hikvision موجود ونريد التوسعة.' },
       status: 'received', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 1).toISOString(),
@@ -675,7 +675,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10486',
       customer: { name: 'عمر الشهري', phone: '0556667788', whatsapp: '0556667788', email: 'omar.s@outlook.com', company: 'مدرسة الرواد' },
-      device: { type: 'projector', brand: 'Epson', model: 'EB-X51', serialNumber: 'EP-X51-0087', purchaseDate: '2022-01-15', warranty: 'expired' },
+      device: { type: 'projector', brand: 'Epson', model: 'EB-X51', serial_number: 'EP-X51-0087', purchase_date: '2022-01-15', warranty_status: 'expired' },
       request: { type: 'maintenance', priority: 'low', description: 'البروجكتر يعرض صورة باهتة وألوانها ليست صحيحة. يحتاج إلى فحص مصدر الضوء.' },
       status: 'maintenance', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
@@ -691,7 +691,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10487',
       customer: { name: 'فاطمة القحطاني', phone: '0512223344', whatsapp: '0512223344', email: 'fatima@gmail.com', company: '' },
-      device: { type: 'laptop', brand: 'Lenovo', model: 'ThinkPad E15', serialNumber: 'LN-E15-4421', purchaseDate: '2023-12-01', warranty: 'active' },
+      device: { type: 'laptop', brand: 'Lenovo', model: 'ThinkPad E15', serial_number: 'LN-E15-4421', purchase_date: '2023-12-01', warranty_status: 'active' },
       request: { type: 'technical', priority: 'high', description: 'شاشة اللاب توب تُظهر خطوطاً رأسية ملونة وتتشوه الصورة أحياناً. المشكلة متقطعة.' },
       status: 'resolved', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 72).toISOString(),
@@ -708,7 +708,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10488',
       customer: { name: 'أحمد الدوسري', phone: '0534445566', whatsapp: '0534445566', email: 'ahmed.d@company.sa', company: 'مجموعة الدوسري' },
-      device: { type: 'desktop', brand: 'Asus', model: 'ProArt PA300Q', serialNumber: 'AS-PRO-7821', purchaseDate: '2024-01-10', warranty: 'active' },
+      device: { type: 'desktop', brand: 'Asus', model: 'ProArt PA300Q', serial_number: 'AS-PRO-7821', purchase_date: '2024-01-10', warranty_status: 'active' },
       request: { type: 'inquiry', priority: 'low', description: 'استفسار عن إمكانية ترقية الذاكرة العشوائية من 16GB إلى 32GB وما هي التكلفة المتوقعة.' },
       status: 'closed', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 96).toISOString(),
@@ -723,7 +723,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10489',
       customer: { name: 'ريم الحربي', phone: '0567778899', whatsapp: '0567778899', email: 'reem.h@edu.sa', company: 'كلية العلوم التطبيقية' },
-      device: { type: 'monitor', brand: 'LG', model: '27UK850', serialNumber: 'LG-27UK-1134', purchaseDate: '2022-09-05', warranty: 'expired' },
+      device: { type: 'monitor', brand: 'LG', model: '27UK850', serial_number: 'LG-27UK-1134', purchase_date: '2022-09-05', warranty_status: 'expired' },
       request: { type: 'complaint', priority: 'medium', description: 'الشاشة فيها بقع سوداء في الزاوية اليسرى. المشكلة ظهرت منذ أسبوع دون أي سبب واضح.' },
       status: 'waiting', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 36).toISOString(),
@@ -738,7 +738,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10490',
       customer: { name: 'تركي المطيري', phone: '0521112233', whatsapp: '0521112233', email: 'turki@startup.io', company: 'ستارت أب تك' },
-      device: { type: 'accessories', brand: 'Logitech', model: 'MX Keys', serialNumber: 'LG-MXK-6677', purchaseDate: '2024-03-20', warranty: 'active' },
+      device: { type: 'accessories', brand: 'Logitech', model: 'MX Keys', serial_number: 'LG-MXK-6677', purchase_date: '2024-03-20', warranty_status: 'active' },
       request: { type: 'warranty', priority: 'medium', description: 'لوحة المفاتيح بعض مفاتيحها لا تستجيب. المنتج لا يزال في فترة الضمان.' },
       status: 'received', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 1800000).toISOString(),
@@ -752,7 +752,7 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10491',
       customer: { name: 'منى العسيري', phone: '0578889900', whatsapp: '0578889900', email: 'mona@mail.com', company: 'عيادة الشفاء' },
-      device: { type: 'laptop', brand: 'HP', model: 'EliteBook 840 G8', serialNumber: 'HP-EBK-840-2231', purchaseDate: '2023-05-18', warranty: 'active' },
+      device: { type: 'laptop', brand: 'HP', model: 'EliteBook 840 G8', serial_number: 'HP-EBK-840-2231', purchase_date: '2023-05-18', warranty_status: 'active' },
       request: { type: 'technical', priority: 'critical', description: 'اللاب توب لا يتصل بالشبكة اللاسلكية نهائياً. الواي فاي لا يظهر في القائمة. المشكلة تأثر على العمل الطبي الحيوي.' },
       status: 'contacting', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 3).toISOString(),
