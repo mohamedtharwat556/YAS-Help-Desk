@@ -42,8 +42,11 @@ module.exports = async function handler(req, res) {
 
   const path = req.url.replace('/api/tickets', '');
 
-  // GET /api/tickets/:id (single ticket)
-  else if (path.match(/^\/\w+/) && req.method === 'GET') {
+  console.log('[Tickets API] Request path:', path);
+  console.log('[Tickets API] Request method:', req.method);
+
+  // GET /api/tickets/:id (single ticket) - check for UUID pattern
+  if (path.match(/^\/[a-f0-9-]+$/) && req.method === 'GET') {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ error: 'Unauthorized' });
