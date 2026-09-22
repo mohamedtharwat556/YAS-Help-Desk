@@ -136,8 +136,20 @@ const YAS_API = {
   /**
    * PUT request
    */
-  async put(endpoint, data = {}) {
-    return this.request(endpoint, {
+  async put(endpoint, data = {}, params = {}) {
+    const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    let url;
+
+    if (isVercel) {
+      // For Vercel, add query params to the endpoint
+      const queryString = new URLSearchParams(params).toString();
+      url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    } else {
+      const queryString = new URLSearchParams(params).toString();
+      url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    }
+
+    return this.request(url, {
       method: 'PUT',
       body: JSON.stringify(data)
     });
@@ -309,16 +321,16 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    // Use dedicated update-ticket endpoint for Vercel
-    return this.put(`/update-ticket/${id}`, updates);
+    // Use dedicated update-ticket endpoint for Vercel with query parameter
+    return this.put('/update-ticket', updates, { id });
   },
 
   /**
    * Update ticket status
    */
   async updateTicketStatus(id, status, note = '') {
-    // Use dedicated update-ticket endpoint for Vercel
-    return this.put(`/update-ticket/${id}`, { status, note });
+    // Use dedicated update-ticket endpoint for Vercel with query parameter
+    return this.put('/update-ticket', { status, note }, { id });
   },
 
   // ============================================================
@@ -436,10 +448,17 @@ const YAS_API = {
   /**
    * Track ticket by ticket number (no auth required)
    */
-  async trackTicket(ticketNumber) {
-    console.log('[API] Tracking ticket:', ticketNumber);
+  async trackTicket(ticketNumberOrId) {
+    console.log('[API] Tracking ticket:', ticketNumberOrId);
 
-    const response = await this.get('/track-ticket', { ticket_number: ticketNumber });
+    // Check if it's a UUID (starts with letter and has hyphens) or ticket number
+    const isUUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(ticketNumberOrId);
+
+    const params = isUUID
+      ? { id: ticketNumberOrId }
+      : { ticket_number: ticketNumberOrId };
+
+    const response = await this.get('/track-ticket', params);
     console.log('[API] Track ticket response:', response);
 
     if (response.success) {
@@ -480,10 +499,10 @@ const YAS_API = {
 
     // For now, we'll use the general update endpoint
     // In the future, we might want a dedicated notes endpoint
-    const response = await this.put(`/update-ticket/${id}`, {
+    const response = await this.put('/update-ticket', {
       note: noteText,
       is_internal: isInternal
-    });
+    }, { id });
 
     if (response.success) {
       return response.data;

@@ -34,32 +34,57 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { ticket_number } = req.query;
+  const { ticket_number, id } = req.query;
 
-  if (!ticket_number) {
-    return res.status(400).json({ error: 'Ticket number is required' });
+  if (!ticket_number && !id) {
+    return res.status(400).json({ error: 'Ticket number or ID is required' });
   }
 
   try {
-    // Normalize ticket number
-    let normalizedTicketNumber = ticket_number.trim().toUpperCase();
-    if (!normalizedTicketNumber.startsWith('YAS-SUP-')) {
-      normalizedTicketNumber = `YAS-SUP-${normalizedTicketNumber}`;
+    let ticket;
+    let error;
+
+    // Try to search by ticket_number first (for public tracking)
+    if (ticket_number) {
+      // Normalize ticket number
+      let normalizedTicketNumber = ticket_number.trim().toUpperCase();
+      if (!normalizedTicketNumber.startsWith('YAS-SUP-')) {
+        normalizedTicketNumber = `YAS-SUP-${normalizedTicketNumber}`;
+      }
+
+      console.log('[Track Ticket] Searching by ticket_number:', normalizedTicketNumber);
+
+      const result = await supabase
+        .from('tickets')
+        .select(`
+          *,
+          customer:customers(*),
+          device:devices(*),
+          assigned_user:users(id, name, email, role)
+        `)
+        .eq('ticket_number', normalizedTicketNumber)
+        .single();
+
+      ticket = result.data;
+      error = result.error;
+    } else if (id) {
+      // Try to search by UUID (for authenticated endpoints)
+      console.log('[Track Ticket] Searching by ID:', id);
+
+      const result = await supabase
+        .from('tickets')
+        .select(`
+          *,
+          customer:customers(*),
+          device:devices(*),
+          assigned_user:users(id, name, email, role)
+        `)
+        .eq('id', id)
+        .single();
+
+      ticket = result.data;
+      error = result.error;
     }
-
-    console.log('[Track Ticket] Searching for:', normalizedTicketNumber);
-
-    // Fetch ticket by ticket_number
-    const { data: ticket, error } = await supabase
-      .from('tickets')
-      .select(`
-        *,
-        customer:customers(*),
-        device:devices(*),
-        assigned_user:users(id, name, email, role)
-      `)
-      .eq('ticket_number', normalizedTicketNumber)
-      .single();
 
     if (error || !ticket) {
       console.log('[Track Ticket] Not found:', error);

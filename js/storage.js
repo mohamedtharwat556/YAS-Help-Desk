@@ -89,6 +89,7 @@ async function getTicketById(id) {
   if (USE_API) {
     try {
       // Try to use public tracking endpoint first (no auth required)
+      // This endpoint now supports both ticket_number and UUID
       const response = await YAS_API.trackTicket(id);
       if (response.success) {
         return response.data;
@@ -106,7 +107,7 @@ async function getTicketById(id) {
       }
     }
   }
-  
+
   // Fallback to LocalStorage
   const tickets = await getAllTickets();
   return tickets.find(t => t.id === id || t.ticket_number === id) || null;

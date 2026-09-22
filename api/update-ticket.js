@@ -44,9 +44,8 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Get ticket ID from URL path
-  const path = req.url.replace('/api/update-ticket/', '');
-  const id = path.split('?')[0]; // Remove query params if any
+  // Get ticket ID from query parameter
+  const { id } = req.query;
 
   if (!id) {
     return res.status(400).json({ error: 'Ticket ID is required' });
@@ -70,14 +69,18 @@ module.exports = async function handler(req, res) {
       body = JSON.parse(body);
     }
 
-    console.log('[Update Ticket] Updating ticket:', id);
+    // Extract id from body if present (for frontend compatibility)
+    const ticketId = body.id || id;
+    delete body.id; // Remove id from the update data
+
+    console.log('[Update Ticket] Updating ticket:', ticketId);
     console.log('[Update Ticket] Update data:', body);
 
     // Update ticket
     const { data: ticket, error } = await supabase
       .from('tickets')
       .update(body)
-      .eq('id', id)
+      .eq('id', ticketId)
       .select(`
         *,
         customer:customers(*),
