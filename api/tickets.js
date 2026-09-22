@@ -137,8 +137,53 @@ module.exports = async function handler(req, res) {
     const id = urlParams.get('id');
     const ticketNumber = urlParams.get('ticket_number');
 
+    console.log('[Tickets API] GET request');
+    console.log('[Tickets API] Query params:', { id, ticketNumber });
+
+    // Public tracking by ticket_number (no auth required)
+    if (ticketNumber) {
+      try {
+        // Normalize ticket number
+        let normalizedTicketNumber = ticketNumber.trim().toUpperCase();
+        if (!normalizedTicketNumber.startsWith('YAS-SUP-')) {
+          normalizedTicketNumber = `YAS-SUP-${normalizedTicketNumber}`;
+        }
+
+        console.log('[Tickets API] Public tracking by ticket_number:', normalizedTicketNumber);
+
+        const result = await supabase
+          .from('tickets')
+          .select(`
+            *,
+            customer:customers(*),
+            device:devices(*),
+            assigned_user:users(id, name, email, role)
+          `)
+          .eq('ticket_number', normalizedTicketNumber)
+          .single();
+
+        console.log('[Tickets API] Tracking result:', result);
+
+        if (result.error || !result.data) {
+          console.log('[Tickets API] Track not found:', result.error);
+          return res.status(404).json({ error: 'Ticket not found' });
+        }
+
+        console.log('[Tickets API] Track found:', result.data.ticket_number);
+
+        res.status(200).json({
+          success: true,
+          data: result.data
+        });
+        return;
+      } catch (error) {
+        console.error('[Tickets API] Track error:', error);
+        res.status(500).json({ error: 'Failed to track ticket', details: error.message });
+        return;
+      }
+    }
     // Single ticket by ID (authenticated)
-    if (id && !ticketNumber) {
+    else if (id) {
       const authHeader = req.headers.authorization;
       if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -182,78 +227,6 @@ module.exports = async function handler(req, res) {
       } catch (error) {
         console.error('Get ticket error:', error);
         res.status(500).json({ error: 'Failed to fetch ticket', details: error.message });
-      }
-    }
-    // Public tracking by ticket_number or ID
-    else if (ticketNumber || id) {
-      try {
-        let ticket;
-        let error;
-
-        console.log('[Tickets API] Public tracking request');
-        console.log('[Tickets API] ticket_number:', ticketNumber);
-        console.log('[Tickets API] id:', id);
-
-        // Try to search by ticket_number first (for public tracking)
-        if (ticketNumber) {
-          // Normalize ticket number
-          let normalizedTicketNumber = ticketNumber.trim().toUpperCase();
-          if (!normalizedTicketNumber.startsWith('YAS-SUP-')) {
-            normalizedTicketNumber = `YAS-SUP-${normalizedTicketNumber}`;
-          }
-
-          console.log('[Tickets API] Tracking by ticket_number:', normalizedTicketNumber);
-
-          const result = await supabase
-            .from('tickets')
-            .select(`
-              *,
-              customer:customers(*),
-              device:devices(*),
-              assigned_user:users(id, name, email, role)
-            `)
-            .eq('ticket_number', normalizedTicketNumber)
-            .single();
-
-          console.log('[Tickets API] Tracking result:', result);
-          ticket = result.data;
-          error = result.error;
-        } else if (id) {
-          // Try to search by UUID (for authenticated endpoints)
-          console.log('[Tickets API] Tracking by ID:', id);
-
-          const result = await supabase
-            .from('tickets')
-            .select(`
-              *,
-              customer:customers(*),
-              device:devices(*),
-              assigned_user:users(id, name, email, role)
-            `)
-            .eq('id', id)
-            .single();
-
-          console.log('[Tickets API] Tracking by ID result:', result);
-          ticket = result.data;
-          error = result.error;
-        }
-
-        if (error || !ticket) {
-          console.log('[Tickets API] Track not found:', error);
-          return res.status(404).json({ error: 'Ticket not found' });
-        }
-
-        console.log('[Tickets API] Track found:', ticket.ticket_number);
-
-        res.status(200).json({
-          success: true,
-          data: ticket
-        });
-        return;
-      } catch (error) {
-        console.error('[Tickets API] Track error:', error);
-        res.status(500).json({ error: 'Failed to track ticket', details: error.message });
-        return;
       }
     }
     // List all tickets (authenticated)
