@@ -319,7 +319,7 @@ async function updateTicketStatus(id, newStatus, note = '') {
 
   const updated = await updateTicket(id, {
     status: newStatus,
-    activities: [...ticket.activities, activity]
+    activities: [...(ticket.activities || []), activity]
   });
 
   if (newStatus === 'resolved' || newStatus === 'closed') {
@@ -361,8 +361,8 @@ async function addTicketNote(id, noteText) {
 
       // Update ticket with new notes and activities as arrays to be merged
       const response = await YAS_API.updateTicket(id, {
-        notes: [newNote],
-        activities: [activity]
+        notes: [...(currentTicket.notes || []), newNote],
+        activities: updatedActivities
       });
 
       if (response.success) {
@@ -392,8 +392,8 @@ async function addTicketNote(id, noteText) {
   };
 
   return await updateTicket(id, {
-    notes:      [...ticket.notes, note],
-    activities: [...ticket.activities, activity]
+    notes:      [...(ticket.notes || []), note],
+    activities: [...(ticket.activities || []), activity]
   });
 }
 
@@ -409,7 +409,7 @@ async function addTicketActivity(id, label, desc, type = 'action') {
   };
 
   return await updateTicket(id, {
-    activities: [...ticket.activities, activity]
+    activities: [...(ticket.activities || []), activity]
   });
 }
 
