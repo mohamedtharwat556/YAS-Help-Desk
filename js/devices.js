@@ -27,12 +27,18 @@ const DevicesPage = {
     const map     = new Map();
 
     tickets.forEach(t => {
-      const key = t.device?.serial_number || `${t.device?.brand}-${t.device?.model}-${t.customer?.phone}`;
+      const device = t.device || {};
+      const key = device.serial_number || `${device.brand || ''}-${device.model || ''}-${t.customer?.phone || ''}`;
       if (!map.has(key)) {
         map.set(key, {
           key,
-          ...t.device,
-          customer:   t.customer,
+          type: device.type || 'unknown',
+          brand: device.brand || 'Unknown',
+          model: device.model || 'Unknown',
+          serial_number: device.serial_number || '',
+          purchase_date: device.purchase_date || device.purchaseDate || '',
+          warranty_status: device.warranty_status || device.warranty || 'unknown',
+          customer:   t.customer || {},
           tickets:    [],
           lastService: t.created_at || t.createdAt
         });
