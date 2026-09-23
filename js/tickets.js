@@ -428,6 +428,18 @@ const TicketTracking = {
     if (!container) return;
 
     console.log('[TicketTracking] Rendering ticket:', ticket);
+    console.log('[TicketTracking] Ticket fields:', {
+      ticket_number: ticket.ticket_number,
+      id: ticket.id,
+      request_type: ticket.request_type,
+      priority: ticket.priority,
+      status: ticket.status,
+      customer: ticket.customer,
+      device: ticket.device,
+      assigned_user: ticket.assigned_user,
+      created_at: ticket.created_at,
+      updated_at: ticket.updated_at
+    });
 
     // Use API response field names
     const requestType = ticket.request_type || 'Unknown';
@@ -439,6 +451,18 @@ const TicketTracking = {
     const assignedName = ticket.assigned_user?.name || 'Unassigned';
     const createdAt = ticket.created_at || ticket.createdAt;
     const updatedAt = ticket.updated_at || ticket.updatedAt;
+
+    console.log('[TicketTracking] Extracted values:', {
+      requestType,
+      requestPriority,
+      ticketNumber,
+      customerName,
+      deviceBrand,
+      deviceModel,
+      assignedName,
+      createdAt,
+      updatedAt
+    });
 
     // Header
     const headerEl = container.querySelector('.ticket-result-header');
