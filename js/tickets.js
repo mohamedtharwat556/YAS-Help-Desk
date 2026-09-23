@@ -398,21 +398,25 @@ const TicketTracking = {
 
   async searchTicket(id, resultDiv) {
     // Normalize ID
-    let normalized = id;
+    let normalized = id.trim().toUpperCase();
     if (!normalized.startsWith('YAS-SUP-') && /^\d+$/.test(normalized)) {
       normalized = 'YAS-SUP-' + normalized;
     }
 
-    try {
-      const ticket = await YASStorage.getTicketById(normalized);
+    console.log('[TicketTracking] Searching for ticket:', normalized);
 
-      if (!ticket) {
+    try {
+      // Use API directly for public tracking
+      const response = await YAS_API.trackTicket(normalized);
+      console.log('[TicketTracking] API response:', response);
+
+      if (!response.success || !response.data) {
         YAS.showToast('رقم الطلب غير موجود. تحقق من الرقم وحاول مرة أخرى.', 'error');
         if (resultDiv) resultDiv.classList.remove('show');
         return;
       }
 
-      this.renderTicket(ticket, resultDiv);
+      this.renderTicket(response.data, resultDiv);
     } catch (error) {
       console.error('[TicketTracking] Error searching ticket:', error);
       YAS.showToast('حدث خطأ أثناء البحث عن الطلب. حاول مرة أخرى.', 'error');
@@ -423,16 +427,25 @@ const TicketTracking = {
   renderTicket(ticket, container) {
     if (!container) return;
 
-    // Add null safety for request object
-    const requestType = ticket.request?.type || ticket.request_type || 'Unknown';
-    const requestPriority = ticket.request?.priority || ticket.priority || 'medium';
+    console.log('[TicketTracking] Rendering ticket:', ticket);
+
+    // Use API response field names
+    const requestType = ticket.request_type || 'Unknown';
+    const requestPriority = ticket.priority || 'medium';
+    const ticketNumber = ticket.ticket_number || ticket.id || 'Unknown';
+    const customerName = ticket.customer?.name || 'Unknown';
+    const deviceBrand = ticket.device?.brand || '';
+    const deviceModel = ticket.device?.model || 'Unknown';
+    const assignedName = ticket.assigned_user?.name || 'Unassigned';
+    const createdAt = ticket.created_at || ticket.createdAt;
+    const updatedAt = ticket.updated_at || ticket.updatedAt;
 
     // Header
     const headerEl = container.querySelector('.ticket-result-header');
     if (headerEl) {
       headerEl.innerHTML = `
         <div>
-          <div class="ticket-result-id">${ticket.id || ticket.ticket_number || 'Unknown'}</div>
+          <div class="ticket-result-id">${ticketNumber}</div>
           <div style="font-size:0.875rem;color:var(--text-muted);margin-top:4px;">
             ${YAS.RequestTypeLabels[requestType] || requestType}
           </div>
@@ -450,11 +463,11 @@ const TicketTracking = {
       infoGrid.innerHTML = `
         <div class="ticket-info-item">
           <label>اسم العميل</label>
-          <span>${ticket.customer?.name || 'Unknown'}</span>
+          <span>${customerName}</span>
         </div>
         <div class="ticket-info-item">
           <label>الجهاز</label>
-          <span>${ticket.device?.brand || ''} ${ticket.device?.model || 'Unknown'}</span>
+          <span>${deviceBrand} ${deviceModel}</span>
         </div>
         <div class="ticket-info-item">
           <label>نوع الطلب</label>
@@ -462,15 +475,15 @@ const TicketTracking = {
         </div>
         <div class="ticket-info-item">
           <label>الفني المسؤول</label>
-          <span>${ticket.assignedTo || ticket.assigned_user?.name || 'Unassigned'}</span>
+          <span>${assignedName}</span>
         </div>
         <div class="ticket-info-item">
           <label>تاريخ الإنشاء</label>
-          <span>${YAS.formatDateTime(ticket.createdAt || ticket.created_at)}</span>
+          <span>${YAS.formatDateTime(createdAt)}</span>
         </div>
         <div class="ticket-info-item">
           <label>آخر تحديث</label>
-          <span>${YAS.timeAgo(ticket.updatedAt || ticket.updated_at)}</span>
+          <span>${YAS.timeAgo(updatedAt)}</span>
         </div>
       `;
     }
