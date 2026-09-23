@@ -135,37 +135,56 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-      // Fetch tickets and join with customer and device
+      // Fetch tickets without relations first
       const { data: tickets, error } = await supabase
         .from('tickets')
-        .select(`
-          *,
-          customer:customers(*),
-          device:devices(*)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
       console.log('[Tickets API] Fetched tickets count:', tickets?.length || 0);
 
-      // Enrich tickets with assigned_user data
+      // Enrich tickets with customer, device, and assigned_user data
       const enrichedTickets = await Promise.all(tickets.map(async (ticket) => {
+        let customer = null;
+        let device = null;
         let assignedUser = null;
+
+        // Fetch customer
+        if (ticket.customer_id) {
+          const { data: cust } = await supabase
+            .from('customers')
+            .select('*')
+            .eq('id', ticket.customer_id)
+            .single();
+          if (cust) customer = cust;
+        }
+
+        // Fetch device
+        if (ticket.device_id) {
+          const { data: dev } = await supabase
+            .from('devices')
+            .select('*')
+            .eq('id', ticket.device_id)
+            .single();
+          if (dev) device = dev;
+        }
+
+        // Fetch assigned user
         if (ticket.assigned_user_id) {
           const { data: user } = await supabase
             .from('users')
             .select('id, name, email, role')
             .eq('id', ticket.assigned_user_id)
             .single();
-          
-          if (user) {
-            assignedUser = user;
-          }
+          if (user) assignedUser = user;
         }
-        
+
         return {
           ...ticket,
+          customer: customer,
+          device: device,
           assigned_user: assignedUser
         };
       }));
