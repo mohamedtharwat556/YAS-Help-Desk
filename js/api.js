@@ -538,33 +538,30 @@ const YAS_API = {
       return response;
     } else {
       // For ticket_number, use the get-tickets endpoint which is confirmed to work
-      const response = await this.get('/get-tickets', { ticket_number: ticketNumberOrId });
-      console.log('[API] Track ticket response (get-tickets endpoint):', response);
-
-      if (response.success) {
-        const ticket = response.data;
-        const transformedTicket = {
-          ...ticket,
-          request: {
-            type: ticket.request_type,
-            priority: ticket.priority,
-            description: ticket.description
-          },
-          customer: ticket.customer || { name: 'Unknown', phone: '—' },
-          device: ticket.device || { type: 'unknown', model: 'Unknown' },
-          assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
-          assigned_user: ticket.assigned_user,
-          assigned_to: ticket.assigned_to,
-          request_type: ticket.request_type,
-          priority: ticket.priority,
-          description: ticket.description,
-          activities: ticket.activities || [],
-          notes: ticket.notes || [],
-          files: ticket.files || []
-        };
-        return { success: true, data: transformedTicket };
+      // Use direct fetch WITHOUT auth header for public tracking
+      const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+      const url = isVercel 
+        ? `/api/get-tickets?ticket_number=${encodeURIComponent(ticketNumberOrId)}&_t=${Date.now()}`
+        : `${this.baseURL}/get-tickets?ticket_number=${encodeURIComponent(ticketNumberOrId)}&_t=${Date.now()}`;
+      
+      console.log('[API] Public tracking URL:', url);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+          // NO Authorization header for public tracking
+        }
+      });
+      
+      const data = await response.json();
+      console.log('[API] Track ticket response (get-tickets endpoint):', data);
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Tracking failed');
       }
-      return response;
+      
+      return data;
     }
   },
 
