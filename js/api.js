@@ -337,7 +337,14 @@ const YAS_API = {
    */
   async updateTicket(id, updates) {
     console.log('[API] updateTicket called with id:', id);
+    console.log('[API] id type:', typeof id);
+    console.log('[API] id value:', id);
     console.log('[API] updates:', updates);
+    
+    if (!id) {
+      console.error('[API] ERROR: id is null or undefined!');
+      throw new Error('Ticket ID is required');
+    }
     
     // Construct URL directly to ensure params are included
     const url = `/get-tickets?id=${id}`;

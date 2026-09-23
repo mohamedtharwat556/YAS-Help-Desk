@@ -529,16 +529,24 @@ const TicketDetails = {
   },
 
   bindActions() {
+    console.log('[TicketDetails] bindActions called');
+    
     // Status update
     const updateBtn = document.getElementById('update-status-btn');
+    console.log('[TicketDetails] update-status-btn found:', !!updateBtn);
+    
     if (updateBtn) {
       updateBtn.addEventListener('click', async () => {
+        console.log('[TicketDetails] Update button clicked');
         const select  = document.getElementById('status-select');
         const noteIn  = document.getElementById('status-note');
         if (!select) return;
 
         const newStatus = select.value;
         const note      = noteIn?.value.trim() || '';
+
+        console.log('[TicketDetails] Updating status:', newStatus, 'note:', note);
+        console.log('[TicketDetails] Current ticket status:', this.ticket?.status);
 
         if (newStatus === this.ticket.status) {
           YAS.showToast('الحالة لم تتغير', 'warning');
@@ -547,13 +555,19 @@ const TicketDetails = {
 
         // Use ticket.id or ticket.ticket_number (UUID)
         const ticketId = this.ticket.id || this.ticket.ticket_number;
+        console.log('[TicketDetails] Ticket ID:', ticketId);
+        
         if (!ticketId) {
           YAS.showToast('خطأ: معرف التذكرة غير موجود', 'error');
           return;
         }
 
+        console.log('[TicketDetails] Calling updateTicketStatus...');
         await YASStorage.updateTicketStatus(ticketId, newStatus, note);
+        console.log('[TicketDetails] updateTicketStatus completed');
+        
         this.ticket = await YASStorage.getTicketById(ticketId);
+        console.log('[TicketDetails] Refreshed ticket:', this.ticket?.status);
 
         // Refresh status badge
         this.setHTML('detail-status', YAS.statusBadge(this.ticket.status));
