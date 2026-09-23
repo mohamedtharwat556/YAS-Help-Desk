@@ -43,18 +43,6 @@ function initLoginPage() {
       errorDiv
     );
   });
-
-  // Demo fill button
-  const demoFill = document.getElementById('demo-fill');
-  if (demoFill) {
-    demoFill.addEventListener('click', () => {
-      emailInput.value = 'admin@yas.sa';
-      passInput.value  = 'admin123';
-      emailInput.classList.remove('error');
-      passInput.classList.remove('error');
-      if (errorDiv) errorDiv.style.display = 'none';
-    });
-  }
 }
 
 async function handleLogin(email, password, btn, errorDiv) {
