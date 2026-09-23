@@ -10,36 +10,37 @@ const DevicesPage = {
   filtered:  [],
   searchQuery: '',
 
-  init() {
+  async init() {
     if (!document.getElementById('devices-table-body')) return;
     if (!YAS.requireAuth()) return;
     YAS.initDashboardSidebar();
     YAS.initGlobalSearch();
     YAS.initNotifPanel();
 
-    this.load();
+    await this.load();
     this.bindSearch();
     this.bindFilter();
   },
 
-  load() {
-    const tickets = YASStorage.getAllTickets();
+  async load() {
+    const tickets = await YASStorage.getAllTickets();
     const map     = new Map();
 
     tickets.forEach(t => {
-      const key = t.device.serial_number || `${t.device.brand}-${t.device.model}-${t.customer.phone}`;
+      const key = t.device?.serial_number || `${t.device?.brand}-${t.device?.model}-${t.customer?.phone}`;
       if (!map.has(key)) {
         map.set(key, {
           key,
           ...t.device,
           customer:   t.customer,
           tickets:    [],
-          lastService: t.createdAt
+          lastService: t.created_at || t.createdAt
         });
       }
       const d = map.get(key);
       d.tickets.push(t);
-      if (t.createdAt > d.lastService) d.lastService = t.createdAt;
+      const ticketDate = t.created_at || t.createdAt;
+      if (ticketDate > d.lastService) d.lastService = ticketDate;
     });
 
     this.devices  = Array.from(map.values());

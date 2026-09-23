@@ -13,39 +13,40 @@ const CustomersPage = {
   filtered:    [],
   searchQuery: '',
 
-  init() {
+  async init() {
     if (!document.getElementById('customers-table-body')) return;
     if (!YAS.requireAuth()) return;
     YAS.initDashboardSidebar();
     YAS.initGlobalSearch();
     YAS.initNotifPanel();
 
-    this.load();
+    await this.load();
     this.bindSearch();
   },
 
-  load() {
-    const tickets = YASStorage.getAllTickets();
+  async load() {
+    const tickets = await YASStorage.getAllTickets();
     const map     = new Map();
 
     tickets.forEach(t => {
-      const key = t.customer.phone || t.customer.name;
+      const key = t.customer?.phone || t.customer?.name;
       if (!map.has(key)) {
         map.set(key, {
           key,
-          name:        t.customer.name,
-          phone:       t.customer.phone,
-          whatsapp:    t.customer.whatsapp,
-          email:       t.customer.email,
-          company:     t.customer.company,
+          name:        t.customer?.name || 'Unknown',
+          phone:       t.customer?.phone || '—',
+          whatsapp:    t.customer?.whatsapp || '—',
+          email:       t.customer?.email || '—',
+          company:     t.customer?.company || '—',
           tickets:     [],
-          lastTicket:  t.createdAt,
-          firstTicket: t.createdAt
+          lastTicket:  t.created_at || t.createdAt,
+          firstTicket: t.created_at || t.createdAt
         });
       }
       const c = map.get(key);
       c.tickets.push(t);
-      if (t.createdAt > c.lastTicket) c.lastTicket = t.createdAt;
+      const ticketDate = t.created_at || t.createdAt;
+      if (ticketDate > c.lastTicket) c.lastTicket = ticketDate;
     });
 
     this.customers = Array.from(map.values());

@@ -5,14 +5,14 @@
 
 'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('reports-page')) return;
   if (!YAS.requireAuth()) return;
   YAS.initDashboardSidebar();
   YAS.initGlobalSearch();
   YAS.initNotifPanel();
 
-  const tickets = YASStorage.getAllTickets();
+  const tickets = await YASStorage.getAllTickets();
 
   renderStatusChart(tickets);
   renderDeviceChart(tickets);
@@ -31,7 +31,7 @@ function renderSummaryStats(tickets) {
   animate('rep-total',    tickets.length);
   animate('rep-resolved', tickets.filter(t => ['resolved','closed'].includes(t.status)).length);
   animate('rep-open',     tickets.filter(t => !['resolved','closed'].includes(t.status)).length);
-  animate('rep-urgent',   tickets.filter(t => t.request.priority === 'critical').length);
+  animate('rep-urgent',   tickets.filter(t => t.priority === 'critical').length);
 }
 
 /* ── Tickets by Status (horizontal bar) ───────────────────── */
@@ -87,7 +87,7 @@ function renderDeviceChart(tickets) {
 
   const data = deviceTypes.map(d => ({
     ...d,
-    count: tickets.filter(t => t.device.type === d.key).length
+    count: tickets.filter(t => t.device?.type === d.key).length
   })).filter(d => d.count > 0);
 
   const total = data.reduce((sum, d) => sum + d.count, 0) || 1;
@@ -160,7 +160,7 @@ function renderTypeChart(tickets) {
 
   const data = types.map(t => ({
     ...t,
-    count: tickets.filter(tk => tk.request.type === t.key).length
+    count: tickets.filter(tk => tk.request_type === t.key).length
   }));
 
   const max = Math.max(...data.map(d => d.count), 1);

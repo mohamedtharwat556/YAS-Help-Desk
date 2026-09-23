@@ -4,29 +4,30 @@
 
 'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('maintenance-body')) return;
   if (!YAS.requireAuth()) return;
   YAS.initDashboardSidebar();
   YAS.initGlobalSearch();
   YAS.initNotifPanel();
 
-  renderMaintenanceStats();
-  renderMaintenanceTable();
+  await renderMaintenanceStats();
+  await renderMaintenanceTable();
   bindSearch();
   bindFilter();
 });
 
-function getMaintenanceTickets() {
-  return YASStorage.getAllTickets().filter(t =>
-    t.request.type === 'maintenance' ||
+async function getMaintenanceTickets() {
+  const tickets = await YASStorage.getAllTickets();
+  return tickets.filter(t =>
+    t.request_type === 'maintenance' ||
     t.status === 'maintenance' ||
     t.status === 'diagnosing'
   );
 }
 
-function renderMaintenanceStats() {
-  const tickets = getMaintenanceTickets();
+async function renderMaintenanceStats() {
+  const tickets = await getMaintenanceTickets();
 
   const counts = {
     pending:    tickets.filter(t => ['received','reviewing'].includes(t.status)).length,
@@ -48,11 +49,11 @@ function renderMaintenanceStats() {
 
 let maintData = [];
 
-function renderMaintenanceTable(filter = '', query = '') {
+async function renderMaintenanceTable(filter = '', query = '') {
   const tbody = document.getElementById('maintenance-body');
   if (!tbody) return;
 
-  maintData = getMaintenanceTickets();
+  maintData = await getMaintenanceTickets();
 
   let data = [...maintData];
 
@@ -60,9 +61,9 @@ function renderMaintenanceTable(filter = '', query = '') {
   if (query) {
     const q = query.toLowerCase();
     data = data.filter(t =>
-      t.id.toLowerCase().includes(q) ||
-      t.customer.name.toLowerCase().includes(q) ||
-      t.device.model.toLowerCase().includes(q)
+      (t.id || t.ticket_number || '').toLowerCase().includes(q) ||
+      (t.customer?.name || '').toLowerCase().includes(q) ||
+      (t.device?.model || '').toLowerCase().includes(q)
     );
   }
 

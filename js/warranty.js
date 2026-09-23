@@ -4,59 +4,60 @@
 
 'use strict';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!document.getElementById('warranty-body')) return;
   if (!YAS.requireAuth()) return;
   YAS.initDashboardSidebar();
   YAS.initGlobalSearch();
   YAS.initNotifPanel();
 
-  renderWarrantyStats();
-  renderWarrantyTable();
+  await renderWarrantyStats();
+  await renderWarrantyTable();
   bindWarrantySearch();
   bindWarrantyFilter();
 });
 
-function getWarrantyTickets() {
-  return YASStorage.getAllTickets().filter(t =>
-    t.request.type === 'warranty' ||
-    t.device.warranty === 'active' ||
-    t.device.warranty === 'expired' ||
-    t.device.warranty === 'expiring'
+async function getWarrantyTickets() {
+  const tickets = await YASStorage.getAllTickets();
+  return tickets.filter(t =>
+    t.request_type === 'warranty' ||
+    t.device?.warranty_status === 'active' ||
+    t.device?.warranty_status === 'expired' ||
+    t.device?.warranty_status === 'expiring'
   );
 }
 
-function renderWarrantyStats() {
-  const tickets = YASStorage.getAllTickets();
+async function renderWarrantyStats() {
+  const tickets = await YASStorage.getAllTickets();
 
   const animate = (id, val) => {
     const el = document.getElementById(id);
     if (el) YAS.animateCount(el, val, 600);
   };
 
-  const warrantyRequests = tickets.filter(t => t.request.type === 'warranty');
-  const activeWarranty   = tickets.filter(t => t.device.warranty === 'active');
-  const expiredWarranty  = tickets.filter(t => t.device.warranty === 'expired');
+  const warrantyRequests = tickets.filter(t => t.request_type === 'warranty');
+  const activeWarranty   = tickets.filter(t => t.device?.warranty_status === 'active');
+  const expiredWarranty  = tickets.filter(t => t.device?.warranty_status === 'expired');
 
   animate('warr-stat-requests', warrantyRequests.length);
   animate('warr-stat-active',   activeWarranty.length);
   animate('warr-stat-expired',  expiredWarranty.length);
 }
 
-function renderWarrantyTable(filter = '', query = '') {
+async function renderWarrantyTable(filter = '', query = '') {
   const tbody = document.getElementById('warranty-body');
   if (!tbody) return;
 
-  let data = getWarrantyTickets();
+  let data = await getWarrantyTickets();
 
-  if (filter) data = data.filter(t => t.device.warranty === filter);
+  if (filter) data = data.filter(t => t.device?.warranty_status === filter);
   if (query) {
     const q = query.toLowerCase();
     data = data.filter(t =>
-      t.id.toLowerCase().includes(q) ||
-      t.customer.name.toLowerCase().includes(q) ||
-      t.device.model.toLowerCase().includes(q) ||
-      (t.device.serial_number || '').toLowerCase().includes(q)
+      (t.id || t.ticket_number || '').toLowerCase().includes(q) ||
+      (t.customer?.name || '').toLowerCase().includes(q) ||
+      (t.device?.model || '').toLowerCase().includes(q) ||
+      (t.device?.serial_number || '').toLowerCase().includes(q)
     );
   }
 
@@ -78,24 +79,24 @@ function renderWarrantyTable(filter = '', query = '') {
       expired:  'warranty-expired',
       expiring: 'warranty-expiring',
       unknown:  ''
-    }[t.device.warranty] || '';
+    }[t.device?.warranty_status] || '';
 
     return `
       <tr style="cursor:pointer" onclick="window.location.href='ticket-details.html?id=${t.id}'">
         <td>
-          <span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem">${t.id}</span>
+          <span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem">${t.ticket_number || t.id}</span>
         </td>
-        <td class="fw-600">${t.customer.name}</td>
+        <td class="fw-600">${t.customer?.name || 'Unknown'}</td>
         <td>
           <div style="display:flex;align-items:center;gap:6px">
-            ${YAS.getDeviceIcon(t.device.type)}
+            ${YAS.getDeviceIcon(t.device?.type)}
             <div>
-              <div class="fw-600" style="font-size:0.875rem">${t.device.brand} ${t.device.model}</div>
-              <div style="font-size:0.75rem;color:var(--text-muted)">${YAS.DeviceTypeLabels[t.device.type] || ''}</div>
+              <div class="fw-600" style="font-size:0.875rem">${t.device?.brand || ''} ${t.device?.model || 'Unknown'}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted)">${YAS.DeviceTypeLabels[t.device?.type] || ''}</div>
             </div>
           </div>
         </td>
-        <td style="font-family:var(--font-ui);font-size:0.8125rem">${t.device.serial_number || '—'}</td>
+        <td style="font-family:var(--font-ui);font-size:0.8125rem">${t.device?.serial_number || '—'}</td>
         <td style="font-size:0.8125rem">${t.device.purchaseDate ? YAS.formatDate(t.device.purchaseDate) : '—'}</td>
         <td>
           <span class="badge ${warrantyStatusClass}" style="padding:4px 12px">
