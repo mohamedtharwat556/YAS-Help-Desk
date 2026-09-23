@@ -238,8 +238,8 @@ const TicketForm = {
         brand:        document.getElementById('device-brand')?.value.trim() || '',
         model:        document.getElementById('device-model')?.value.trim() || '',
         serial_number: document.getElementById('device-serial')?.value.trim() || '',
-        purchaseDate: document.getElementById('purchase-date')?.value || '',
-        warranty:     document.getElementById('warranty-status')?.value || 'unknown'
+        purchase_date: document.getElementById('purchase-date')?.value || '',
+        warranty_status: document.getElementById('warranty-status')?.value || 'unknown'
       };
     }
 
