@@ -343,9 +343,17 @@ const YAS_API = {
       throw new Error('Ticket ID is required');
     }
     
-    // Use request method directly with full URL
-    const url = this.baseUrl + `/get-tickets?id=${encodeURIComponent(id)}`;
-    console.log('[API] Full URL:', url);
+    // Use the same URL logic as request method for Vercel
+    const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+    let url;
+    
+    if (isVercel) {
+      url = `/api/get-tickets?id=${encodeURIComponent(id)}`;
+    } else {
+      url = `${this.baseURL}/get-tickets?id=${encodeURIComponent(id)}`;
+    }
+    
+    console.log('[API] URL:', url);
     
     const config = {
       method: 'PUT',
