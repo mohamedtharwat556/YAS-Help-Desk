@@ -420,15 +420,32 @@ async function deleteTicket(id) {
 
 async function deleteAllTickets() {
   if (USE_API && YAS_API && YAS_API.token) {
-    // Delete all from API using single request
+    // Delete all from API using direct fetch
     try {
       console.log('[Storage] Attempting to delete all tickets from API');
-      const response = await YAS_API.request('DELETE', '/api/tickets?delete_all=true');
-      console.log('[Storage] Delete all response:', response);
-      if (response.success) {
+      const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+      const url = isVercel ? '/api/tickets?delete_all=true' : 'http://localhost:3000/api/tickets?delete_all=true';
+      
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${YAS_API.token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const data = await response.json();
+      console.log('[Storage] Delete all response:', data);
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete tickets');
+      }
+      
+      if (data.success) {
         console.log('[Storage] All tickets deleted from API successfully');
       } else {
-        console.error('[Storage] Failed to delete all tickets:', response);
+        console.error('[Storage] Failed to delete all tickets:', data);
+        throw new Error(data.error || 'Deletion failed');
       }
     } catch (error) {
       console.error('[Storage] Failed to delete all tickets from API:', error);
