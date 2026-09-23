@@ -160,12 +160,27 @@ module.exports = async function handler(req, res) {
       // Delete all tickets
       if (deleteAll === 'true') {
         console.log('[Tickets API] Deleting all tickets');
-        const { error } = await supabase
+        
+        // First, get all ticket IDs
+        const { data: allTickets, error: fetchError } = await supabase
           .from('tickets')
-          .delete()
-          .neq('id', '00000000-0000-0000-0000-000000000000'); // This will delete all
+          .select('id');
+        
+        if (fetchError) throw fetchError;
+        
+        console.log('[Tickets API] Found', allTickets?.length || 0, 'tickets to delete');
+        
+        if (allTickets && allTickets.length > 0) {
+          // Delete all tickets by IDs
+          const { error } = await supabase
+            .from('tickets')
+            .delete()
+            .in('id', allTickets.map(t => t.id));
 
-        if (error) throw error;
+          if (error) throw error;
+          
+          console.log('[Tickets API] Deleted', allTickets.length, 'tickets');
+        }
 
         // Reset ticket counter
         const { error: counterError } = await supabase
@@ -176,7 +191,7 @@ module.exports = async function handler(req, res) {
           console.error('[Tickets API] Failed to reset counter:', counterError);
         }
 
-        console.log('[Tickets API] All tickets deleted');
+        console.log('[Tickets API] All tickets deleted and counter reset');
         res.status(200).json({
           success: true,
           message: 'All tickets deleted successfully'

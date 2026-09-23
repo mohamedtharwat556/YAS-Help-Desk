@@ -422,15 +422,21 @@ async function deleteAllTickets() {
   if (USE_API && YAS_API && YAS_API.token) {
     // Delete all from API using single request
     try {
+      console.log('[Storage] Attempting to delete all tickets from API');
       const response = await YAS_API.request('DELETE', '/api/tickets?delete_all=true');
+      console.log('[Storage] Delete all response:', response);
       if (response.success) {
-        console.log('[Storage] All tickets deleted from API');
+        console.log('[Storage] All tickets deleted from API successfully');
+      } else {
+        console.error('[Storage] Failed to delete all tickets:', response);
       }
     } catch (error) {
       console.error('[Storage] Failed to delete all tickets from API:', error);
+      throw error;
     }
   }
   // Clear LocalStorage
+  console.log('[Storage] Clearing LocalStorage');
   localStorage.removeItem(YAS_STORAGE_KEY);
   localStorage.removeItem(YAS_COUNTER_KEY);
   return true;
