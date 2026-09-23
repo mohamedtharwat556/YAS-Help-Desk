@@ -336,23 +336,38 @@ const YAS_API = {
    * Update ticket
    */
   async updateTicket(id, updates) {
-    console.log('[API] updateTicket called with id:', id);
-    console.log('[API] id type:', typeof id);
-    console.log('[API] id value:', id);
-    console.log('[API] updates:', updates);
+    console.log('[API] updateTicket called - id:', id, 'type:', typeof id);
     
     if (!id) {
-      console.error('[API] ERROR: id is null or undefined!');
+      console.error('[API] ERROR: id is null/undefined!');
       throw new Error('Ticket ID is required');
     }
     
-    // Construct URL directly to ensure params are included
-    const url = `/get-tickets?id=${id}`;
-    console.log('[API] Constructed URL:', url);
-    return this.request(url, {
+    // Use request method directly with full URL
+    const url = this.baseUrl + `/get-tickets?id=${encodeURIComponent(id)}`;
+    console.log('[API] Full URL:', url);
+    
+    const config = {
       method: 'PUT',
+      headers: this.getHeaders(),
       body: JSON.stringify(updates)
-    });
+    };
+    
+    console.log('[API] Config:', config);
+    
+    try {
+      const response = await fetch(url, config);
+      const data = await response.json();
+      console.log('[API] Response:', response.status, data);
+      
+      if (!response.ok) {
+        throw new Error(data.error || data.message || 'API request failed');
+      }
+      return data;
+    } catch (error) {
+      console.error('[API] Error:', error);
+      throw error;
+    }
   },
 
   /**
