@@ -532,7 +532,7 @@ const TicketDetails = {
     // Status update
     const updateBtn = document.getElementById('update-status-btn');
     if (updateBtn) {
-      updateBtn.addEventListener('click', () => {
+      updateBtn.addEventListener('click', async () => {
         const select  = document.getElementById('status-select');
         const noteIn  = document.getElementById('status-note');
         if (!select) return;
@@ -552,7 +552,7 @@ const TicketDetails = {
           return;
         }
 
-        YASStorage.updateTicketStatus(ticketId, newStatus, note);
+        await YASStorage.updateTicketStatus(ticketId, newStatus, note);
         this.ticket = await YASStorage.getTicketById(ticketId);
 
         // Refresh status badge
@@ -575,7 +575,7 @@ const TicketDetails = {
     // Add note
     const addNoteBtn = document.getElementById('add-note-btn');
     if (addNoteBtn) {
-      addNoteBtn.addEventListener('click', () => {
+      addNoteBtn.addEventListener('click', async () => {
         const textarea = document.getElementById('note-input');
         const text     = textarea?.value.trim();
 
@@ -591,7 +591,7 @@ const TicketDetails = {
           return;
         }
 
-        YASStorage.addTicketNote(ticketId, text);
+        await YASStorage.addTicketNote(ticketId, text);
         this.ticket = await YASStorage.getTicketById(ticketId);
         this.renderNotes();
         this.renderActivities();
@@ -655,8 +655,15 @@ const TicketDetails = {
 
 /* ── Init ──────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-  TicketManager.init();
-  TicketDetails.init();
+  // Only init TicketManager if we're on tickets.html
+  if (document.getElementById('tickets-table-body')) {
+    TicketManager.init();
+  }
+  
+  // Only init TicketDetails if we're on ticket-details.html
+  if (document.getElementById('ticket-detail-container')) {
+    TicketDetails.init();
+  }
 
   // Status modal confirm button
   const confirmBtn = document.getElementById('confirm-status-btn');
