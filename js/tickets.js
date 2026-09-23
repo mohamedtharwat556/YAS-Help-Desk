@@ -278,7 +278,7 @@ const TicketForm = {
     set('review-device-model',  d.device.model);
     set('review-device-serial', d.device.serial_number);
     set('review-purchase-date', d.device.purchase_date ? YAS.formatDate(d.device.purchase_date) : '—');
-    setHTML('review-warranty', YAS.warrantyBadge(d.device.warranty_status));
+    setHTML('review-warranty', YAS.warrantyBadge(d.device.warranty_status || d.device.warranty));
 
     // Request
     set('review-req-type',  YAS.RequestTypeLabels[d.request.type] || d.request.type);

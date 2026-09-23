@@ -156,8 +156,9 @@ function priorityBadge(priority) {
 }
 
 function warrantyBadge(warranty) {
-  const classes = { active: 'badge-resolved', expired: 'badge-diagnosing', expiring: 'badge-reviewing' };
-  return `<span class="badge ${classes[warranty] || 'badge-closed'}">${WarrantyLabels[warranty] || warranty}</span>`;
+  const classes = { active: 'badge-resolved', expired: 'badge-diagnosing', expiring: 'badge-reviewing', unknown: 'badge-closed' };
+  const value = warranty || 'unknown';
+  return `<span class="badge ${classes[value] || 'badge-closed'}">${WarrantyLabels[value] || value}</span>`;
 }
 
 /* ── Toast Notifications ───────────────────────────────────── */
