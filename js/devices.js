@@ -51,6 +51,20 @@ const DevicesPage = {
   },
 
   renderStats() {
+    const totalEl = document.getElementById('dev-stat-total');
+    const activeEl = document.getElementById('dev-stat-active');
+    const resolvedEl = document.getElementById('dev-stat-resolved');
+
+    const totalDevices = this.devices.length;
+    const activeWarranty = this.devices.filter(d => d.warranty_status === 'active').length;
+    const expiredWarranty = this.devices.filter(d => d.warranty_status === 'expired').length;
+
+    if (totalEl) YAS.animateCount(totalEl, totalDevices, 600);
+    if (activeEl) YAS.animateCount(activeEl, activeWarranty, 600);
+    if (resolvedEl) YAS.animateCount(resolvedEl, expiredWarranty, 600);
+  },
+
+  renderStats() {
     const setCount = (id, val) => {
       const el = document.getElementById(id);
       if (el) YAS.animateCount(el, val, 600);
@@ -94,7 +108,7 @@ const DevicesPage = {
     }
 
     if (filterType) data = data.filter(d => d.type === filterType);
-    if (filterWarr) data = data.filter(d => d.warranty === filterWarr);
+    if (filterWarr) data = data.filter(d => d.warranty_status === filterWarr);
 
     this.filtered = data;
     this.renderTable();

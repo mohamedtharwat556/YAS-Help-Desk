@@ -52,19 +52,18 @@ const CustomersPage = {
     this.customers = Array.from(map.values());
     this.filtered  = [...this.customers];
 
-    this.renderStats();
+    await this.renderStats(tickets);
     this.renderTable();
   },
 
-  renderStats() {
+  async renderStats(tickets) {
     const totalEl   = document.getElementById('cust-stat-total');
     const activeEl  = document.getElementById('cust-stat-active');
     const resolvedEl= document.getElementById('cust-stat-resolved');
 
     const totalCustomers = this.customers.length;
-    const allTickets     = YASStorage.getAllTickets();
-    const activeTickets  = allTickets.filter(t => !['resolved','closed'].includes(t.status)).length;
-    const resolvedTickets= allTickets.filter(t =>  ['resolved','closed'].includes(t.status)).length;
+    const activeTickets  = tickets.filter(t => !['resolved','closed'].includes(t.status)).length;
+    const resolvedTickets= tickets.filter(t =>  ['resolved','closed'].includes(t.status)).length);
 
     if (totalEl)    YAS.animateCount(totalEl,    totalCustomers, 600);
     if (activeEl)   YAS.animateCount(activeEl,   activeTickets, 600);
