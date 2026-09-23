@@ -19,13 +19,19 @@ const TicketManager = {
   searchQuery:   '',
 
   async init() {
-    if (!document.getElementById('tickets-table-body')) return;
+    console.log('[TicketManager] init called');
+    if (!document.getElementById('tickets-table-body')) {
+      console.log('[TicketManager] tickets-table-body not found, skipping init');
+      return;
+    }
     if (!YAS.requireAuth()) return;
     YAS.initDashboardSidebar();
     YAS.initGlobalSearch();
     YAS.initNotifPanel();
 
+    console.log('[TicketManager] Fetching tickets...');
     this.allTickets = await YASStorage.getAllTickets();
+    console.log('[TicketManager] Tickets loaded:', this.allTickets?.length || 0);
     this.filtered   = Array.isArray(this.allTickets) ? [...this.allTickets] : [];
 
     this.bindFilters();
