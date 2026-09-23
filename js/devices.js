@@ -100,10 +100,10 @@ const DevicesPage = {
     if (this.searchQuery) {
       const q = this.searchQuery;
       data = data.filter(d =>
-        d.model.toLowerCase().includes(q) ||
-        d.brand.toLowerCase().includes(q) ||
+        (d.model || '').toLowerCase().includes(q) ||
+        (d.brand || '').toLowerCase().includes(q) ||
         (d.serial_number || '').toLowerCase().includes(q) ||
-        d.customer.name.toLowerCase().includes(q)
+        (d.customer?.name || '').toLowerCase().includes(q)
       );
     }
 

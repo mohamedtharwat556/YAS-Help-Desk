@@ -85,8 +85,8 @@ const CustomersPage = {
     } else {
       const q = this.searchQuery;
       this.filtered = this.customers.filter(c =>
-        c.name.toLowerCase().includes(q) ||
-        c.phone.includes(q) ||
+        (c.name || '').toLowerCase().includes(q) ||
+        (c.phone || '').includes(q) ||
         (c.company || '').toLowerCase().includes(q) ||
         (c.email || '').toLowerCase().includes(q)
       );
