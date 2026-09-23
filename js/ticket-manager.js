@@ -201,7 +201,7 @@ const TicketManager = {
       const updatedAt = t.updated_at || t.updatedAt;
       const requestType = t.request_type || t.request?.type;
       const priority = t.priority || t.request?.priority;
-      const assignedName = t.assigned_user?.name || t.assignedTo || 'Unassigned';
+      const assignedName = t.assigned_user?.name || t.assignedTo || 'Eng. Adam Farouk';
 
       return `
       <tr>
@@ -420,7 +420,7 @@ const TicketDetails = {
     this.setEl('detail-ticket-type', YAS.RequestTypeLabels[t.request?.type || t.request_type] || t.request?.type || t.request_type);
     this.setHTML('detail-status',    YAS.statusBadge(t.status));
     this.setHTML('detail-priority',  YAS.priorityBadge(t.request?.priority || t.priority));
-    this.setEl('detail-assigned',    t.assignedTo || t.assigned_user?.name || 'Unassigned');
+    this.setEl('detail-assigned',    t.assignedTo || t.assigned_user?.name || 'Eng. Adam Farouk');
     this.setEl('detail-created',     YAS.formatDateTime(createdAt));
     this.setEl('detail-updated',     YAS.timeAgo(updatedAt));
 

@@ -86,8 +86,22 @@ module.exports = async function handler(req, res) {
         const enrichedTicket = {
           ...ticket,
           customer: customerResult.data || null,
-          device: deviceResult.data || null
+          device: deviceResult.data || null,
+          assigned_user: null
         };
+
+        // Try to fetch assigned user if assigned_user_id exists
+        if (ticket.assigned_user_id) {
+          const { data: assignedUser } = await supabase
+            .from('users')
+            .select('id, name, email, role')
+            .eq('id', ticket.assigned_user_id)
+            .single();
+          
+          if (assignedUser) {
+            enrichedTicket.assigned_user = assignedUser;
+          }
+        }
 
         res.status(200).json({
           success: true,
@@ -131,9 +145,30 @@ module.exports = async function handler(req, res) {
 
       console.log('[Tickets API] Fetched tickets count:', tickets?.length || 0);
 
+      // Enrich tickets with assigned_user data
+      const enrichedTickets = await Promise.all(tickets.map(async (ticket) => {
+        let assignedUser = null;
+        if (ticket.assigned_user_id) {
+          const { data: user } = await supabase
+            .from('users')
+            .select('id, name, email, role')
+            .eq('id', ticket.assigned_user_id)
+            .single();
+          
+          if (user) {
+            assignedUser = user;
+          }
+        }
+        
+        return {
+          ...ticket,
+          assigned_user: assignedUser
+        };
+      }));
+
       res.status(200).json({
         success: true,
-        data: tickets || []
+        data: enrichedTickets || []
       });
     } catch (error) {
       console.error('Get tickets error:', error);
@@ -227,12 +262,31 @@ module.exports = async function handler(req, res) {
         return res.status(404).json({ error: 'Ticket not found or update failed' });
       }
 
+      // Fetch assigned user if assigned_user_id exists
+      let assignedUser = null;
+      if (ticket.assigned_user_id) {
+        const { data: user } = await supabase
+          .from('users')
+          .select('id, name, email, role')
+          .eq('id', ticket.assigned_user_id)
+          .single();
+        
+        if (user) {
+          assignedUser = user;
+        }
+      }
+
+      const enrichedTicket = {
+        ...ticket,
+        assigned_user: assignedUser
+      };
+
       console.log('[GetTickets API] Updated successfully:', ticket.ticket_number);
 
       res.status(200).json({
         success: true,
         message: 'Ticket updated successfully',
-        data: ticket
+        data: enrichedTicket
       });
     } catch (error) {
       console.error('[GetTickets API] Update error:', error);

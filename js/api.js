@@ -248,7 +248,7 @@ const YAS_API = {
         // Use customer/device data from the maps
         customer: customersMap.get(ticket.customer_id) || { name: 'Unknown', phone: '—' },
         device: devicesMap.get(ticket.device_id) || { type: 'unknown', model: 'Unknown' },
-        assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
+        assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Eng. Adam Farouk',
         assigned_user: ticket.assigned_user,
         assigned_to: ticket.assigned_to,
         // Keep original fields for backward compatibility
@@ -281,7 +281,7 @@ const YAS_API = {
         },
         customer: ticket.customer || { name: 'Unknown', phone: '—' },
         device: ticket.device || { type: 'unknown', model: 'Unknown' },
-        assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
+        assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Eng. Adam Farouk',
         assigned_user: ticket.assigned_user,
         assigned_to: ticket.assigned_to,
         // Keep original fields for backward compatibility
@@ -325,7 +325,7 @@ const YAS_API = {
         },
         customer: response.data.customer || {},
         device: response.data.device || {},
-        assignedTo: response.data.assigned_user?.name || 'Unassigned'
+        assignedTo: response.data.assigned_user?.name || 'Eng. Adam Farouk'
       };
       return { success: true, data: transformedTicket };
     }
@@ -489,7 +489,7 @@ const YAS_API = {
         },
         customer: response.data.customer || {},
         device: response.data.device || {},
-        assignedTo: response.data.assigned_user?.name || 'Unassigned',
+        assignedTo: response.data.assigned_user?.name || 'Eng. Adam Farouk',
         assigned_user: response.data.assigned_user
       };
       console.log('[API] Transformed ticket:', transformedTicket);
@@ -523,7 +523,7 @@ const YAS_API = {
           },
           customer: ticket.customer || { name: 'Unknown', phone: '—' },
           device: ticket.device || { type: 'unknown', model: 'Unknown' },
-          assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Unassigned',
+          assignedTo: ticket.assigned_user?.name || ticket.assigned_to || 'Eng. Adam Farouk',
           assigned_user: ticket.assigned_user,
           assigned_to: ticket.assigned_to,
           request_type: ticket.request_type,

@@ -448,7 +448,7 @@ const TicketTracking = {
     const customerName = ticket.customer?.name || 'Unknown';
     const deviceBrand = ticket.device?.brand || '';
     const deviceModel = ticket.device?.model || 'Unknown';
-    const assignedName = ticket.assigned_user?.name || 'Unassigned';
+    const assignedName = ticket.assigned_user?.name || 'Eng. Adam Farouk';
     const createdAt = ticket.created_at || ticket.createdAt;
     const updatedAt = ticket.updated_at || ticket.updatedAt;
 

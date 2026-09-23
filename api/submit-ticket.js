@@ -167,6 +167,23 @@ module.exports = async function handler(req, res) {
 
       console.log('[SUBMIT-TICKET] Final ticket number:', finalTicketNumber);
 
+      // Get Adam Farouk's user ID to assign as default technician
+      let adamUserId = null;
+      try {
+        const { data: adamUser } = await supabase
+          .from('users')
+          .select('id')
+          .eq('email', 'adam@yas.sa')
+          .single();
+        
+        if (adamUser) {
+          adamUserId = adamUser.id;
+          console.log('[SUBMIT-TICKET] Found Adam Farouk ID:', adamUserId);
+        }
+      } catch (error) {
+        console.log('[SUBMIT-TICKET] Could not find Adam Farouk, will leave unassigned');
+      }
+
       // Create ticket
       let ticket;
       try {
@@ -176,7 +193,8 @@ module.exports = async function handler(req, res) {
           device_id: newDevice.id,
           request_type,
           priority,
-          description
+          description,
+          assigned_user_id: adamUserId
         });
 
         const result = await supabase
@@ -189,12 +207,14 @@ module.exports = async function handler(req, res) {
             priority,
             description,
             files,
-            status: 'received'
+            status: 'received',
+            assigned_user_id: adamUserId
           })
           .select(`
             *,
             customer:customers(*),
-            device:devices(*)
+            device:devices(*),
+            assigned_user:users(id, name, email, role)
           `)
           .single();
 
