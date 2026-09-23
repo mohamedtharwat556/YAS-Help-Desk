@@ -457,6 +457,139 @@ async function exportReportsData() {
   exportToCSV(flatData, filename);
 }
 
+/* ── Export Reports to Excel ───────────────────────────────── */
+async function exportReportsToExcel() {
+  const tickets = await YASStorage.getAllTickets();
+
+  const exportData = tickets.map(t => ({
+    'رقم الطلب': t.ticket_number || t.id,
+    'العميل': t.customer?.name || 'Unknown',
+    'الجوال': t.customer?.phone || '—',
+    'البريد': t.customer?.email || '—',
+    'الشركة': t.customer?.company || '—',
+    'نوع الجهاز': YAS.DeviceTypeLabels[t.device?.type] || t.device?.type || '—',
+    'الماركة': t.device?.brand || '—',
+    'الموديل': t.device?.model || '—',
+    'الرقم التسلسلي': t.device?.serial_number || '—',
+    'نوع الطلب': YAS.RequestTypeLabels[t.request_type] || t.request_type || t.request?.type || '—',
+    'الأولوية': YAS.PriorityLabels[t.priority] || t.priority || t.request?.priority || '—',
+    'الحالة': YAS.StatusLabels[t.status] || t.status || '—',
+    'المسؤول': t.assigned_user?.name || t.assignedTo || 'Eng. Adam Farouk',
+    'تاريخ الإنشاء': t.created_at || t.createdAt || '—',
+    'آخر تحديث': t.updated_at || t.updatedAt || '—',
+    'وصف المشكلة': t.request?.description || t.description || '—'
+  }));
+
+  const filename = `YAS_Reports_Excel_${new Date().toISOString().split('T')[0]}.csv`;
+  exportToCSV(exportData, filename);
+}
+
+/* ── Export Reports to Word (HTML) ──────────────────────────── */
+async function exportReportsToWord() {
+  const tickets = await YASStorage.getAllTickets();
+
+  const summary = {
+    total: tickets.length,
+    resolved: tickets.filter(t => ['resolved', 'closed'].includes(t.status)).length,
+    inProgress: tickets.filter(t => ['reviewing', 'contacting', 'diagnosing', 'maintenance'].includes(t.status)).length,
+    new: tickets.filter(t => t.status === 'received').length
+  };
+
+  const tableRows = tickets.map(t => `
+    <tr>
+      <td>${t.ticket_number || t.id}</td>
+      <td>${t.customer?.name || 'Unknown'}</td>
+      <td>${t.customer?.phone || '—'}</td>
+      <td>${YAS.DeviceTypeLabels[t.device?.type] || t.device?.type || '—'}</td>
+      <td>${t.device?.brand || '—'} ${t.device?.model || '—'}</td>
+      <td>${YAS.RequestTypeLabels[t.request_type] || t.request_type || t.request?.type || '—'}</td>
+      <td>${YAS.PriorityLabels[t.priority] || t.priority || t.request?.priority || '—'}</td>
+      <td>${YAS.StatusLabels[t.status] || t.status || '—'}</td>
+      <td>${t.created_at || t.createdAt || '—'}</td>
+    </tr>
+  `).join('');
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html dir="rtl" lang="ar">
+    <head>
+      <meta charset="UTF-8">
+      <title>تقرير YAS Help Desk</title>
+      <style>
+        body { font-family: 'Cairo', Arial, sans-serif; padding: 20px; }
+        h1 { color: #1A56DB; text-align: center; }
+        .summary { display: flex; gap: 20px; margin: 20px 0; }
+        .summary-item { flex: 1; background: #f5f5f5; padding: 15px; border-radius: 8px; text-align: center; }
+        .summary-item h3 { margin: 0; font-size: 2rem; color: #1A56DB; }
+        .summary-item p { margin: 5px 0 0; color: #666; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+        th { background: #1A56DB; color: white; }
+        tr:nth-child(even) { background: #f9f9f9; }
+      </style>
+    </head>
+    <body>
+      <h1>تقرير YAS Help Desk</h1>
+      <p style="text-align: center; color: #666;">تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}</p>
+      
+      <div class="summary">
+        <div class="summary-item">
+          <h3>${summary.total}</h3>
+          <p>إجمالي الطلبات</p>
+        </div>
+        <div class="summary-item">
+          <h3>${summary.resolved}</h3>
+          <p>تم الحل</p>
+        </div>
+        <div class="summary-item">
+          <h3>${summary.inProgress}</h3>
+          <p>قيد التنفيذ</p>
+        </div>
+        <div class="summary-item">
+          <h3>${summary.new}</h3>
+          <p>جديدة</p>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>رقم الطلب</th>
+            <th>العميل</th>
+            <th>الجوال</th>
+            <th>نوع الجهاز</th>
+            <th>الجهاز</th>
+            <th>نوع الطلب</th>
+            <th>الأولوية</th>
+            <th>الحالة</th>
+            <th>تاريخ الإنشاء</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+
+      <p style="text-align: center; margin-top: 30px; color: #666; font-size: 12px;">
+        إشراف Eng. Adam Farouk · جميع الحقوق محفوظة لـ YAS © 2026
+      </p>
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob([htmlContent], { type: 'application/msword' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', `YAS_Reports_Word_${new Date().toISOString().split('T')[0]}.doc`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  YAS.showToast('تم تصدير التقرير إلى Word بنجاح', 'success');
+}
+
 /* ── Add Export Buttons to Pages ───────────────────────────── */
 function addExportButtons() {
   // Add export button to tickets page
@@ -512,17 +645,21 @@ function addExportButtons() {
   // Add export button to reports page
   const reportsPage = document.querySelector('.page-header');
   if (reportsPage && document.getElementById('rep-total')) {
-    const exportBtn = document.createElement('button');
-    exportBtn.className = 'btn btn-outline';
-    exportBtn.style.marginRight = 'var(--space-3)';
-    exportBtn.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      تصدير التقرير
-    `;
-    exportBtn.addEventListener('click', async () => {
-      await exportReportsData();
-    });
-    reportsPage.querySelector('div').appendChild(exportBtn);
+    // Excel button
+    const excelBtn = document.getElementById('export-excel-btn');
+    if (excelBtn) {
+      excelBtn.addEventListener('click', async () => {
+        await exportReportsToExcel();
+      });
+    }
+
+    // Word button
+    const wordBtn = document.getElementById('export-word-btn');
+    if (wordBtn) {
+      wordBtn.addEventListener('click', async () => {
+        await exportReportsToWord();
+      });
+    }
   }
   
   // Add PDF export button to ticket details
@@ -553,6 +690,8 @@ window.YASExport = {
   toPDF: exportToPDF,
   ticketToPDF: exportTicketDetailsToPDF,
   reportsData: exportReportsData,
+  reportsToExcel: exportReportsToExcel,
+  reportsToWord: exportReportsToWord,
   addButtons: addExportButtons
 };
 

@@ -191,7 +191,7 @@ function renderMonthlyChart(tickets) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
     months.push(d.toLocaleString('ar-SA', { month: 'short' }));
     const count = tickets.filter(t => {
-      const created = new Date(t.createdAt);
+      const created = new Date(t.created_at || t.createdAt);
       return created.getFullYear() === d.getFullYear() &&
              created.getMonth()    === d.getMonth();
     }).length;
