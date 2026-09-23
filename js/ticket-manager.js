@@ -112,12 +112,12 @@ const TicketManager = {
     if (this.searchQuery) {
       const q = this.searchQuery;
       data = data.filter(t =>
-        t.id.toLowerCase().includes(q) ||
-        t.customer.name.toLowerCase().includes(q) ||
-        t.customer.phone.includes(q) ||
-        t.device.model.toLowerCase().includes(q) ||
-        (t.device.serial_number || '').toLowerCase().includes(q) ||
-        t.customer.company.toLowerCase().includes(q)
+        (t.id || t.ticket_number || '').toLowerCase().includes(q) ||
+        (t.customer?.name || '').toLowerCase().includes(q) ||
+        (t.customer?.phone || '').includes(q) ||
+        (t.device?.model || '').toLowerCase().includes(q) ||
+        (t.device?.serial_number || '').toLowerCase().includes(q) ||
+        (t.customer?.company || '').toLowerCase().includes(q)
       );
     }
 
@@ -128,29 +128,30 @@ const TicketManager = {
 
     // Priority filter
     if (this.activeFilters['filter-priority']) {
-      data = data.filter(t => t.request.priority === this.activeFilters['filter-priority']);
+      data = data.filter(t => t.priority === this.activeFilters['filter-priority']);
     }
 
     // Device filter
     if (this.activeFilters['filter-device']) {
-      data = data.filter(t => t.device.type === this.activeFilters['filter-device']);
+      data = data.filter(t => t.device?.type === this.activeFilters['filter-device']);
     }
 
     // Type filter
     if (this.activeFilters['filter-type']) {
-      data = data.filter(t => t.request.type === this.activeFilters['filter-type']);
+      data = data.filter(t => t.request_type === this.activeFilters['filter-type']);
     }
 
     // Sort
     data.sort((a, b) => {
       let va, vb;
       if (this.sortField === 'createdAt' || this.sortField === 'updatedAt') {
-        va = new Date(a[this.sortField]).getTime();
-        vb = new Date(b[this.sortField]).getTime();
+        const field = this.sortField === 'createdAt' ? 'created_at' : 'updated_at';
+        va = new Date(a[field] || a[this.sortField]).getTime();
+        vb = new Date(b[field] || b[this.sortField]).getTime();
       } else if (this.sortField === 'priority') {
         const order = { critical: 4, high: 3, medium: 2, low: 1 };
-        va = order[a.request.priority] || 0;
-        vb = order[b.request.priority] || 0;
+        va = order[a.priority] || 0;
+        vb = order[b.priority] || 0;
       } else {
         va = a[this.sortField] || '';
         vb = b[this.sortField] || '';
@@ -194,10 +195,13 @@ const TicketManager = {
 
     const q = this.searchQuery;
     tbody.innerHTML = page.map(t => {
-      // Handle both API format (ticket_number) and LocalStorage format (id)
+      // Use API response field names
       const ticketId = t.ticket_number || t.id;
-      const createdAt = t.createdAt || t.created_at;
-      const updatedAt = t.updatedAt || t.updated_at;
+      const createdAt = t.created_at || t.createdAt;
+      const updatedAt = t.updated_at || t.updatedAt;
+      const requestType = t.request_type || t.request?.type;
+      const priority = t.priority || t.request?.priority;
+      const assignedName = t.assigned_user?.name || t.assignedTo || 'Unassigned';
 
       return `
       <tr>
@@ -224,11 +228,11 @@ const TicketManager = {
             </div>
           </div>
         </td>
-        <td>${YAS.RequestTypeLabels[t.request?.type || t.request_type] || t.request?.type || t.request_type || 'Unknown'}</td>
-        <td>${YAS.priorityBadge(t.request?.priority || t.priority || 'medium')}</td>
+        <td>${YAS.RequestTypeLabels[requestType] || requestType || 'Unknown'}</td>
+        <td>${YAS.priorityBadge(priority || 'medium')}</td>
         <td>${YAS.statusBadge(t.status)}</td>
         <td>${typeof YASSLA !== 'undefined' ? YASSLA.getBadge(t) : '—'}</td>
-        <td style="font-size:0.875rem">${t.assignedTo || t.assigned_user?.name || 'Unassigned'}</td>
+        <td style="font-size:0.875rem">${assignedName}</td>
         <td style="font-size:0.8125rem;color:var(--text-muted);white-space:nowrap">${YAS.formatDate(createdAt)}</td>
         <td style="font-size:0.8125rem;color:var(--text-muted);white-space:nowrap">${YAS.timeAgo(updatedAt)}</td>
         <td>
@@ -238,9 +242,6 @@ const TicketManager = {
             </a>
             <button class="btn btn-ghost btn-sm" data-tooltip="تحديث الحالة" onclick="openStatusModal('${t.id}','${t.status}')">
               ${YAS.Icons.edit}
-            </button>
-            <button class="btn btn-ghost btn-sm" data-tooltip="حذف" onclick="deleteTicketAction('${t.id}')">
-              ${YAS.Icons.trash}
             </button>
           </div>
         </td>
