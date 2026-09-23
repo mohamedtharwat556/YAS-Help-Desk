@@ -418,6 +418,24 @@ async function deleteTicket(id) {
   saveAllTickets(tickets);
 }
 
+async function deleteAllTickets() {
+  if (USE_API && YAS_API && YAS_API.token) {
+    // Delete all from API using single request
+    try {
+      const response = await YAS_API.request('DELETE', '/api/tickets?delete_all=true');
+      if (response.success) {
+        console.log('[Storage] All tickets deleted from API');
+      }
+    } catch (error) {
+      console.error('[Storage] Failed to delete all tickets from API:', error);
+    }
+  }
+  // Clear LocalStorage
+  localStorage.removeItem(YAS_STORAGE_KEY);
+  localStorage.removeItem(YAS_COUNTER_KEY);
+  return true;
+}
+
 /* ── Statistics ────────────────────────────────────────────── */
 async function getStats() {
   console.log('[Storage] Getting stats...');
@@ -797,6 +815,7 @@ window.YASStorage = {
   addTicketNote,
   addTicketActivity,
   deleteTicket,
+  deleteAllTickets,
   getStats,
   getAllCustomers,
   getAllNotifications,

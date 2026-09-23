@@ -136,6 +136,76 @@ module.exports = async function handler(req, res) {
       res.status(500).json({ error: 'Internal server error', details: error.message });
     }
   }
+  // DELETE /api/tickets
+  else if (req.method === 'DELETE') {
+    const urlParams = new URLSearchParams(req.url.split('?')[1]);
+    const id = urlParams.get('id');
+    const deleteAll = urlParams.get('delete_all');
+
+    console.log('[Tickets API] DELETE request');
+    console.log('[Tickets API] Query params:', { id, deleteAll });
+
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const token = authHeader.substring(7);
+    const decoded = verifyToken(token);
+    if (!decoded) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+
+    try {
+      // Delete all tickets
+      if (deleteAll === 'true') {
+        console.log('[Tickets API] Deleting all tickets');
+        const { error } = await supabase
+          .from('tickets')
+          .delete()
+          .neq('id', '00000000-0000-0000-0000-000000000000'); // This will delete all
+
+        if (error) throw error;
+
+        // Reset ticket counter
+        const { error: counterError } = await supabase
+          .from('ticket_counter')
+          .upsert({ id: 1, last_number: 10480 }, { onConflict: 'id' });
+
+        if (counterError) {
+          console.error('[Tickets API] Failed to reset counter:', counterError);
+        }
+
+        console.log('[Tickets API] All tickets deleted');
+        res.status(200).json({
+          success: true,
+          message: 'All tickets deleted successfully'
+        });
+      }
+      // Delete single ticket
+      else if (id) {
+        console.log('[Tickets API] Deleting ticket:', id);
+        const { error } = await supabase
+          .from('tickets')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        console.log('[Tickets API] Ticket deleted:', id);
+        res.status(200).json({
+          success: true,
+          message: 'Ticket deleted successfully'
+        });
+      }
+      else {
+        return res.status(400).json({ error: 'Ticket ID or delete_all parameter required' });
+      }
+    } catch (error) {
+      console.error('[Tickets API] Delete error:', error);
+      res.status(500).json({ error: 'Failed to delete ticket(s)', details: error.message });
+    }
+  }
   // GET /api/tickets (list all or single)
   else if (req.method === 'GET') {
     const urlParams = new URLSearchParams(req.url.split('?')[1]);

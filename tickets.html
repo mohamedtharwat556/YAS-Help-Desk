@@ -122,10 +122,16 @@
           <h1>طلبات الدعم الفني</h1>
           <p>إدارة وتتبع جميع طلبات الدعم الفني</p>
         </div>
-        <a href="support.html" target="_blank" class="btn btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          طلب جديد
-        </a>
+        <div style="display:flex;gap:var(--space-3)">
+          <button class="btn btn-danger" id="delete-all-tickets-btn" style="margin-right:var(--space-3)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            حذف الكل
+          </button>
+          <a href="support.html" target="_blank" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            طلب جديد
+          </a>
+        </div>
       </div>
 
       <!-- Filters Bar -->
@@ -287,5 +293,24 @@
 <script src="js/export.js"></script>
 <script src="js/sla.js"></script>
 <script src="js/ticket-manager.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const deleteAllBtn = document.getElementById('delete-all-tickets-btn');
+    if (deleteAllBtn) {
+      deleteAllBtn.addEventListener('click', async () => {
+        if (confirm('هل أنت متأكد من حذف جميع الطلبات؟\nهذا الإجراء لا يمكن التراجع عنه!')) {
+          try {
+            await YASStorage.deleteAllTickets();
+            YAS.showToast('تم حذف جميع الطلبات بنجاح', 'success');
+            setTimeout(() => window.location.reload(), 1500);
+          } catch (error) {
+            YAS.showToast('حدث خطأ أثناء الحذف', 'error');
+            console.error(error);
+          }
+        }
+      });
+    }
+  });
+</script>
 </body>
 </html>
