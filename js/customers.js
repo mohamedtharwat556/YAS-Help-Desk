@@ -63,7 +63,7 @@ const CustomersPage = {
 
     const totalCustomers = this.customers.length;
     const activeTickets  = tickets.filter(t => !['resolved','closed'].includes(t.status)).length;
-    const resolvedTickets= tickets.filter(t =>  ['resolved','closed'].includes(t.status)).length);
+    const resolvedTickets= tickets.filter(t =>  ['resolved','closed'].includes(t.status)).length;
 
     if (totalEl)    YAS.animateCount(totalEl,    totalCustomers, 600);
     if (activeEl)   YAS.animateCount(activeEl,   activeTickets, 600);
