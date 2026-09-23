@@ -135,15 +135,23 @@ module.exports = async function handler(req, res) {
     }
 
     try {
+      console.log('[Tickets API] Fetching tickets from Supabase...');
+
       // Fetch tickets without relations first
       const { data: tickets, error } = await supabase
         .from('tickets')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      console.log('[Tickets API] Supabase response:', { tickets, error });
+
+      if (error) {
+        console.error('[Tickets API] Supabase error:', error);
+        throw error;
+      }
 
       console.log('[Tickets API] Fetched tickets count:', tickets?.length || 0);
+      console.log('[Tickets API] Tickets data:', JSON.stringify(tickets, null, 2));
 
       // Enrich tickets with customer, device, and assigned_user data
       const enrichedTickets = await Promise.all(tickets.map(async (ticket) => {
@@ -188,6 +196,8 @@ module.exports = async function handler(req, res) {
           assigned_user: assignedUser
         };
       }));
+
+      console.log('[Tickets API] Enriched tickets count:', enrichedTickets.length);
 
       res.status(200).json({
         success: true,
