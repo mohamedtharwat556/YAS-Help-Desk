@@ -57,30 +57,30 @@ function exportToCSV(data, filename = 'export.csv') {
 }
 
 /* ── Ticket Export ──────────────────────────────────────────── */
-function exportTicketsToCSV(tickets) {
+async function exportTicketsToCSV(tickets) {
   if (!tickets) {
-    tickets = YASStorage.getAllTickets();
+    tickets = await YASStorage.getAllTickets();
   }
-  
+
   const exportData = tickets.map(t => ({
-    'رقم الطلب': t.id,
-    'العميل': t.customer.name,
-    'الجوال': t.customer.phone,
-    'البريد': t.customer.email,
-    'الشركة': t.customer.company,
-    'نوع الجهاز': YAS.DeviceTypeLabels[t.device.type] || t.device.type,
-    'الماركة': t.device.brand,
-    'الموديل': t.device.model,
-    'الرقم التسلسلي': t.device.serial_number,
-    'نوع الطلب': YAS.RequestTypeLabels[t.request.type] || t.request.type,
-    'الأولوية': YAS.PriorityLabels[t.request.priority] || t.request.priority,
-    'الحالة': YAS.StatusLabels[t.status] || t.status,
-    'المسؤول': t.assignedTo,
-    'تاريخ الإنشاء': t.createdAt,
-    'آخر تحديث': t.updatedAt,
-    'وصف المشكلة': t.request.description
+    'رقم الطلب': t.ticket_number || t.id,
+    'العميل': t.customer?.name || 'Unknown',
+    'الجوال': t.customer?.phone || '—',
+    'البريد': t.customer?.email || '—',
+    'الشركة': t.customer?.company || '—',
+    'نوع الجهاز': YAS.DeviceTypeLabels[t.device?.type] || t.device?.type || '—',
+    'الماركة': t.device?.brand || '—',
+    'الموديل': t.device?.model || '—',
+    'الرقم التسلسلي': t.device?.serial_number || '—',
+    'نوع الطلب': YAS.RequestTypeLabels[t.request_type] || t.request_type || t.request?.type || '—',
+    'الأولوية': YAS.PriorityLabels[t.priority] || t.priority || t.request?.priority || '—',
+    'الحالة': YAS.StatusLabels[t.status] || t.status || '—',
+    'المسؤول': t.assigned_user?.name || t.assignedTo || 'Eng. Adam Farouk',
+    'تاريخ الإنشاء': t.created_at || t.createdAt || '—',
+    'آخر تحديث': t.updated_at || t.updatedAt || '—',
+    'وصف المشكلة': t.request?.description || t.description || '—'
   }));
-  
+
   const filename = `YAS_Tickets_${new Date().toISOString().split('T')[0]}.csv`;
   exportToCSV(exportData, filename);
 }
@@ -88,9 +88,36 @@ function exportTicketsToCSV(tickets) {
 /* ── Customer Export ───────────────────────────────────────── */
 function exportCustomersToCSV(customers) {
   if (!customers) {
-    customers = YASStorage.getAllCustomers();
+    // Try to get from page if available
+    if (window.CustomersPage && window.CustomersPage.customers) {
+      customers = window.CustomersPage.customers;
+    } else {
+      // Build from tickets
+      const tickets = YASStorage.getAllTickets();
+      const map = new Map();
+      tickets.forEach(t => {
+        const key = t.customer?.phone || t.customer?.name;
+        if (!map.has(key)) {
+          map.set(key, {
+            name: t.customer?.name || 'Unknown',
+            phone: t.customer?.phone || '—',
+            whatsapp: t.customer?.whatsapp || '—',
+            email: t.customer?.email || '—',
+            company: t.customer?.company || '—',
+            tickets: [],
+            firstTicket: t.created_at || t.createdAt,
+            lastTicket: t.created_at || t.createdAt
+          });
+        }
+        const c = map.get(key);
+        c.tickets.push(t);
+        const ticketDate = t.created_at || t.createdAt;
+        if (ticketDate > c.lastTicket) c.lastTicket = ticketDate;
+      });
+      customers = Array.from(map.values());
+    }
   }
-  
+
   const exportData = customers.map(c => ({
     'الاسم': c.name,
     'الجوال': c.phone,
@@ -100,7 +127,7 @@ function exportCustomersToCSV(customers) {
     'أول طلب': c.firstTicket,
     'آخر طلب': c.lastTicket
   }));
-  
+
   const filename = `YAS_Customers_${new Date().toISOString().split('T')[0]}.csv`;
   exportToCSV(exportData, filename);
 }
@@ -108,29 +135,44 @@ function exportCustomersToCSV(customers) {
 /* ── Device Export ─────────────────────────────────────────── */
 function exportDevicesToCSV(devices) {
   if (!devices) {
-    const tickets = YASStorage.getAllTickets();
-    devices = tickets.map(t => ({
-      ...t.device,
-      owner: t.customer.name,
-      ownerPhone: t.customer.phone,
-      ticketId: t.id,
-      ticketStatus: t.status
-    }));
+    // Try to get from page if available
+    if (window.DevicesPage && window.DevicesPage.devices) {
+      devices = window.DevicesPage.devices;
+    } else {
+      // Build from tickets
+      const tickets = YASStorage.getAllTickets();
+      const map = new Map();
+      tickets.forEach(t => {
+        const key = t.device?.serial_number || `${t.device?.brand}-${t.device?.model}-${t.customer?.phone}`;
+        if (!map.has(key)) {
+          map.set(key, {
+            ...t.device,
+            customer: t.customer,
+            tickets: [],
+            lastService: t.created_at || t.createdAt
+          });
+        }
+        const d = map.get(key);
+        d.tickets.push(t);
+        const ticketDate = t.created_at || t.createdAt;
+        if (ticketDate > d.lastService) d.lastService = ticketDate;
+      });
+      devices = Array.from(map.values());
+    }
   }
-  
+
   const exportData = devices.map(d => ({
-    'المالك': d.owner || '—',
-    'الجوال': d.ownerPhone || '—',
+    'المالك': d.customer?.name || '—',
+    'الجوال': d.customer?.phone || '—',
     'نوع الجهاز': YAS.DeviceTypeLabels[d.type] || d.type,
     'الماركة': d.brand,
     'الموديل': d.model,
-    'الرقم التسلسلي': d.serial_number,
-    'تاريخ الشراء': d.purchaseDate,
-    'حالة الضمان': YAS.WarrantyLabels[d.warranty] || d.warranty,
-    'رقم الطلب': d.ticketId || '—',
-    'حالة الطلب': YAS.StatusLabels[d.ticketStatus] || d.ticketStatus
+    'الرقم التسلسلي': d.serial_number || '—',
+    'تاريخ الشراء': d.purchase_date || d.purchaseDate || '—',
+    'حالة الضمان': YAS.WarrantyLabels[d.warranty_status] || d.warranty_status || d.warranty || '—',
+    'عدد الطلبات': d.tickets?.length || 0
   }));
-  
+
   const filename = `YAS_Devices_${new Date().toISOString().split('T')[0]}.csv`;
   exportToCSV(exportData, filename);
 }
@@ -356,9 +398,9 @@ function exportTicketDetailsToPDF(ticketId) {
 }
 
 /* ── Export Reports Data ───────────────────────────────────── */
-function exportReportsData() {
-  const tickets = YASStorage.getAllTickets();
-  
+async function exportReportsData() {
+  const tickets = await YASStorage.getAllTickets();
+
   // Export comprehensive report
   const exportData = {
     summary: {
@@ -366,38 +408,38 @@ function exportReportsData() {
       resolved: tickets.filter(t => ['resolved', 'closed'].includes(t.status)).length,
       inProgress: tickets.filter(t => ['reviewing', 'contacting', 'diagnosing', 'maintenance'].includes(t.status)).length,
       new: tickets.filter(t => t.status === 'received').length,
-      urgent: tickets.filter(t => t.request.priority === 'critical').length
+      urgent: tickets.filter(t => t.priority === 'critical' || t.request?.priority === 'critical').length
     },
     byStatus: {},
     byType: {},
     byDevice: {},
     byPriority: {}
   };
-  
+
   // Group by status
   tickets.forEach(t => {
     const status = YAS.StatusLabels[t.status] || t.status;
     exportData.byStatus[status] = (exportData.byStatus[status] || 0) + 1;
   });
-  
+
   // Group by type
   tickets.forEach(t => {
-    const type = YAS.RequestTypeLabels[t.request.type] || t.request.type;
+    const type = YAS.RequestTypeLabels[t.request_type] || t.request_type || t.request?.type || '—';
     exportData.byType[type] = (exportData.byType[type] || 0) + 1;
   });
-  
+
   // Group by device
   tickets.forEach(t => {
-    const device = YAS.DeviceTypeLabels[t.device.type] || t.device.type;
+    const device = YAS.DeviceTypeLabels[t.device?.type] || t.device?.type || '—';
     exportData.byDevice[device] = (exportData.byDevice[device] || 0) + 1;
   });
-  
+
   // Group by priority
   tickets.forEach(t => {
-    const priority = YAS.PriorityLabels[t.request.priority] || t.request.priority;
+    const priority = YAS.PriorityLabels[t.priority] || t.priority || t.request?.priority || '—';
     exportData.byPriority[priority] = (exportData.byPriority[priority] || 0) + 1;
   });
-  
+
   // Convert to flat format for CSV
   const flatData = [
     { category: 'ملخص', metric: 'إجمالي الطلبات', value: exportData.summary.totalTickets },
@@ -410,7 +452,7 @@ function exportReportsData() {
     ...Object.entries(exportData.byDevice).map(([key, value]) => ({ category: 'حسب الجهاز', metric: key, value })),
     ...Object.entries(exportData.byPriority).map(([key, value]) => ({ category: 'حسب الأولوية', metric: key, value }))
   ];
-  
+
   const filename = `YAS_Reports_${new Date().toISOString().split('T')[0]}.csv`;
   exportToCSV(flatData, filename);
 }
@@ -422,11 +464,14 @@ function addExportButtons() {
   if (ticketsPage && document.getElementById('tickets-table-body')) {
     const exportBtn = document.createElement('button');
     exportBtn.className = 'btn btn-outline';
+    exportBtn.style.marginRight = 'var(--space-3)';
     exportBtn.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       تصدير CSV
     `;
-    exportBtn.addEventListener('click', () => exportTicketsToCSV());
+    exportBtn.addEventListener('click', async () => {
+      await exportTicketsToCSV();
+    });
     ticketsPage.querySelector('div').appendChild(exportBtn);
   }
   
@@ -435,11 +480,15 @@ function addExportButtons() {
   if (customersPage && document.getElementById('customers-table-body')) {
     const exportBtn = document.createElement('button');
     exportBtn.className = 'btn btn-outline';
+    exportBtn.style.marginRight = 'var(--space-3)';
     exportBtn.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       تصدير CSV
     `;
-    exportBtn.addEventListener('click', () => exportCustomersToCSV());
+    exportBtn.addEventListener('click', () => {
+      const customers = window.CustomersPage ? window.CustomersPage.customers : null;
+      exportCustomersToCSV(customers);
+    });
     customersPage.querySelector('div').appendChild(exportBtn);
   }
   
@@ -448,11 +497,15 @@ function addExportButtons() {
   if (devicesPage && document.getElementById('devices-table-body')) {
     const exportBtn = document.createElement('button');
     exportBtn.className = 'btn btn-outline';
+    exportBtn.style.marginRight = 'var(--space-3)';
     exportBtn.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       تصدير CSV
     `;
-    exportBtn.addEventListener('click', () => exportDevicesToCSV());
+    exportBtn.addEventListener('click', () => {
+      const devices = window.DevicesPage ? window.DevicesPage.devices : null;
+      exportDevicesToCSV(devices);
+    });
     devicesPage.querySelector('div').appendChild(exportBtn);
   }
   
@@ -461,11 +514,14 @@ function addExportButtons() {
   if (reportsPage && document.getElementById('rep-total')) {
     const exportBtn = document.createElement('button');
     exportBtn.className = 'btn btn-outline';
+    exportBtn.style.marginRight = 'var(--space-3)';
     exportBtn.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       تصدير التقرير
     `;
-    exportBtn.addEventListener('click', () => exportReportsData());
+    exportBtn.addEventListener('click', async () => {
+      await exportReportsData();
+    });
     reportsPage.querySelector('div').appendChild(exportBtn);
   }
   
