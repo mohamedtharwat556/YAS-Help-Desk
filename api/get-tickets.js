@@ -135,10 +135,14 @@ module.exports = async function handler(req, res) {
     }
 
     try {
-      // Fetch tickets without relations to avoid Supabase relationship errors
+      // Fetch tickets and join with customer and device
       const { data: tickets, error } = await supabase
         .from('tickets')
-        .select('*')
+        .select(`
+          *,
+          customer:customers(*),
+          device:devices(*)
+        `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
