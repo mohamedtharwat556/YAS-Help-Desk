@@ -169,7 +169,7 @@ const DevicesPage = {
 
 /* ── Device Details ────────────────────────────────────────── */
 const DeviceDetails = {
-  init() {
+  async init() {
     if (!document.getElementById('device-detail-body')) return;
     if (!YAS.requireAuth()) return;
     YAS.initDashboardSidebar();
@@ -180,8 +180,8 @@ const DeviceDetails = {
     const key    = decodeURIComponent(params.get('id') || '');
     if (!key) return this.showNotFound();
 
-    const tickets = YASStorage.getAllTickets().filter(t => {
-      const k = t.device.serial_number || `${t.device.brand}-${t.device.model}-${t.customer.phone}`;
+    const tickets = (await YASStorage.getAllTickets()).filter(t => {
+      const k = t.device?.serial_number || `${t.device?.brand}-${t.device?.model}-${t.customer?.phone}`;
       return k === key;
     });
 

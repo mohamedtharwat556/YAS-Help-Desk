@@ -155,7 +155,7 @@ const CustomersPage = {
    CUSTOMER DETAILS
    ══════════════════════════════════════════════════════════════ */
 const CustomerDetails = {
-  init() {
+  async init() {
     if (!document.getElementById('customer-detail-body')) return;
     if (!YAS.requireAuth()) return;
     YAS.initDashboardSidebar();
@@ -166,8 +166,8 @@ const CustomerDetails = {
     const key    = decodeURIComponent(params.get('id') || '');
     if (!key) return this.showNotFound();
 
-    const tickets = YASStorage.getAllTickets().filter(t =>
-      (t.customer.phone || t.customer.name) === key
+    const tickets = (await YASStorage.getAllTickets()).filter(t =>
+      (t.customer?.phone || t.customer?.name) === key
     );
 
     if (tickets.length === 0) return this.showNotFound();
