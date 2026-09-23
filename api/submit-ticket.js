@@ -210,12 +210,7 @@ module.exports = async function handler(req, res) {
             status: 'received',
             assigned_user_id: adamUserId
           })
-          .select(`
-            *,
-            customer:customers(*),
-            device:devices(*),
-            assigned_user:users(id, name, email, role)
-          `)
+          .select('*')
           .single();
 
         console.log('[SUBMIT-TICKET] Supabase insert result:', result);
@@ -229,10 +224,24 @@ module.exports = async function handler(req, res) {
         console.log('[SUBMIT-TICKET] Ticket created successfully:', ticket.id, 'Ticket number:', ticket.ticket_number);
         console.log('[SUBMIT-TICKET] Full ticket object:', JSON.stringify(ticket, null, 2));
 
+        // Fetch customer and device separately
+        const [customerResult, deviceResult, assignedUserResult] = await Promise.all([
+          supabase.from('customers').select('*').eq('id', newCustomer.id).single(),
+          supabase.from('devices').select('*').eq('id', newDevice.id).single(),
+          adamUserId ? supabase.from('users').select('id, name, email, role').eq('id', adamUserId).single() : Promise.resolve({ data: null })
+        ]);
+
+        const enrichedTicket = {
+          ...ticket,
+          customer: customerResult.data,
+          device: deviceResult.data,
+          assigned_user: assignedUserResult.data
+        };
+
         res.status(201).json({
           success: true,
           message: 'Ticket created successfully',
-          data: ticket
+          data: enrichedTicket
         });
       } catch (error) {
         console.error('[SUBMIT-TICKET] Ticket creation exception:', error);
