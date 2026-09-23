@@ -86,14 +86,14 @@ async function exportTicketsToCSV(tickets) {
 }
 
 /* ── Customer Export ───────────────────────────────────────── */
-function exportCustomersToCSV(customers) {
+async function exportCustomersToCSV(customers) {
   if (!customers) {
     // Try to get from page if available
     if (window.CustomersPage && window.CustomersPage.customers) {
       customers = window.CustomersPage.customers;
     } else {
       // Build from tickets
-      const tickets = YASStorage.getAllTickets();
+      const tickets = await YASStorage.getAllTickets();
       const map = new Map();
       tickets.forEach(t => {
         const key = t.customer?.phone || t.customer?.name;
@@ -133,14 +133,14 @@ function exportCustomersToCSV(customers) {
 }
 
 /* ── Device Export ─────────────────────────────────────────── */
-function exportDevicesToCSV(devices) {
+async function exportDevicesToCSV(devices) {
   if (!devices) {
     // Try to get from page if available
     if (window.DevicesPage && window.DevicesPage.devices) {
       devices = window.DevicesPage.devices;
     } else {
       // Build from tickets
-      const tickets = YASStorage.getAllTickets();
+      const tickets = await YASStorage.getAllTickets();
       const map = new Map();
       tickets.forEach(t => {
         const key = t.device?.serial_number || `${t.device?.brand}-${t.device?.model}-${t.customer?.phone}`;
@@ -485,9 +485,9 @@ function addExportButtons() {
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       تصدير CSV
     `;
-    exportBtn.addEventListener('click', () => {
+    exportBtn.addEventListener('click', async () => {
       const customers = window.CustomersPage ? window.CustomersPage.customers : null;
-      exportCustomersToCSV(customers);
+      await exportCustomersToCSV(customers);
     });
     customersPage.querySelector('div').appendChild(exportBtn);
   }
@@ -502,9 +502,9 @@ function addExportButtons() {
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       تصدير CSV
     `;
-    exportBtn.addEventListener('click', () => {
+    exportBtn.addEventListener('click', async () => {
       const devices = window.DevicesPage ? window.DevicesPage.devices : null;
-      exportDevicesToCSV(devices);
+      await exportDevicesToCSV(devices);
     });
     devicesPage.querySelector('div').appendChild(exportBtn);
   }
