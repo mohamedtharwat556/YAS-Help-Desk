@@ -522,6 +522,9 @@ const TicketTracking = {
     const notesContainer = document.getElementById('update-notes-container');
     if (notesContainer) {
       const notes = ticket.notes || [];
+      console.log('[TicketTracking] Ticket notes:', notes);
+      console.log('[TicketTracking] Notes count:', notes.length);
+      
       if (notes.length === 0) {
         notesContainer.innerHTML = `
           <div style="padding:var(--space-4);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-muted);font-size:0.875rem;text-align:center">
@@ -529,15 +532,18 @@ const TicketTracking = {
           </div>
         `;
       } else {
-        notesContainer.innerHTML = notes.map(note => `
+        notesContainer.innerHTML = notes.map(note => {
+          console.log('[TicketTracking] Rendering note:', note);
+          return `
           <div style="padding:var(--space-4);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-md)">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:var(--space-2)">
               <span style="font-weight:600;font-size:0.875rem">${note.author || 'الفني'}</span>
-              <span style="font-size:0.75rem;color:var(--text-muted)">${YAS.formatDateTime(note.timestamp)}</span>
+              <span style="font-size:0.75rem;color:var(--text-muted)">${YAS.formatDateTime(note.timestamp || note.time)}</span>
             </div>
             <div style="font-size:0.875rem;color:var(--text);line-height:1.5">${note.text || note.note || ''}</div>
           </div>
-        `).join('');
+        `;
+        }).join('');
       }
     }
 
