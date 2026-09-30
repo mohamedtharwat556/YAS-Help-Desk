@@ -47,16 +47,22 @@
 </header>
 
 <!-- ── Main ─────────────────────────────────────────────────── -->
-<main class="portal-page">
+<main class="portal-page" style="background:linear-gradient(180deg, var(--background) 0%, var(--primary-light) 50%, var(--background) 100%)">
 
   <!-- Hero -->
-  <section class="hero stagger-children">
-    <div class="hero-badge animate-fade-in-up">
+  <section class="hero stagger-children" style="background:linear-gradient(135deg,rgba(26,86,219,0.05) 0%,rgba(14,165,233,0.03) 100%);border-radius:24px;padding:var(--space-16) var(--space-8);margin:var(--space-8) var(--space-6);position:relative;overflow:hidden">
+    <div style="position:absolute;top:-50%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(26,86,219,0.1) 0%,transparent 70%);border-radius:50%;animation: float 8s ease-in-out infinite"></div>
+    <div style="position:absolute;bottom:-50%;left:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(14,165,233,0.08) 0%,transparent 70%);border-radius:50%;animation: float 10s ease-in-out infinite reverse"></div>
+
+    <div class="hero-badge animate-fade-in-up" style="position:relative;z-index:1">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       خدمة الدعم الفني الاحترافية
     </div>
-    <h1 class="animate-fade-in-up animate-pulse-glow" style="animation-delay: 0.1s">محتاج مساعدة؟ إحنا معاك طوال الوقت.</h1>
-    <p class="animate-fade-in-up" style="animation-delay: 0.2s">فريق YAS المتخصص جاهز لمساعدتك في حل جميع مشاكل الأجهزة والأنظمة التقنية. تسجيل طلب، تتبع حالته، والحصول على الدعم الفني لم يكن بهذه السهولة.</p>
+    <div class="animate-fade-in-up" style="animation-delay: 0.05s;margin-bottom:var(--space-6);position:relative;z-index:1">
+      <img src="logo.png" alt="YAS Technical Support" style="width:140px;height:140px;border-radius:32px;box-shadow:0 12px 40px rgba(26,86,219,0.4),0 0 0 4px rgba(255,255,255,0.5);animation: float 4s ease-in-out infinite">
+    </div>
+    <h1 class="animate-fade-in-up animate-pulse-glow" style="animation-delay: 0.1s;position:relative;z-index:1">محتاج مساعدة؟ إحنا معاك طوال الوقت.</h1>
+    <p class="animate-fade-in-up" style="animation-delay: 0.2s;position:relative;z-index:1">فريق YAS المتخصص جاهز لمساعدتك في حل جميع مشاكل الأجهزة والأنظمة التقنية. تسجيل طلب، تتبع حالته، والحصول على الدعم الفني لم يكن بهذه السهولة.</p>
 
     <div class="hero-actions">
       <a href="support.html" class="btn btn-primary btn-lg animate-bounce-in" style="animation-delay: 0.3s">
@@ -99,13 +105,13 @@
   </section>
 
   <!-- Service Categories -->
-  <section class="categories-section">
-    <h2>خدمات الدعم الفني</h2>
-    <p class="subtitle">نوفر مجموعة شاملة من خدمات الدعم الفني لضمان عمل أنظمتك بكفاءة عالية</p>
+  <section class="categories-section" style="background:linear-gradient(180deg,transparent 0%,rgba(26,86,219,0.02) 100%);padding:var(--space-16) var(--space-8)">
+    <h2 class="animate-fade-in-up" style="animation-delay: 0.1s">خدمات الدعم الفني</h2>
+    <p class="subtitle animate-fade-in-up" style="animation-delay: 0.15s">نوفر مجموعة شاملة من خدمات الدعم الفني لضمان عمل أنظمتك بكفاءة عالية</p>
 
     <div class="categories-grid stagger-children">
-      <a href="support.html" class="category-card animate-slide-in-left" data-type="technical" style="animation-delay: 0.1s">
-        <div class="category-icon">
+      <a href="support.html" class="category-card animate-slide-in-left" data-type="technical" style="animation-delay: 0.1s;box-shadow:0 4px 20px rgba(26,86,219,0.15);border:2px solid transparent;transition:all 0.3s" onmouseover="this.style.borderColor='var(--primary)';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 12px 40px rgba(26,86,219,0.25)'" onmouseout="this.style.borderColor='transparent';this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 4px 20px rgba(26,86,219,0.15)'">
+        <div class="category-icon" style="background:linear-gradient(135deg,var(--primary-light) 0%,#e0e7ff 100%)">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
         </div>
         <div class="category-info">
@@ -114,8 +120,8 @@
         </div>
       </a>
 
-      <a href="support.html" class="category-card animate-slide-in-left" data-type="maintenance" style="animation-delay: 0.2s">
-        <div class="category-icon">
+      <a href="support.html" class="category-card animate-slide-in-left" data-type="maintenance" style="animation-delay: 0.2s;box-shadow:0 4px 20px rgba(245,158,11,0.15);border:2px solid transparent;transition:all 0.3s" onmouseover="this.style.borderColor='var(--warning)';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 12px 40px rgba(245,158,11,0.25)'" onmouseout="this.style.borderColor='transparent';this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 4px 20px rgba(245,158,11,0.15)'">
+        <div class="category-icon" style="background:linear-gradient(135deg,var(--warning-light) 0%,#fef3c7 100%)">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
         </div>
         <div class="category-info">
@@ -124,8 +130,8 @@
         </div>
       </a>
 
-      <a href="support.html" class="category-card animate-slide-in-left" data-type="warranty" style="animation-delay: 0.3s">
-        <div class="category-icon">
+      <a href="support.html" class="category-card animate-slide-in-left" data-type="warranty" style="animation-delay: 0.3s;box-shadow:0 4px 20px rgba(16,185,129,0.15);border:2px solid transparent;transition:all 0.3s" onmouseover="this.style.borderColor='var(--success)';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 12px 40px rgba(16,185,129,0.25)'" onmouseout="this.style.borderColor='transparent';this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 4px 20px rgba(16,185,129,0.15)'">
+        <div class="category-icon" style="background:linear-gradient(135deg,var(--success-light) 0%,#d1fae5 100%)">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
         </div>
         <div class="category-info">
@@ -134,8 +140,8 @@
         </div>
       </a>
 
-      <a href="support.html" class="category-card animate-slide-in-left" data-type="installation" style="animation-delay: 0.4s">
-        <div class="category-icon">
+      <a href="support.html" class="category-card animate-slide-in-left" data-type="installation" style="animation-delay: 0.4s;box-shadow:0 4px 20px rgba(14,165,233,0.15);border:2px solid transparent;transition:all 0.3s" onmouseover="this.style.borderColor='var(--accent)';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 12px 40px rgba(14,165,233,0.25)'" onmouseout="this.style.borderColor='transparent';this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 4px 20px rgba(14,165,233,0.15)'">
+        <div class="category-icon" style="background:linear-gradient(135deg,var(--info-light) 0%,#dbeafe 100%)">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         </div>
         <div class="category-info">
@@ -144,8 +150,8 @@
         </div>
       </a>
 
-      <a href="support.html" class="category-card animate-slide-in-left" data-type="network" style="animation-delay: 0.5s">
-        <div class="category-icon">
+      <a href="support.html" class="category-card animate-slide-in-left" data-type="network" style="animation-delay: 0.5s;box-shadow:0 4px 20px rgba(139,92,246,0.15);border:2px solid transparent;transition:all 0.3s" onmouseover="this.style.borderColor='#8b5cf6';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 12px 40px rgba(139,92,246,0.25)'" onmouseout="this.style.borderColor='transparent';this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 4px 20px rgba(139,92,246,0.15)'">
+        <div class="category-icon" style="background:linear-gradient(135deg,#ede9fe 0%,#ddd6fe 100%)">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
         </div>
         <div class="category-info">
@@ -154,8 +160,8 @@
         </div>
       </a>
 
-      <a href="support.html" class="category-card animate-slide-in-left" data-type="software" style="animation-delay: 0.6s">
-        <div class="category-icon">
+      <a href="support.html" class="category-card animate-slide-in-left" data-type="software" style="animation-delay: 0.6s;box-shadow:0 4px 20px rgba(236,72,153,0.15);border:2px solid transparent;transition:all 0.3s" onmouseover="this.style.borderColor='#ec4899';this.style.transform='translateY(-8px) scale(1.02)';this.style.boxShadow='0 12px 40px rgba(236,72,153,0.25)'" onmouseout="this.style.borderColor='transparent';this.style.transform='translateY(0) scale(1)';this.style.boxShadow='0 4px 20px rgba(236,72,153,0.15)'">
+        <div class="category-icon" style="background:linear-gradient(135deg,#fce7f3 0%,#fbcfe8 100%)">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
         <div class="category-info">
@@ -167,9 +173,9 @@
   </section>
 
   <!-- How it works -->
-  <section style="max-width:900px;margin:0 auto var(--space-16);padding:0 var(--space-8);width:100%">
-    <h2 style="text-align:center;margin-bottom:var(--space-3)">كيف تعمل الخدمة؟</h2>
-    <p style="text-align:center;color:var(--text-muted);margin-bottom:var(--space-10);font-size:0.9375rem">أربع خطوات بسيطة للحصول على الدعم الفني الاحترافي</p>
+  <section style="max-width:1100px;margin:0 auto var(--space-16);padding:var(--space-16) var(--space-8);width:100%;background:linear-gradient(135deg,rgba(255,255,255,0.8) 0%,rgba(255,255,255,0.4) 100%);backdrop-filter:blur(10px);border-radius:24px;border:1px solid rgba(255,255,255,0.5);box-shadow:0 8px 32px rgba(0,0,0,0.08)">
+    <h2 class="animate-fade-in-up" style="text-align:center;margin-bottom:var(--space-3);animation-delay: 0.1s">كيف تعمل الخدمة؟</h2>
+    <p class="animate-fade-in-up" style="text-align:center;color:var(--text-muted);margin-bottom:var(--space-10);font-size:0.9375rem;animation-delay: 0.15s">أربع خطوات بسيطة للحصول على الدعم الفني الاحترافي</p>
     <div class="grid-4 stagger-children">
       <div class="card animate-zoom-in" style="text-align:center;position:relative;overflow:hidden;animation-delay: 0.1s">
         <div style="position:absolute;top:0;right:0;width:80px;height:80px;background:var(--primary-light);border-radius:0 0 0 100%;opacity:0.5"></div>
@@ -285,13 +291,35 @@
 </main>
 
 <!-- ── Footer ────────────────────────────────────────────────── -->
-<footer class="portal-footer">
-  <div style="margin-bottom:var(--space-3)">
-    <strong style="color:var(--text)">
-      <a href="https://yas-help-desk.vercel.app/index.html" style="color:inherit;text-decoration:none">Technical Support & Customer Service</a>
-    </strong>
+<footer class="portal-footer" style="background:linear-gradient(180deg,var(--surface) 0%,var(--surface-secondary) 100%);padding:var(--space-12) var(--space-8);border-top:1px solid var(--border)">
+  <div style="max-width:1200px;margin:0 auto;text-align:center">
+    <div style="display:flex;align-items:center;justify-content:center;gap:var(--space-4);margin-bottom:var(--space-6)">
+      <img src="logo.png" alt="YAS Technical Support" style="width:64px;height:64px;border-radius:16px;box-shadow:0 4px 16px rgba(26,86,219,0.2)">
+      <div style="text-align:right">
+        <div style="font-size:1.25rem;font-weight:700;color:var(--text)">
+          <a href="https://yas-help-desk.vercel.app/index.html" style="color:inherit;text-decoration:none">Technical Support & Customer Service</a>
+        </div>
+        <div style="font-size:0.875rem;color:var(--text-muted)">مواعيد العمل متاح دايماً التسجيل</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:var(--space-6);justify-content:center;margin-bottom:var(--space-6);flex-wrap:wrap">
+      <a href="https://wa.me/201101267185" target="_blank" style="display:flex;align-items:center;gap:8px;color:var(--text-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        واتساب
+      </a>
+      <a href="mailto:adam@yas.sa" style="display:flex;align-items:center;gap:8px;color:var(--text-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg>
+        البريد الإلكتروني
+      </a>
+      <a href="support.html" style="display:flex;align-items:center;gap:8px;color:var(--text-muted);text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        تتبع الطلب
+      </a>
+    </div>
+    <div style="color:var(--text-muted);font-size:0.875rem">
+      إشراف <a href="https://wa.me/201101267185" target="_blank" style="color:var(--text);text-decoration:none;font-weight:600">Eng. Adam Farouk</a> · جميع الحقوق محفوظة لـ YAS © 2026
+    </div>
   </div>
-  <div>مواعيد العمل متاح دايماً التسجيل · إشراف <a href="https://wa.me/201101267185" target="_blank" style="color:var(--text-muted);text-decoration:none;font-weight:600">Eng. Adam Farouk</a> · جميع الحقوق محفوظة لـ YAS © 2026</div>
 </footer>
 
 <div id="toast-container"></div>
