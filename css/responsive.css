@@ -8,6 +8,13 @@
     width: 180px !important;
     height: 180px !important;
   }
+
+  /* Language button on tablet */
+  #language-btn {
+    font-size: 0.8125rem;
+    padding: 6px 10px;
+  }
+
   .sidebar {
     transform: translateX(100%);
     box-shadow: var(--shadow-xl);
@@ -70,6 +77,11 @@
     border-right: 1px solid var(--border);
     flex-shrink: 0;
   }
+
+  /* Device grid on tablet */
+  .device-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 /* ── Mobile (≤ 768px) ───────────────────────────────────────── */
@@ -109,6 +121,11 @@
     display: flex !important;
   }
 
+  #language-btn {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+
   /* Hero */
   .hero {
     padding: var(--space-8) var(--space-4);
@@ -130,6 +147,7 @@
   .hero-actions {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--space-3);
   }
 
   .hero-actions .btn {
@@ -164,17 +182,51 @@
     display: none;
   }
 
+  .step-indicator {
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .step-item {
+    flex-shrink: 0;
+  }
+
   .priority-options {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .form-actions {
     flex-direction: column-reverse;
+    gap: var(--space-3);
   }
 
   .form-actions .btn {
     width: 100%;
     justify-content: center;
+  }
+
+  /* Device grid on mobile */
+  .device-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+  }
+
+  .device-option {
+    padding: var(--space-3);
+  }
+
+  .device-option-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .device-option-icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .device-option span {
+    font-size: 0.75rem;
   }
 
   /* Tracking */
@@ -188,15 +240,54 @@
 
   .tracking-search-row {
     flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .tracking-search-row input {
+    width: 100%;
+  }
+
+  .tracking-search-row .btn {
+    width: 100%;
   }
 
   .ticket-info-grid {
     grid-template-columns: 1fr;
   }
 
+  .ticket-timeline {
+    padding: var(--space-4);
+  }
+
+  .timeline-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .timeline-dot {
+    position: relative;
+    margin-bottom: var(--space-2);
+  }
+
+  .timeline-content {
+    width: 100%;
+  }
+
   /* Dashboard top bar */
   .top-bar {
     padding: 0 var(--space-4);
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .top-bar-left {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .top-bar-right {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .global-search {
@@ -205,6 +296,66 @@
 
   .page-content {
     padding: var(--space-5) var(--space-4);
+  }
+
+  /* Dashboard stats */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .stat-card {
+    padding: var(--space-4);
+  }
+
+  .stat-card-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-card-label {
+    font-size: 0.8125rem;
+  }
+
+  /* Dashboard recent tickets */
+  .recent-tickets-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .recent-tickets-header .btn {
+    width: 100%;
+  }
+
+  /* Ticket cards on mobile */
+  .ticket-card {
+    padding: var(--space-4);
+  }
+
+  .ticket-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .ticket-meta {
+    flex-wrap: wrap;
+  }
+
+  .ticket-meta-item {
+    font-size: 0.75rem;
+  }
+
+  /* Status badges on mobile */
+  .status-badge {
+    font-size: 0.6875rem;
+    padding: 2px 8px;
+  }
+
+  /* Priority badges on mobile */
+  .priority-badge {
+    font-size: 0.6875rem;
+    padding: 2px 8px;
   }
 
   /* Stats */
@@ -280,6 +431,36 @@
     grid-template-columns: 1fr;
   }
 
+  /* How it works section */
+  .grid-4.stagger-children {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  /* FAQ section */
+  .faq-item {
+    padding: var(--space-4);
+  }
+
+  .faq-question {
+    font-size: 0.9375rem;
+  }
+
+  .faq-answer {
+    font-size: 0.875rem;
+  }
+
+  /* Footer */
+  .portal-footer {
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+  }
+
+  .portal-footer > div {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
   /* Page header */
   .page-header {
     flex-direction: column;
@@ -353,7 +534,26 @@
   }
 
   .device-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+
+  .device-option {
+    padding: var(--space-2);
+  }
+
+  .device-option-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .device-option-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .device-option span {
+    font-size: 0.6875rem;
   }
 
   .stats-grid {
@@ -372,6 +572,43 @@
 
   .priority-options {
     grid-template-columns: 1fr 1fr;
+  }
+
+  /* Form on small mobile */
+  .form-card {
+    padding: var(--space-4);
+  }
+
+  .form-group label {
+    font-size: 0.875rem;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 0.875rem;
+  }
+
+  /* Buttons on small mobile */
+  .btn {
+    font-size: 0.875rem;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  /* Grid 4 on small mobile */
+  .grid-4.stagger-children {
+    grid-template-columns: 1fr;
+  }
+
+  /* Trust indicators on small mobile */
+  .hero-actions + div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-actions + div > div {
+    width: 100%;
+    max-width: 200px;
   }
 }
 
