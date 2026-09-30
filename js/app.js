@@ -152,13 +152,17 @@ function statusBadge(status) {
 }
 
 function priorityBadge(priority) {
-  return `<span class="badge ${PriorityBadgeClass[priority] || 'badge-priority-low'}">${PriorityLabels[priority] || priority}</span>`;
+  // Use i18n translation if available, otherwise fallback to static labels
+  const label = typeof translatePriority !== 'undefined' ? translatePriority(priority) : (PriorityLabels[priority] || priority);
+  return `<span class="badge ${PriorityBadgeClass[priority] || 'badge-priority-low'}">${label}</span>`;
 }
 
 function warrantyBadge(warranty) {
   const classes = { active: 'badge-resolved', expired: 'badge-diagnosing', expiring: 'badge-reviewing', unknown: 'badge-closed' };
   const value = warranty || 'unknown';
-  return `<span class="badge ${classes[value] || 'badge-closed'}">${WarrantyLabels[value] || value}</span>`;
+  // Use i18n translation if available, otherwise fallback to static labels
+  const label = typeof translateWarrantyStatus !== 'undefined' ? translateWarrantyStatus(value) : (WarrantyLabels[value] || value);
+  return `<span class="badge ${classes[value] || 'badge-closed'}">${label}</span>`;
 }
 
 /* ── Toast Notifications ───────────────────────────────────── */

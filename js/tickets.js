@@ -272,16 +272,18 @@ const TicketForm = {
     set('review-email',    d.customer.email);
     set('review-company',  d.customer.company);
 
-    // Device
-    set('review-device-type',   YAS.DeviceTypeLabels[d.device.type] || d.device.type);
+    // Device - Use i18n translation functions if available
+    const deviceTypeLabel = typeof translateDeviceType !== 'undefined' ? translateDeviceType(d.device.type) : (YAS.DeviceTypeLabels[d.device.type] || d.device.type);
+    set('review-device-type',   deviceTypeLabel);
     set('review-device-brand',  d.device.brand);
     set('review-device-model',  d.device.model);
     set('review-device-serial', d.device.serial_number);
     set('review-purchase-date', d.device.purchase_date ? YAS.formatDate(d.device.purchase_date) : '—');
     setHTML('review-warranty', YAS.warrantyBadge(d.device.warranty_status || d.device.warranty));
 
-    // Request
-    set('review-req-type',  YAS.RequestTypeLabels[d.request.type] || d.request.type);
+    // Request - Use i18n translation functions if available
+    const requestTypeLabel = typeof translateIssueType !== 'undefined' ? translateIssueType(d.request.type) : (YAS.RequestTypeLabels[d.request.type] || d.request.type);
+    set('review-req-type',  requestTypeLabel);
     setHTML('review-priority', YAS.priorityBadge(d.request.priority));
     set('review-desc', d.request.description);
   },
