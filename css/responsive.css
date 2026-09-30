@@ -4,6 +4,10 @@
 
 /* ── Tablet (≤ 1024px) ──────────────────────────────────────── */
 @media (max-width: 1024px) {
+  .hero img {
+    width: 180px !important;
+    height: 180px !important;
+  }
   .sidebar {
     transform: translateX(100%);
     box-shadow: var(--shadow-xl);
@@ -108,8 +112,11 @@
   /* Hero */
   .hero {
     padding: var(--space-8) var(--space-4);
-    grid-template-columns: 1fr;
-    text-align: center;
+  }
+
+  .hero img {
+    width: 160px !important;
+    height: 160px !important;
   }
 
   .hero h1 {
@@ -329,8 +336,8 @@
   .hero h1 { font-size: 1.5rem; }
 
   .hero img {
-    width: 180px !important;
-    height: 180px !important;
+    width: 150px !important;
+    height: 150px !important;
   }
 
   .categories-grid {
