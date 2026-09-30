@@ -22,15 +22,18 @@
       <img src="logo.png" alt="YAS Technical Support" style="width:48px;height:48px;border-radius:50%">
       <div class="logo-text">
         <div class="brand">YAS Help Desk</div>
-        <div class="tagline">Technical Support &amp; Customer Service</div>
+        <div class="tagline" data-i18n="footer_company">Technical Support &amp; Customer Service</div>
       </div>
     </a>
     <nav class="portal-nav" id="portal-nav">
-      <a href="index.html">الرئيسية</a>
-      <a href="support.html" class="active">تسجيل طلب</a>
-      <a href="tracking.html">متابعة الطلب</a>
+      <a href="index.html" data-i18n="nav_home">الرئيسية</a>
+      <a href="support.html" class="active" data-i18n="nav_support">تسجيل طلب</a>
+      <a href="tracking.html" data-i18n="nav_tracking">متابعة الطلب</a>
     </nav>
     <div class="portal-nav-actions">
+      <button class="btn btn-outline" id="language-btn" style="font-size:0.8125rem;padding:6px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all var(--transition)" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+        🌐 اللغة
+      </button>
       <button class="theme-toggle" id="theme-toggle-btn" aria-label="تبديل الوضع"></button>
       <button class="menu-toggle" id="menu-toggle" aria-label="القائمة">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -47,9 +50,9 @@
 
       <!-- Breadcrumb -->
       <div class="breadcrumb" style="margin-bottom:var(--space-6)">
-        <a href="index.html">الرئيسية</a>
+        <a href="index.html" data-i18n="nav_home">الرئيسية</a>
         <span class="breadcrumb-sep">›</span>
-        <span class="breadcrumb-current">تسجيل طلب دعم فني</span>
+        <span class="breadcrumb-current" data-i18n="nav_support">تسجيل طلب دعم فني</span>
       </div>
 
       <!-- Progress bar -->
@@ -482,8 +485,8 @@
 </main>
 
 <footer class="portal-footer">
-  <div>YAS Help Desk — Technical Support &amp; Customer Service</div>
-  <div style="margin-top:4px">إشراف <a href="https://wa.me/201101267185" target="_blank" style="color:var(--text-muted);text-decoration:none;font-weight:600">Eng. Adam Farouk</a> · جميع الحقوق محفوظة لـ YAS © 2026</div>
+  <div data-i18n="footer_company">YAS Help Desk — Technical Support &amp; Customer Service</div>
+  <div style="margin-top:4px"><span data-i18n="footer_supervision">إشراف</span> <a href="https://wa.me/201101267185" target="_blank" style="color:var(--text-muted);text-decoration:none;font-weight:600">Eng. Adam Farouk</a> · <span data-i18n="footer_rights">جميع الحقوق محفوظة لـ YAS © 2026</span></div>
 </footer>
 
 <div id="toast-container"></div>
@@ -495,5 +498,6 @@
 <script src="js/pwa.js"></script>
 <script src="js/file-upload.js"></script>
 <script src="js/tickets.js"></script>
+<script src="js/i18n.js"></script>
 </body>
 </html>

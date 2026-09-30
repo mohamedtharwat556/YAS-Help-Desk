@@ -11,6 +11,19 @@ const translations = {
     nav_tracking: 'متابعة الطلب',
     nav_faq: 'الأسئلة الشائعة',
     language_btn: 'اللغة',
+
+    // Tracking
+    tracking_title: 'تتبع طلب الدعم الفني',
+    tracking_subtitle: 'أدخل رقم الطلب الذي حصلت عليه عند تسجيل طلبك',
+    tracking_search: 'بحث',
+    tracking_example: 'مثال: YAS-SUP-10482 | يمكنك أيضاً إدخال الأرقام فقط: 10482',
+    tracking_timeline: 'مسار الطلب',
+    tracking_updates: 'تحديثات وملاحظات الفني',
+    tracking_no_updates: 'لا توجد تحديثات بعد',
+    tracking_new_ticket: 'طلب دعم جديد',
+    tracking_search_again: 'بحث آخر',
+    tracking_help_title: 'لا تتذكر رقم طلبك؟',
+    tracking_help_desc: 'تحقق من الرسالة التي أرسلها لك النظام عند تسجيل الطلب. إذا واجهت مشكلة، تواصل مع Eng. Adam Farouk مباشرة.',
     
     // Hero
     hero_badge: 'خدمة الدعم الفني الاحترافية',
@@ -89,6 +102,19 @@ const translations = {
     nav_tracking: 'Track Ticket',
     nav_faq: 'FAQ',
     language_btn: 'Language',
+
+    // Tracking
+    tracking_title: 'Track Technical Support Ticket',
+    tracking_subtitle: 'Enter the ticket number you received when you submitted your request',
+    tracking_search: 'Search',
+    tracking_example: 'Example: YAS-SUP-10482 | You can also enter only the numbers: 10482',
+    tracking_timeline: 'Ticket Timeline',
+    tracking_updates: 'Technician Updates & Notes',
+    tracking_no_updates: 'No updates yet',
+    tracking_new_ticket: 'New Support Ticket',
+    tracking_search_again: 'Search Again',
+    tracking_help_title: 'Don\'t remember your ticket number?',
+    tracking_help_desc: 'Check the message sent to you by the system when you submitted the ticket. If you encounter any issues, contact Eng. Adam Farouk directly.',
     
     // Hero
     hero_badge: 'Professional Technical Support',
@@ -167,6 +193,19 @@ const translations = {
     nav_tracking: '跟踪工单',
     nav_faq: '常见问题',
     language_btn: '语言',
+
+    // Tracking
+    tracking_title: '跟踪技术支持工单',
+    tracking_subtitle: '输入您提交请求时收到的工单号码',
+    tracking_search: '搜索',
+    tracking_example: '示例：YAS-SUP-10482 | 您也可以只输入数字：10482',
+    tracking_timeline: '工单时间线',
+    tracking_updates: '技术员更新和备注',
+    tracking_no_updates: '暂无更新',
+    tracking_new_ticket: '新支持工单',
+    tracking_search_again: '再次搜索',
+    tracking_help_title: '不记得您的工单号码？',
+    tracking_help_desc: '检查系统在您提交工单时发送给您的消息。如果遇到任何问题，请直接联系 Eng. Adam Farouk。',
     
     // Hero
     hero_badge: '专业技术支持',
