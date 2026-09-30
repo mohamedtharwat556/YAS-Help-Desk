@@ -269,13 +269,26 @@ async function updateTicketStatus(id, newStatus, note = '') {
         desc:  note || `تم تحديث حالة الطلب إلى "${activityLabel}"`,
         type:  'status'
       };
+      // Also add to notes if note is provided
+      const newNote = note ? {
+        id: Date.now(),
+        author: 'Eng. Adam Farouk',
+        text: note,
+        timestamp: new Date().toISOString()
+      } : null;
 
-      console.log('[Storage] Calling API updateTicket with id:', id);
-      // Update ticket with new status and activities as array to be merged
-      const response = await YAS_API.updateTicket(id, {
+      // Send only new items - API will merge with existing
+      const updateData = {
         status: newStatus,
-        activities: [...(currentTicket.activities || []), activity]
-      });
+        activities: [activity]
+      };
+
+      if (newNote) {
+        updateData.notes = [newNote];
+      }
+
+      console.log('[Storage] Calling API updateTicket with id:', id, 'data:', updateData);
+      const response = await YAS_API.updateTicket(id, updateData);
 
       if (response.success) {
         if (newStatus === 'resolved' || newStatus === 'closed') {
