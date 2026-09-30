@@ -316,10 +316,38 @@ const TicketForm = {
           sessionStorage.setItem('yas_new_ticket_id', ticketId);
           sessionStorage.setItem('yas_new_ticket_name', this.data.customer.name);
 
-          // Generate WhatsApp message for Adam
-          const dashboardUrl = `https://yas-help-desk.vercel.app/tickets.html?search=${ticketId}`;
-          const trackingUrl = `https://yas-help-desk.vercel.app/tracking.html`;
-          const whatsappMessage = `
+          // Show success section with ticket code
+          const formSection = document.getElementById('form-section');
+          const successSection = document.getElementById('success-section');
+          if (formSection) formSection.style.display = 'none';
+          if (successSection) successSection.style.display = 'block';
+
+          // Update success page with ticket info
+          const idEl = document.getElementById('success-ticket-id');
+          const nameEl = document.getElementById('success-cust-name');
+          if (idEl) idEl.textContent = ticketId;
+          if (nameEl) nameEl.textContent = this.data.customer.name;
+
+          // Show countdown message
+          const countdownEl = document.getElementById('countdown-message');
+          if (countdownEl) {
+            countdownEl.style.display = 'block';
+          }
+
+          // Start countdown
+          let seconds = 30;
+          const countdownInterval = setInterval(() => {
+            seconds--;
+            const countdownSpan = document.getElementById('countdown');
+            if (countdownSpan) {
+              countdownSpan.textContent = seconds;
+            }
+            if (seconds <= 0) {
+              clearInterval(countdownInterval);
+              // Redirect to WhatsApp
+              const dashboardUrl = `https://yas-help-desk.vercel.app/tickets.html?search=${ticketId}`;
+              const trackingUrl = `https://yas-help-desk.vercel.app/tracking.html`;
+              const whatsappMessage = `
 🆕 *تذكرة دعم جديدة*
 
 *رقم التذكرة:* ${ticketId}
@@ -331,7 +359,7 @@ const TicketForm = {
 *الأولوية:* ${this.data.request.priority}
 *الوصف:* ${this.data.request.description}
 
-� *لإخبار العميل بكود التتبع:*
+💡 *لإخبار العميل بكود التتبع:*
 "كود التتبع الخاص بك هو: ${ticketId}
 استخدمه في صفحة التتبع: ${trackingUrl}"
 
@@ -339,12 +367,16 @@ const TicketForm = {
 ${dashboardUrl}
 
 تاريخ الإنشاء: ${new Date().toLocaleString('ar-EG')}
-          `.trim();
+              `.trim();
 
-          // Redirect to WhatsApp with the message
-          const whatsappUrl = `https://wa.me/201101267185?text=${encodeURIComponent(whatsappMessage)}`;
-          console.log('[TicketForm] Redirecting to WhatsApp:', whatsappUrl);
-          window.location.href = whatsappUrl;
+              const whatsappUrl = `https://wa.me/201101267185?text=${encodeURIComponent(whatsappMessage)}`;
+              console.log('[TicketForm] Redirecting to WhatsApp after countdown:', whatsappUrl);
+              window.location.href = whatsappUrl;
+            }
+          }, 1000);
+
+          // Store countdown interval globally so it can be cancelled if user copies code
+          window.ticketCountdownInterval = countdownInterval;
         } else {
           YAS.showToast('حدث خطأ أثناء إنشاء الطلب. حاول مرة أخرى.', 'error');
           if (btn) { btn.textContent = 'إرسال طلب الدعم'; btn.disabled = false; }
