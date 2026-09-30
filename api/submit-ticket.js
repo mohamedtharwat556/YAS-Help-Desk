@@ -254,6 +254,9 @@ module.exports = async function handler(req, res) {
 
         // Send WhatsApp notification to Adam Farouk
         try {
+          // Use ticket_number to open ticket details - this is more reliable
+          const dashboardUrl = `https://yas-help-desk.vercel.app/tickets.html?search=${finalTicketNumber}`;
+          
           const whatsappMessage = `
 🆕 *تذكرة دعم جديدة*
 
@@ -266,11 +269,15 @@ module.exports = async function handler(req, res) {
 *الأولوية:* ${priority}
 *الوصف:* ${description}
 
+🔗 *افتح التذكرة في الداشبورد:*
+${dashboardUrl}
+
 تاريخ الإنشاء: ${new Date().toLocaleString('ar-EG')}
           `.trim();
 
           const whatsappUrl = `https://wa.me/201101267185?text=${encodeURIComponent(whatsappMessage)}`;
           console.log('[SUBMIT-TICKET] WhatsApp URL generated:', whatsappUrl);
+          console.log('[SUBMIT-TICKET] Dashboard URL:', dashboardUrl);
 
           // Note: This is just logging the URL. To actually send, you would need a WhatsApp Business API service
           console.log('[SUBMIT-TICKET] WhatsApp message to Adam:', whatsappMessage);
