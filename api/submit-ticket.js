@@ -55,30 +55,42 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Device model is required' });
       }
 
-      // Create or update customer
+      // Create customer (insert only, no upsert to avoid updating existing customers)
       let newCustomer;
       try {
-        const result = await supabase
+        // Check if customer already exists by phone
+        const { data: existingCustomer } = await supabase
           .from('customers')
-          .upsert({
-            name: customer.name,
-            phone: customer.phone,
-            whatsapp: customer.whatsapp || customer.phone,
-            email: customer.email,
-            company: customer.company
-          }, {
-            onConflict: 'phone'
-          })
-          .select()
+          .select('*')
+          .eq('phone', customer.phone)
           .single();
 
-        if (result.error) {
-          console.error('[SUBMIT-TICKET] Customer creation error:', result.error);
-          throw result.error;
-        }
+        if (existingCustomer) {
+          // Use existing customer
+          newCustomer = existingCustomer;
+          console.log('[SUBMIT-TICKET] Using existing customer:', newCustomer.id);
+        } else {
+          // Create new customer
+          const result = await supabase
+            .from('customers')
+            .insert({
+              name: customer.name,
+              phone: customer.phone,
+              whatsapp: customer.whatsapp || customer.phone,
+              email: customer.email,
+              company: customer.company
+            })
+            .select()
+            .single();
 
-        newCustomer = result.data;
-        console.log('[SUBMIT-TICKET] Customer created:', newCustomer.id);
+          if (result.error) {
+            console.error('[SUBMIT-TICKET] Customer creation error:', result.error);
+            throw result.error;
+          }
+
+          newCustomer = result.data;
+          console.log('[SUBMIT-TICKET] Customer created:', newCustomer.id);
+        }
       } catch (error) {
         console.error('[SUBMIT-TICKET] Customer creation exception:', error);
         return res.status(500).json({ error: 'Failed to create customer', details: error.message });
