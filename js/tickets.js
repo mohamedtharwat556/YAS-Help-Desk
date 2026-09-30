@@ -315,7 +315,31 @@ const TicketForm = {
           console.log('[TicketForm] Saving ticket ID:', ticketId);
           sessionStorage.setItem('yas_new_ticket_id', ticketId);
           sessionStorage.setItem('yas_new_ticket_name', this.data.customer.name);
-          window.location.href = 'support.html?success=1';
+
+          // Generate WhatsApp message for Adam
+          const dashboardUrl = `https://yas-help-desk.vercel.app/tickets.html?search=${ticketId}`;
+          const whatsappMessage = `
+🆕 *تذكرة دعم جديدة*
+
+*رقم التذكرة:* ${ticketId}
+*العميل:* ${this.data.customer.name}
+*الهاتف:* ${this.data.customer.phone}
+*واتساب:* ${this.data.customer.whatsapp || this.data.customer.phone}
+*الجهاز:* ${this.data.device.brand} ${this.data.device.model}
+*نوع الطلب:* ${this.data.request.type}
+*الأولوية:* ${this.data.request.priority}
+*الوصف:* ${this.data.request.description}
+
+🔗 *افتح التذكرة في الداشبورد:*
+${dashboardUrl}
+
+تاريخ الإنشاء: ${new Date().toLocaleString('ar-EG')}
+          `.trim();
+
+          // Redirect to WhatsApp with the message
+          const whatsappUrl = `https://wa.me/201101267185?text=${encodeURIComponent(whatsappMessage)}`;
+          console.log('[TicketForm] Redirecting to WhatsApp:', whatsappUrl);
+          window.location.href = whatsappUrl;
         } else {
           YAS.showToast('حدث خطأ أثناء إنشاء الطلب. حاول مرة أخرى.', 'error');
           if (btn) { btn.textContent = 'إرسال طلب الدعم'; btn.disabled = false; }
