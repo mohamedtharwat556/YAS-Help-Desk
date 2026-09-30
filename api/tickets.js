@@ -350,9 +350,28 @@ module.exports = async function handler(req, res) {
 
         console.log('[Tickets API] Fetched tickets count:', tickets?.length || 0);
 
+        // Enrich tickets with customer and device data
+        const enrichedTickets = await Promise.all(tickets.map(async (ticket) => {
+          try {
+            const [customerResult, deviceResult] = await Promise.all([
+              supabase.from('customers').select('*').eq('id', ticket.customer_id).single(),
+              supabase.from('devices').select('*').eq('id', ticket.device_id).single()
+            ]);
+
+            return {
+              ...ticket,
+              customer: customerResult.data || null,
+              device: deviceResult.data || null
+            };
+          } catch (enrichError) {
+            console.error('[Tickets API] Error enriching ticket:', ticket.id, enrichError);
+            return ticket; // Return original ticket if enrichment fails
+          }
+        }));
+
         res.status(200).json({
           success: true,
-          data: tickets || []
+          data: enrichedTickets || []
         });
       } catch (error) {
         console.error('Get tickets error:', error);

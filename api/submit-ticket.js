@@ -285,8 +285,6 @@ ${dashboardUrl}
           console.error('[SUBMIT-TICKET] WhatsApp notification error:', whatsappError);
           // Don't fail the ticket creation if WhatsApp fails
         }
-          assigned_user: assignedUserResult.data
-        };
 
         res.status(201).json({
           success: true,
