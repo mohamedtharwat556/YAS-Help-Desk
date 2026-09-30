@@ -333,7 +333,7 @@ function openStatusModal(ticketId, currentStatus) {
   YAS.openModal('status-modal');
 }
 
-function confirmStatusUpdate() {
+async function confirmStatusUpdate() {
   const modal    = document.getElementById('status-modal');
   const select   = document.getElementById('modal-status-select');
   const noteInput= document.getElementById('modal-status-note');
@@ -344,11 +344,15 @@ function confirmStatusUpdate() {
   const newStatus = select.value;
   const note      = noteInput?.value.trim() || '';
 
-  YASStorage.updateTicketStatus(ticketId, newStatus, note);
-
-  YAS.closeModal('status-modal');
-  YAS.showToast('تم تحديث حالة الطلب بنجاح', 'success');
-  TicketManager.refresh();
+  try {
+    await YASStorage.updateTicketStatus(ticketId, newStatus, note);
+    YAS.closeModal('status-modal');
+    YAS.showToast('تم تحديث حالة الطلب بنجاح', 'success');
+    TicketManager.refresh();
+  } catch (error) {
+    console.error('[TicketManager] Error updating status:', error);
+    YAS.showToast('فشل تحديث حالة الطلب', 'error');
+  }
 }
 
 function deleteTicketAction(ticketId) {
