@@ -528,15 +528,33 @@
 function copyTicketCode() {
   const ticketId = document.getElementById('success-ticket-id').textContent;
   navigator.clipboard.writeText(ticketId).then(() => {
-    // Cancel countdown if user copies the code
+    // Cancel the 30-second countdown
     if (window.ticketCountdownInterval) {
       clearInterval(window.ticketCountdownInterval);
-      const countdownEl = document.getElementById('countdown-message');
-      if (countdownEl) {
-        countdownEl.style.display = 'none';
-      }
     }
-    alert('تم نسخ الكود بنجاح! يمكنك استخدامه في صفحة التتبع.');
+
+    // Update countdown message
+    const countdownEl = document.getElementById('countdown-message');
+    if (countdownEl) {
+      countdownEl.innerHTML = '✅ تم نسخ الكود! سيتم التحويل لواتساب الدعم الفني خلال <span id="countdown">5</span> ثواني';
+    }
+
+    // Start a new 5-second countdown then redirect to WhatsApp
+    let seconds = 5;
+    const shortCountdown = setInterval(() => {
+      seconds--;
+      const countdownSpan = document.getElementById('countdown');
+      if (countdownSpan) {
+        countdownSpan.textContent = seconds;
+      }
+      if (seconds <= 0) {
+        clearInterval(shortCountdown);
+        // Trigger the WhatsApp redirect
+        if (window.redirectToWhatsApp) {
+          window.redirectToWhatsApp();
+        }
+      }
+    }, 1000);
   });
 }
 </script>

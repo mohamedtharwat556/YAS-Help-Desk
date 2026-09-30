@@ -334,20 +334,11 @@ const TicketForm = {
             countdownEl.style.display = 'block';
           }
 
-          // Start countdown
-          let seconds = 30;
-          const countdownInterval = setInterval(() => {
-            seconds--;
-            const countdownSpan = document.getElementById('countdown');
-            if (countdownSpan) {
-              countdownSpan.textContent = seconds;
-            }
-            if (seconds <= 0) {
-              clearInterval(countdownInterval);
-              // Redirect to WhatsApp
-              const dashboardUrl = `https://yas-help-desk.vercel.app/tickets.html?search=${ticketId}`;
-              const trackingUrl = `https://yas-help-desk.vercel.app/tracking.html`;
-              const whatsappMessage = `
+          // Define redirect function globally
+          window.redirectToWhatsApp = () => {
+            const dashboardUrl = `https://yas-help-desk.vercel.app/tickets.html?search=${ticketId}`;
+            const trackingUrl = `https://yas-help-desk.vercel.app/tracking.html`;
+            const whatsappMessage = `
 🆕 *تذكرة دعم جديدة*
 
 *رقم التذكرة:* ${ticketId}
@@ -367,11 +358,25 @@ const TicketForm = {
 ${dashboardUrl}
 
 تاريخ الإنشاء: ${new Date().toLocaleString('ar-EG')}
-              `.trim();
+            `.trim();
 
-              const whatsappUrl = `https://wa.me/201101267185?text=${encodeURIComponent(whatsappMessage)}`;
-              console.log('[TicketForm] Redirecting to WhatsApp after countdown:', whatsappUrl);
-              window.location.href = whatsappUrl;
+            const whatsappUrl = `https://wa.me/201101267185?text=${encodeURIComponent(whatsappMessage)}`;
+            console.log('[TicketForm] Redirecting to WhatsApp:', whatsappUrl);
+            window.location.href = whatsappUrl;
+          };
+
+          // Start countdown
+          let seconds = 30;
+          const countdownInterval = setInterval(() => {
+            seconds--;
+            const countdownSpan = document.getElementById('countdown');
+            if (countdownSpan) {
+              countdownSpan.textContent = seconds;
+            }
+            if (seconds <= 0) {
+              clearInterval(countdownInterval);
+              // Redirect to WhatsApp
+              window.redirectToWhatsApp();
             }
           }, 1000);
 
