@@ -250,6 +250,37 @@ module.exports = async function handler(req, res) {
           assigned_user: assignedUserResult.data
         };
 
+        console.log('[SUBMIT-TICKET] Enriched ticket:', enrichedTicket);
+
+        // Send WhatsApp notification to Adam Farouk
+        try {
+          const whatsappMessage = `
+🆕 *تذكرة دعم جديدة*
+
+*رقم التذكرة:* ${finalTicketNumber}
+*العميل:* ${customer.name}
+*الهاتف:* ${customer.phone}
+*واتساب:* ${customer.whatsapp || customer.phone}
+*الجهاز:* ${device.brand} ${device.model}
+*نوع الطلب:* ${request_type}
+*الأولوية:* ${priority}
+*الوصف:* ${description}
+
+تاريخ الإنشاء: ${new Date().toLocaleString('ar-EG')}
+          `.trim();
+
+          const whatsappUrl = `https://wa.me/201101267185?text=${encodeURIComponent(whatsappMessage)}`;
+          console.log('[SUBMIT-TICKET] WhatsApp URL generated:', whatsappUrl);
+
+          // Note: This is just logging the URL. To actually send, you would need a WhatsApp Business API service
+          console.log('[SUBMIT-TICKET] WhatsApp message to Adam:', whatsappMessage);
+        } catch (whatsappError) {
+          console.error('[SUBMIT-TICKET] WhatsApp notification error:', whatsappError);
+          // Don't fail the ticket creation if WhatsApp fails
+        }
+          assigned_user: assignedUserResult.data
+        };
+
         res.status(201).json({
           success: true,
           message: 'Ticket created successfully',
