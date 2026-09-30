@@ -66,7 +66,7 @@ module.exports = async function handler(req, res) {
         // Simple query without relations first
         const { data: ticket, error } = await supabase
           .from('tickets')
-          .select('*')
+          .select('*, notes, activities')
           .eq('ticket_number', normalizedTicketNumber)
           .single();
 
@@ -76,6 +76,8 @@ module.exports = async function handler(req, res) {
         }
 
         console.log('[GetTickets API] Track found:', ticket.ticket_number);
+        console.log('[GetTickets API] Ticket notes:', ticket.notes);
+        console.log('[GetTickets API] Ticket activities:', ticket.activities);
 
         // Fetch customer and device separately
         const [customerResult, deviceResult] = await Promise.all([
@@ -140,7 +142,7 @@ module.exports = async function handler(req, res) {
       // Fetch tickets without relations first
       const { data: tickets, error } = await supabase
         .from('tickets')
-        .select('*')
+        .select('*, notes, activities')
         .order('created_at', { ascending: false });
 
       console.log('[Tickets API] Supabase response:', { tickets, error });
