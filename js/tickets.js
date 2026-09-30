@@ -316,6 +316,9 @@ const TicketForm = {
           sessionStorage.setItem('yas_new_ticket_id', ticketId);
           sessionStorage.setItem('yas_new_ticket_name', this.data.customer.name);
 
+          // Generate track code page URL
+          const trackCodeUrl = `https://yas-help-desk.vercel.app/track-code.html?id=${ticketId}&customer=${encodeURIComponent(this.data.customer.name)}&device=${encodeURIComponent(this.data.device.brand + ' ' + this.data.device.model)}&date=${new Date().toISOString()}`;
+          
           // Generate WhatsApp message for Adam
           const dashboardUrl = `https://yas-help-desk.vercel.app/tickets.html?search=${ticketId}`;
           const whatsappMessage = `
@@ -329,6 +332,9 @@ const TicketForm = {
 *نوع الطلب:* ${this.data.request.type}
 *الأولوية:* ${this.data.request.priority}
 *الوصف:* ${this.data.request.description}
+
+🔗 *كود التتبع للعميل:*
+${trackCodeUrl}
 
 🔗 *افتح التذكرة في الداشبورد:*
 ${dashboardUrl}
