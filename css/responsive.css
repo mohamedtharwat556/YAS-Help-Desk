@@ -108,6 +108,8 @@
   /* Hero */
   .hero {
     padding: var(--space-8) var(--space-4);
+    grid-template-columns: 1fr;
+    text-align: center;
   }
 
   .hero h1 {
@@ -325,6 +327,11 @@
 /* ── Small Mobile (≤ 480px) ─────────────────────────────────── */
 @media (max-width: 480px) {
   .hero h1 { font-size: 1.5rem; }
+
+  .hero img {
+    width: 180px !important;
+    height: 180px !important;
+  }
 
   .categories-grid {
     grid-template-columns: 1fr 1fr;

@@ -50,56 +50,61 @@
 <main class="portal-page" style="background:linear-gradient(180deg, var(--background) 0%, var(--primary-light) 50%, var(--background) 100%)">
 
   <!-- Hero -->
-  <section class="hero stagger-children" style="background:linear-gradient(135deg,rgba(26,86,219,0.05) 0%,rgba(14,165,233,0.03) 100%);border-radius:24px;padding:var(--space-16) var(--space-8);margin:var(--space-8) var(--space-6);position:relative;overflow:hidden">
+  <section class="hero stagger-children" style="background:linear-gradient(135deg,rgba(26,86,219,0.05) 0%,rgba(14,165,233,0.03) 100%);border-radius:24px;padding:var(--space-16) var(--space-8);margin:var(--space-8) var(--space-6);position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-12);align-items:center">
     <div style="position:absolute;top:-50%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(26,86,219,0.1) 0%,transparent 70%);border-radius:50%;animation: float 8s ease-in-out infinite"></div>
     <div style="position:absolute;bottom:-50%;left:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(14,165,233,0.08) 0%,transparent 70%);border-radius:50%;animation: float 10s ease-in-out infinite reverse"></div>
 
-    <div class="hero-badge animate-fade-in-up" style="position:relative;z-index:1">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      خدمة الدعم الفني الاحترافية
-    </div>
-    <div class="animate-fade-in-up" style="animation-delay: 0.05s;margin-bottom:var(--space-6);position:relative;z-index:1">
-      <img src="logo.png" alt="YAS Technical Support" style="width:140px;height:140px;border-radius:32px;box-shadow:0 12px 40px rgba(26,86,219,0.4),0 0 0 4px rgba(255,255,255,0.5);animation: float 4s ease-in-out infinite">
-    </div>
-    <h1 class="animate-fade-in-up animate-pulse-glow" style="animation-delay: 0.1s;position:relative;z-index:1">محتاج مساعدة؟ إحنا معاك طوال الوقت.</h1>
-    <p class="animate-fade-in-up" style="animation-delay: 0.2s;position:relative;z-index:1">فريق YAS المتخصص جاهز لمساعدتك في حل جميع مشاكل الأجهزة والأنظمة التقنية. تسجيل طلب، تتبع حالته، والحصول على الدعم الفني لم يكن بهذه السهولة.</p>
-
-    <div class="hero-actions">
-      <a href="support.html" class="btn btn-primary btn-lg animate-bounce-in" style="animation-delay: 0.3s">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-        تسجيل طلب دعم
-      </a>
-      <a href="tracking.html" class="btn btn-secondary btn-lg animate-bounce-in" style="animation-delay: 0.4s">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><polyline points="11 8 11 12 13 14"/></svg>
-        متابعة طلب
-      </a>
+    <!-- Left: Logo -->
+    <div class="animate-fade-in-up" style="animation-delay: 0.05s;position:relative;z-index:1;display:flex;justify-content:center;align-items:center">
+      <img src="logo.png" alt="YAS Technical Support" style="width:280px;height:280px;border-radius:40px;box-shadow:0 20px 60px rgba(26,86,219,0.4),0 0 0 8px rgba(255,255,255,0.5);animation: float 4s ease-in-out infinite">
     </div>
 
-    <!-- Trust indicators -->
-    <div style="display:flex;gap:var(--space-8);margin-top:var(--space-10);flex-wrap:wrap;justify-content:center">
-      <a href="https://wa.me/201101267185" target="_blank" class="animate-float" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:var(--text-muted);font-size:0.875rem;text-decoration:none;transition:all 0.3s;min-width:100px;animation-delay: 0.5s" onmouseover="this.style.color='var(--primary)';this.style.transform='translateY(-4px)'" onmouseout="this.style.color='var(--text-muted)';this.style.transform='translateY(0)'">
-        <div style="width:48px;height:48px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        </div>
-        <span style="font-weight:600">دعم 24/7</span>
-      </a>
-      <div class="animate-float" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:var(--text-muted);font-size:0.875rem;min-width:100px;animation-delay: 0.6s">
-        <div style="width:48px;height:48px;border-radius:12px;background:var(--success-light);display:flex;align-items:center;justify-content:center">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
-        </div>
-        <span style="font-weight:600">ضمان الجودة</span>
+    <!-- Right: Content -->
+    <div style="position:relative;z-index:1">
+      <div class="hero-badge animate-fade-in-up">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        خدمة الدعم الفني الاحترافية
       </div>
-      <div class="animate-float" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:var(--text-muted);font-size:0.875rem;min-width:100px;animation-delay: 0.7s">
-        <div style="width:48px;height:48px;border-radius:12px;background:var(--warning-light);display:flex;align-items:center;justify-content:center">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-        <span style="font-weight:600">فريق متخصص</span>
+      <h1 class="animate-fade-in-up animate-pulse-glow" style="animation-delay: 0.1s">محتاج مساعدة؟ إحنا معاك طوال الوقت.</h1>
+      <p class="animate-fade-in-up" style="animation-delay: 0.2s">فريق YAS المتخصص جاهز لمساعدتك في حل جميع مشاكل الأجهزة والأنظمة التقنية. تسجيل طلب، تتبع حالته، والحصول على الدعم الفني لم يكن بهذه السهولة.</p>
+
+      <div class="hero-actions">
+        <a href="support.html" class="btn btn-primary btn-lg animate-bounce-in" style="animation-delay: 0.3s">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          تسجيل طلب دعم
+        </a>
+        <a href="tracking.html" class="btn btn-secondary btn-lg animate-bounce-in" style="animation-delay: 0.4s">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><polyline points="11 8 11 12 13 14"/></svg>
+          متابعة طلب
+        </a>
       </div>
-      <div class="animate-float" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:var(--text-muted);font-size:0.875rem;min-width:100px;animation-delay: 0.8s">
-        <div style="width:48px;height:48px;border-radius:12px;background:var(--danger-light);display:flex;align-items:center;justify-content:center">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+
+      <!-- Trust indicators -->
+      <div style="display:flex;gap:var(--space-6);margin-top:var(--space-10);flex-wrap:wrap">
+        <a href="https://wa.me/201101267185" target="_blank" class="animate-float" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:var(--text-muted);font-size:0.875rem;text-decoration:none;transition:all 0.3s;min-width:90px;animation-delay: 0.5s" onmouseover="this.style.color='var(--primary)';this.style.transform='translateY(-4px)'" onmouseout="this.style.color='var(--text-muted)';this.style.transform='translateY(0)'">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--primary-light);display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <span style="font-weight:600">دعم 24/7</span>
+        </a>
+        <div class="animate-float" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:var(--text-muted);font-size:0.875rem;min-width:90px;animation-delay: 0.6s">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--success-light);display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <span style="font-weight:600">ضمان الجودة</span>
         </div>
-        <span style="font-weight:600">استجابة سريعة</span>
+        <div class="animate-float" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:var(--text-muted);font-size:0.875rem;min-width:90px;animation-delay: 0.7s">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--warning-light);display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span style="font-weight:600">فريق متخصص</span>
+        </div>
+        <div class="animate-float" style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);color:var(--text-muted);font-size:0.875rem;min-width:90px;animation-delay: 0.8s">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--danger-light);display:flex;align-items:center;justify-content:center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <span style="font-weight:600">استجابة سريعة</span>
+        </div>
       </div>
     </div>
   </section>
