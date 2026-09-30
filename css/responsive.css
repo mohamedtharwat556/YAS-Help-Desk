@@ -2,6 +2,15 @@
    YAS Help Desk — Responsive CSS
    ============================================================ */
 
+/* Language dropdown */
+#language-dropdown.show {
+  display: block !important;
+}
+
+.lang-option:hover {
+  background: var(--primary-light) !important;
+}
+
 /* ── Tablet (≤ 1024px) ──────────────────────────────────────── */
 @media (max-width: 1024px) {
   .hero img {

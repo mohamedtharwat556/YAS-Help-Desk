@@ -40,9 +40,25 @@
     </nav>
 
     <div class="portal-nav-actions">
-      <button class="btn btn-outline" id="language-btn" style="font-size:0.8125rem;padding:6px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all var(--transition)" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
-        🌐 اللغة
-      </button>
+      <div style="position:relative">
+        <button class="btn btn-outline" id="language-btn" style="font-size:0.8125rem;padding:6px 12px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);cursor:pointer;transition:all var(--transition)" onmouseover="this.style.borderColor='var(--primary)';this.style.color='var(--primary)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+          🌐 العربية
+        </button>
+        <div id="language-dropdown" style="position:absolute;top:100%;inset-inline-end:0;margin-top:4px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);min-width:140px;z-index:1000;display:none">
+          <div class="lang-option" data-lang="ar" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.2s" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'">
+            <span>🇸🇦</span>
+            <span>العربية</span>
+          </div>
+          <div class="lang-option" data-lang="en" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.2s" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'">
+            <span>🇬🇧</span>
+            <span>English</span>
+          </div>
+          <div class="lang-option" data-lang="zh" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.2s" onmouseover="this.style.background='var(--primary-light)'" onmouseout="this.style.background='transparent'">
+            <span>🇨🇳</span>
+            <span>中文</span>
+          </div>
+        </div>
+      </div>
       <button class="theme-toggle" id="theme-toggle-btn" aria-label="تبديل الوضع"></button>
       <button class="menu-toggle" id="menu-toggle" aria-label="القائمة">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
