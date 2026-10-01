@@ -156,33 +156,97 @@ const TicketForm = {
     clearErrors();
 
     if (step === 1) {
-      const name  = document.getElementById('cust-name');
-      const phone = document.getElementById('cust-phone');
+      const name     = document.getElementById('cust-name');
+      const phone    = document.getElementById('cust-phone');
+      const whatsapp = document.getElementById('cust-whatsapp');
+      const email    = document.getElementById('cust-email');
 
+      // Name validation
       if (!name?.value.trim()) {
         this.markError(name, 'cust-name-error', 'الاسم مطلوب');
         valid = false;
+      } else if (name.value.trim().length < 3) {
+        this.markError(name, 'cust-name-error', 'الاسم يجب أن يكون 3 أحرف على الأقل');
+        valid = false;
+      } else if (!/^[\u0600-\u06FFa-zA-Z\s]+$/.test(name.value.trim())) {
+        this.markError(name, 'cust-name-error', 'الاسم يجب أن يحتوي على أحرف فقط');
+        valid = false;
       }
+
+      // Phone validation
       if (!phone?.value.trim()) {
         this.markError(phone, 'cust-phone-error', 'رقم الجوال مطلوب');
         valid = false;
-      } else if (!/^[0-9+\s()-]{7,15}$/.test(phone.value.trim())) {
-        this.markError(phone, 'cust-phone-error', 'رقم الجوال غير صحيح');
+      } else if (!/^[0-9+\s()-]{10,15}$/.test(phone.value.trim())) {
+        this.markError(phone, 'cust-phone-error', 'رقم الجوال غير صحيح (10-15 رقم)');
         valid = false;
+      }
+
+      // WhatsApp validation (optional but if provided must be valid)
+      if (whatsapp?.value.trim()) {
+        if (!/^[0-9+\s()-]{10,15}$/.test(whatsapp.value.trim())) {
+          this.markError(whatsapp, 'cust-whatsapp-error', 'رقم الواتساب غير صحيح (10-15 رقم)');
+          valid = false;
+        }
+      }
+
+      // Email validation (optional but if provided must be valid)
+      if (email?.value.trim()) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.value.trim())) {
+          this.markError(email, 'cust-email-error', 'البريد الإلكتروني غير صحيح');
+          valid = false;
+        }
       }
     }
 
     if (step === 2) {
       const deviceType = document.getElementById('device-type-hidden');
+      const brand      = document.getElementById('device-brand');
       const model      = document.getElementById('device-model');
+      const serial     = document.getElementById('device-serial');
+      const purchase   = document.getElementById('device-purchase');
 
+      // Device type validation
       if (!deviceType?.value) {
         YAS.showToast('يرجى اختيار نوع الجهاز', 'warning');
         valid = false;
       }
+
+      // Brand validation
+      if (!brand?.value.trim()) {
+        this.markError(brand, 'device-brand-error', 'الماركة مطلوبة');
+        valid = false;
+      } else if (brand.value.trim().length < 2) {
+        this.markError(brand, 'device-brand-error', 'الماركة يجب أن تكون حرفين على الأقل');
+        valid = false;
+      }
+
+      // Model validation
       if (!model?.value.trim()) {
         this.markError(model, 'device-model-error', 'موديل الجهاز مطلوب');
         valid = false;
+      } else if (model.value.trim().length < 2) {
+        this.markError(model, 'device-model-error', 'الموديل يجب أن يكون حرفين على الأقل');
+        valid = false;
+      }
+
+      // Serial number validation (optional but if provided must be valid)
+      if (serial?.value.trim()) {
+        if (serial.value.trim().length < 3) {
+          this.markError(serial, 'device-serial-error', 'الرقم التسلسلي يجب أن يكون 3 أحرف على الأقل');
+          valid = false;
+        }
+      }
+
+      // Purchase date validation (optional but if provided must be valid)
+      if (purchase?.value) {
+        const purchaseDate = new Date(purchase.value);
+        const today = new Date();
+        if (purchaseDate > today) {
+          this.markError(purchase, 'device-purchase-error', 'تاريخ الشراء لا يمكن أن يكون في المستقبل');
+          valid = false;
+        }
       }
     }
 
@@ -191,22 +255,33 @@ const TicketForm = {
       const priority = document.getElementById('priority-hidden');
       const desc     = document.getElementById('problem-desc');
 
+      // Request type validation
       if (!type?.value) {
         this.markError(type, 'request-type-error', 'نوع الطلب مطلوب');
         valid = false;
       }
+
+      // Priority validation
       if (!priority?.value) {
         YAS.showToast('يرجى اختيار الأولوية', 'warning');
         valid = false;
       }
-      if (!desc?.value.trim() || desc.value.trim().length < 10) {
-        this.markError(desc, 'desc-error', 'يرجى وصف المشكلة بشكل كافٍ (10 أحرف على الأقل)');
+
+      // Description validation
+      if (!desc?.value.trim()) {
+        this.markError(desc, 'desc-error', 'وصف المشكلة مطلوب');
+        valid = false;
+      } else if (desc.value.trim().length < 20) {
+        this.markError(desc, 'desc-error', 'يرجى وصف المشكلة بشكل كافٍ (20 حرف على الأقل)');
+        valid = false;
+      } else if (desc.value.trim().length > 2000) {
+        this.markError(desc, 'desc-error', 'الوصف طويل جداً (أقصى 2000 حرف)');
         valid = false;
       }
     }
 
     if (!valid) {
-      YAS.showToast('من فضلك أكمل البيانات المطلوبة', 'warning');
+      YAS.showToast('من فضلك أكمل البيانات المطلوبة بشكل صحيح', 'warning');
     }
 
     return valid;
