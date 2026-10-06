@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>دليل حل المشاكل — YAS Help Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/customer.css">
+  <style>
+    .troubleshooting-page {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .page-header h1 {
+      font-size: 2.5rem;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .page-header p {
+      color: var(--text-muted);
+      font-size: 1.125rem;
+    }
+    .search-section {
+      margin-bottom: 40px;
+    }
+    .search-box {
+      position: relative;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 16px 50px 16px 20px;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Cairo', sans-serif;
+      transition: border-color 0.2s;
+    }
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .search-box svg {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .categories {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+    .category-btn {
+      padding: 10px 20px;
+      background: var(--bg-tertiary);
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .category-btn:hover,
+    .category-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    .article-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .article-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .article-card .category {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .article-card h3 {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .article-card p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .article-card .read-more {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    .article-card .read-more:hover {
+      text-decoration: underline;
+    }
+    .article-detail {
+      display: none;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 32px;
+      margin-top: 24px;
+    }
+    .article-detail.active {
+      display: block;
+    }
+    .article-detail h2 {
+      font-size: 1.75rem;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .article-detail .meta {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-bottom: 24px;
+    }
+    .article-detail .content {
+      line-height: 1.8;
+      color: var(--text-primary);
+    }
+    .article-detail .content h3 {
+      font-size: 1.25rem;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+    .article-detail .content ul {
+      margin: 12px 0;
+      padding-right: 24px;
+    }
+    .article-detail .content li {
+      margin-bottom: 8px;
+    }
+    .article-detail .content code {
+      background: var(--bg-tertiary);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .article-detail .close-btn {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 12px 24px;
+      background: var(--bg-tertiary);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .article-detail .close-btn:hover {
+      background: var(--border-color);
+    }
+    .video-section {
+      margin-top: 48px;
+    }
+    .video-section h2 {
+      font-size: 1.75rem;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .video-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .video-card .thumbnail {
+      width: 100%;
+      height: 160px;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+    }
+    .video-card .info {
+      padding: 16px;
+    }
+    .video-card h4 {
+      font-size: 1rem;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .video-card p {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    .no-results {
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted);
+      display: none;
+    }
+    .no-results.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="YAS Logo" width="40" height="40">
+          <div class="logo-text">
+            <span class="logo-main">Technical Support & Customer Service</span>
+            <span class="logo-sub">مواعيد العمل متاح دايماً التسجيل</span>
+          </div>
+        </a>
+      </div>
+      <div class="header-right">
+        <a href="index.html" class="nav-link" data-i18n="nav_home">الرئيسية</a>
+        <a href="support.html" class="nav-link" data-i18n="nav_support">تسجيل طلب</a>
+        <a href="tracking.html" class="nav-link" data-i18n="nav_tracking">متابعة الطلب</a>
+        <a href="troubleshooting.html" class="nav-link active">دليل المشاكل</a>
+        <button class="lang-btn" id="lang-toggle">🌐 العربية</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="troubleshooting-page">
+    <div class="page-header">
+      <h1>دليل حل المشاكل</h1>
+      <p>حل مشاكلك بنفسك قبل الاتصال بالدعم الفني</p>
+    </div>
+
+    <div class="search-section">
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="ابحث عن مشكلة...">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+    </div>
+
+    <div class="categories">
+      <button class="category-btn active" data-category="all">الكل</button>
+      <button class="category-btn" data-category="laptop">لاب توب</button>
+      <button class="category-btn" data-category="desktop">كمبيوتر</button>
+      <button class="category-btn" data-category="network">شبكات</button>
+      <button class="category-btn" data-category="printer">طابعات</button>
+      <button class="category-btn" data-category="software">برمجيات</button>
+    </div>
+
+    <div class="articles-grid" id="articles-grid">
+      <!-- Articles will be loaded here -->
+    </div>
+
+    <div class="no-results" id="no-results">
+      <p>لم يتم العثور على نتائج</p>
+    </div>
+
+    <div class="article-detail" id="article-detail">
+      <h2 id="detail-title">عنوان المقال</h2>
+      <div class="meta" id="detail-meta">التصنيف • الوقت المقدر</div>
+      <div class="content" id="detail-content">
+        <!-- Article content -->
+      </div>
+      <button class="close-btn" id="close-detail">إغلاق</button>
+    </div>
+
+    <div class="video-section">
+      <h2>فيديوهات تعليمية</h2>
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="thumbnail">▶️</div>
+          <div class="info">
+            <h4>كيف تعيد تشغيل جهازك</h4>
+            <p>دقيقة واحدة</p>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="thumbnail">▶️</div>
+          <div class="info">
+            <h4>تثبيت برنامج جديد</h4>
+            <p>3 دقائق</p>
+          </div>
+        </div>
+        <div class="video-card">
+          <div class="thumbnail">▶️</div>
+          <div class="info">
+            <h4>حل مشاكل الشبكة</h4>
+            <p>5 دقائق</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-links">
+        <a href="https://yas-portfolio-eta.vercel.app/" target="_blank">Portfolio</a>
+        <a href="https://www.yas-eg.com/" target="_blank">المتجر</a>
+        <a href="tracking.html">تتبع الطلب</a>
+      </div>
+      <div class="footer-text">
+        <a href="https://wa.me/201101267185" target="_blank">Technical Support & Customer Service</a>
+        <span>مواعيد العمل متاح دايماً التسجيل · إشراف Eng. Adam Farouk · جميع الحقوق محفوظة لـ YAS © 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+    const articles = [
+      {
+        id: 1,
+        category: 'laptop',
+        title: 'جهازي لا يعمل بعد إعادة التشغيل',
+        excerpt: 'إذا كان جهازك لا يعمل بعد إعادة التشغيل، جرب هذه الخطوات...',
+        time: '5 دقائق',
+        content: `
+          <h3>الخطوة 1: تحقق من الطاقة</h3>
+          <p>تأكد من أن الجهاز متصل بالكهرباء وأن الشاحن يعمل بشكل صحيح.</p>
+          
+          <h3>الخطوة 2: إعادة التشغيل القسري</h3>
+          <p>اضغط على زر الطاقة لمدة 10 ثواني ثم أعد تشغيل الجهاز.</p>
+          
+          <h3>الخطوة 3: الوضع الآمن</h3>
+          <p>حاول التشغيل في الوضع الآمن عن طريق الضغط على F8 أثناء التشغيل.</p>
+          
+          <h3>الخطوة 4: استعادة النظام</h3>
+          <p>إذا لم تنجح الخطوات السابقة، جرب استعادة النظام إلى نقطة سابقة.</p>
+          
+          <p>إذا استمرت المشكلة، تواصل مع الدعم الفني عبر <a href="support.html">تسجيل طلب دعم</a>.</p>
+        `
+      },
+      {
+        id: 2,
+        category: 'network',
+        title: 'لا يمكنني الاتصال بالإنترنت',
+        excerpt: 'إذا كنت تواجه مشاكل في الاتصال بالإنترنت، اتبع هذه الخطوات...',
+        time: '3 دقائق',
+        content: `
+          <h3>الخطوة 1: تحقق من المودم</h3>
+          <p>تأكد من أن المودم متصل بالكهرباء وأن الأضواء تعمل بشكل طبيعي.</p>
+          
+          <h3>الخطوة 2: إعادة تشغيل المودم</h3>
+          <p>افصل المودم عن الكهرباء لمدة 30 ثانية ثم أعد توصيله.</p>
+          
+          <h3>الخطوة 3: تحقق من إعدادات الشبكة</h3>
+          <p>اذهب إلى إعدادات الشبكة وتأكد من أن الاتصال صحيح.</p>
+          
+          <h3>الخطوة 4: تحديث محول الشبكة</h3>
+          <p>افتح إدارة الأجهزة وقم بتحديث محول الشبكة.</p>
+          
+          <p>إذا استمرت المشكلة، تواصل مع الدعم الفني عبر <a href="support.html">تسجيل طلب دعم</a>.</p>
+        `
+      },
+      {
+        id: 3,
+        category: 'printer',
+        title: 'الطابعة لا تطبع',
+        excerpt: 'إذا كانت طابعتك لا تطبع، جرب هذه الحلول السريعة...',
+        time: '4 دقائق',
+        content: `
+          <h3>الخطوة 1: تحقق من الورق والحبر</h3>
+          <p>تأكد من أن الورق موجود في الدرج وأن الحبر لا ينفد.</p>
+          
+          <h3>الخطوة 2: إعادة تشغيل الطابعة</h3>
+          <p>افصل الطابعة عن الكهرباء لمدة 30 ثانية ثم أعد توصيلها.</p>
+          
+          <h3>الخطوة 3: تحقق من الاتصال</h3>
+          <p>تأكد من أن الطابعة متصلة بالكمبيوتر أو الشبكة بشكل صحيح.</p>
+          
+          <h3>الخطوة 4: تحديث التعريفات</h3>
+          <p>اذهب إلى موقع الشركة المصنعة وقم بتحديث تعريفات الطابعة.</p>
+          
+          <p>إذا استمرت المشكلة، تواصل مع الدعم الفني عبر <a href="support.html">تسجيل طلب دعم</a>.</p>
+        `
+      },
+      {
+        id: 4,
+        category: 'software',
+        title: 'البرنامج يتوقف عن العمل',
+        excerpt: 'إذا كان برنامج يتوقف عن العمل بشكل متكرر، اتبع هذه الخطوات...',
+        time: '5 دقائق',
+        content: `
+          <h3>الخطوة 1: إعادة تشغيل البرنامج</h3>
+          <p>أغلق البرنامج تماماً وأعد فتحه.</p>
+          
+          <h3>الخطوة 2: تحديث البرنامج</h3>
+          <p>تأكد من أنك تستخدم أحدث إصدار من البرنامج.</p>
+          
+          <h3>الخطوة 3: إعادة التثبيت</h3>
+          <p>قم بإلغاء تثبيت البرنامج ثم أعد تثبيته من جديد.</p>
+          
+          <h3>الخطوة 4: التحقق من التوافق</h3>
+          <p>تأكد من أن البرنامج متوافق مع نظام التشغيل الخاص بك.</p>
+          
+          <p>إذا استمرت المشكلة، تواصل مع الدعم الفني عبر <a href="support.html">تسجيل طلب دعم</a>.</p>
+        `
+      },
+      {
+        id: 5,
+        category: 'laptop',
+        title: 'البطارية لا تشحن',
+        excerpt: 'إذا كانت بطارية لابتوبك لا تشحن، جرب هذه الحلول...',
+        time: '3 دقائق',
+        content: `
+          <h3>الخطوة 1: تحقق من الشاحن</h3>
+          <p>تأكد من أن الشاحن يعمل بشكل صحيح وغير تالف.</p>
+          
+          <h3>الخطوة 2: نظف منافذ الشحن</h3>
+          <p>استخدم فرشاة ناعمة لتنظيف منفذ الشحن من الغبار والأوساخ.</p>
+          
+          <h3>الخطوة 3: إعادة ضبط البطارية</h3>
+          <p>افصل البطارية إذا كانت قابلة للإزالة، ثم أعد توصيلها.</p>
+          
+          <h3>الخطوة 4: تحديث BIOS</h3>
+          <p>تحديث BIOS قد يحل مشاكل البطارية في بعض الأحيان.</p>
+          
+          <p>إذا استمرت المشكلة، قد تحتاج إلى استبدال البطارية. تواصل مع الدعم الفني عبر <a href="support.html">تسجيل طلب دعم</a>.</p>
+        `
+      },
+      {
+        id: 6,
+        category: 'desktop',
+        title: 'الشاشة سوداء بعد التشغيل',
+        excerpt: 'إذا كانت شاشتك سوداء بعد تشغيل الكمبيوتر، اتبع هذه الخطوات...',
+        time: '5 دقائق',
+        content: `
+          <h3>الخطوة 1: تحقق من اتصال الشاشة</h3>
+          <p>تأكد من أن كابل الشاشة متصل بإحكام في الشاشة والكمبيوتر.</p>
+          
+          <h3>الخطوة 2: تحقق من الشاشة</h3>
+          <p>جرب استخدام شاشة أخرى للتأكد من أن المشكلة ليست من الشاشة.</p>
+          
+          <h3>الخطوة 3: إزالة كرت الشاشة</h3>
+          <p>إذا كان لديك كرت شاشة منفصل، أعد تثبيته بإحكام.</p>
+          
+          <h3>الخطوة 4: الوضع الآمن</h3>
+          <p>حاول التشغيل في الوضع الآمن وتحديث تعريفات الشاشة.</p>
+          
+          <p>إذا استمرت المشكلة، تواصل مع الدعم الفني عبر <a href="support.html">تسجيل طلب دعم</a>.</p>
+        `
+      }
+    ];
+
+    // Render articles
+    function renderArticles(articlesToRender) {
+      const grid = document.getElementById('articles-grid');
+      const noResults = document.getElementById('no-results');
+      
+      grid.innerHTML = '';
+      
+      if (articlesToRender.length === 0) {
+        noResults.classList.add('show');
+        return;
+      }
+      
+      noResults.classList.remove('show');
+      
+      articlesToRender.forEach(article => {
+        const card = document.createElement('div');
+        card.className = 'article-card';
+        card.innerHTML = `
+          <span class="category">${getCategoryName(article.category)}</span>
+          <h3>${article.title}</h3>
+          <p>${article.excerpt}</p>
+          <a href="#" class="read-more" data-id="${article.id}">اقرأ المزيد ←</a>
+        `;
+        grid.appendChild(card);
+      });
+
+      // Add click handlers
+      document.querySelectorAll('.read-more').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const articleId = parseInt(link.getAttribute('data-id'));
+          showArticleDetail(articleId);
+        });
+      });
+    }
+
+    function getCategoryName(category) {
+      const names = {
+        laptop: 'لاب توب',
+        desktop: 'كمبيوتر',
+        network: 'شبكات',
+        printer: 'طابعات',
+        software: 'برمجيات'
+      };
+      return names[category] || category;
+    }
+
+    function showArticleDetail(articleId) {
+      const article = articles.find(a => a.id === articleId);
+      if (!article) return;
+
+      document.getElementById('detail-title').textContent = article.title;
+      document.getElementById('detail-meta').textContent = `${getCategoryName(article.category)} • ${article.time}`;
+      document.getElementById('detail-content').innerHTML = article.content;
+      document.getElementById('article-detail').classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Search functionality
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase();
+      const filtered = articles.filter(article => 
+        article.title.toLowerCase().includes(query) ||
+        article.excerpt.toLowerCase().includes(query) ||
+        article.content.toLowerCase().includes(query)
+      );
+      renderArticles(filtered);
+    });
+
+    // Category filter
+    let currentCategory = 'all';
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.getAttribute('data-category');
+        
+        if (currentCategory === 'all') {
+          renderArticles(articles);
+        } else {
+          renderArticles(articles.filter(a => a.category === currentCategory));
+        }
+      });
+    });
+
+    // Close article detail
+    document.getElementById('close-detail').addEventListener('click', () => {
+      document.getElementById('article-detail').classList.remove('active');
+    });
+
+    // Initial render
+    renderArticles(articles);
+  </script>
+</body>
+</html>

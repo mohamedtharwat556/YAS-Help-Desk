@@ -9,6 +9,7 @@ const translations = {
     nav_home: 'الرئيسية',
     nav_support: 'تسجيل طلب',
     nav_tracking: 'متابعة الطلب',
+    nav_troubleshooting: 'دليل المشاكل',
     nav_faq: 'الأسئلة الشائعة',
     language_btn: 'اللغة',
 
@@ -302,6 +303,7 @@ const translations = {
     nav_home: 'Home',
     nav_support: 'Submit Ticket',
     nav_tracking: 'Track Ticket',
+    nav_troubleshooting: 'Troubleshooting Guide',
     nav_faq: 'FAQ',
     language_btn: 'Language',
 
@@ -574,6 +576,7 @@ const translations = {
     nav_home: '首页',
     nav_support: '提交工单',
     nav_tracking: '跟踪工单',
+    nav_troubleshooting: '故障排除指南',
     nav_faq: '常见问题',
     language_btn: '语言',
 

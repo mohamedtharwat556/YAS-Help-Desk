@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>تقييم الخدمة — YAS Help Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/customer.css">
+  <style>
+    .rating-page {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .rating-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .rating-header h1 {
+      font-size: 2rem;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .rating-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+    .ticket-info {
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    .ticket-info .label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .ticket-info .value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .stars-container {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin: 40px 0;
+    }
+    .star {
+      font-size: 48px;
+      cursor: pointer;
+      color: var(--border-color);
+      transition: all 0.2s;
+    }
+    .star:hover,
+    .star.active {
+      color: #FFD700;
+      transform: scale(1.2);
+    }
+    .rating-labels {
+      display: flex;
+      justify-content: space-between;
+      max-width: 300px;
+      margin: 0 auto 30px;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+    .comment-section {
+      margin-bottom: 30px;
+    }
+    .comment-section label {
+      display: block;
+      margin-bottom: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .comment-section textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 16px;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+    .comment-section textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.125rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+    }
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .success-message {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+    .success-message .icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    .success-message h2 {
+      font-size: 1.75rem;
+      color: var(--success);
+      margin-bottom: 12px;
+    }
+    .success-message p {
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+    .back-link {
+      display: inline-block;
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-container">
+      <div class="header-left">
+        <a href="index.html" class="logo">
+          <img src="logo.png" alt="YAS Logo" width="40" height="40">
+          <div class="logo-text">
+            <span class="logo-main">Technical Support & Customer Service</span>
+            <span class="logo-sub">مواعيد العمل متاح دايماً التسجيل</span>
+          </div>
+        </a>
+      </div>
+      <div class="header-right">
+        <a href="index.html" class="nav-link" data-i18n="nav_home">الرئيسية</a>
+        <a href="support.html" class="nav-link" data-i18n="nav_support">تسجيل طلب</a>
+        <a href="tracking.html" class="nav-link" data-i18n="nav_tracking">متابعة الطلب</a>
+        <button class="lang-btn" id="lang-toggle">🌐 العربية</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="rating-page">
+    <div id="rating-form">
+      <div class="rating-header">
+        <h1>كيف كانت تجربتك معنا؟</h1>
+        <p>نقدر ملاحظاتك لمساعدتنا على تحسين خدماتنا</p>
+      </div>
+
+      <div class="ticket-info">
+        <div class="label">رقم التذكرة</div>
+        <div class="value" id="ticket-number">YAS-SUP-XXXXX</div>
+      </div>
+
+      <div class="stars-container" id="stars-container">
+        <span class="star" data-rating="1">★</span>
+        <span class="star" data-rating="2">★</span>
+        <span class="star" data-rating="3">★</span>
+        <span class="star" data-rating="4">★</span>
+        <span class="star" data-rating="5">★</span>
+      </div>
+
+      <div class="rating-labels">
+        <span>سيء</span>
+        <span>ممتاز</span>
+      </div>
+
+      <div class="comment-section">
+        <label for="comment">ملاحظاتك (اختياري)</label>
+        <textarea id="comment" placeholder="أخبرنا المزيد عن تجربتك..."></textarea>
+      </div>
+
+      <button class="submit-btn" id="submit-rating">إرسال التقييم</button>
+    </div>
+
+    <div class="success-message" id="success-message">
+      <div class="icon">✅</div>
+      <h2>شكراً لك!</h2>
+      <p>تم إرسال تقييمك بنجاح. نقدر ملاحظاتك!</p>
+      <a href="index.html" class="back-link">العودة للرئيسية</a>
+    </div>
+  </main>
+
+  <footer class="main-footer">
+    <div class="footer-container">
+      <div class="footer-links">
+        <a href="https://yas-portfolio-eta.vercel.app/" target="_blank">Portfolio</a>
+        <a href="https://www.yas-eg.com/" target="_blank">المتجر</a>
+        <a href="tracking.html">تتبع الطلب</a>
+      </div>
+      <div class="footer-text">
+        <a href="https://wa.me/201101267185" target="_blank">Technical Support & Customer Service</a>
+        <span>مواعيد العمل متاح دايماً التسجيل · إشراف Eng. Adam Farouk · جميع الحقوق محفوظة لـ YAS © 2026</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/i18n.js"></script>
+  <script>
+    // Get ticket number from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketNumber = urlParams.get('ticket');
+    const ticketId = urlParams.get('id');
+
+    if (ticketNumber) {
+      document.getElementById('ticket-number').textContent = ticketNumber;
+    }
+
+    // Star rating
+    let selectedRating = 0;
+    const stars = document.querySelectorAll('.star');
+
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        selectedRating = parseInt(star.getAttribute('data-rating'));
+        updateStars();
+      });
+
+      star.addEventListener('mouseenter', () => {
+        const rating = parseInt(star.getAttribute('data-rating'));
+        highlightStars(rating);
+      });
+
+      star.addEventListener('mouseleave', () => {
+        updateStars();
+      });
+    });
+
+    function highlightStars(rating) {
+      stars.forEach(star => {
+        const starRating = parseInt(star.getAttribute('data-rating'));
+        star.classList.toggle('active', starRating <= rating);
+      });
+    }
+
+    function updateStars() {
+      highlightStars(selectedRating);
+    }
+
+    // Submit rating
+    document.getElementById('submit-rating').addEventListener('click', async () => {
+      if (selectedRating === 0) {
+        alert('يرجى اختيار تقييم');
+        return;
+      }
+
+      const comment = document.getElementById('comment').value.trim();
+      const submitBtn = document.getElementById('submit-rating');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'جاري الإرسال...';
+
+      try {
+        const response = await fetch('/api/ratings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            ticket_id: ticketId,
+            ticket_number: ticketNumber,
+            customer_name: urlParams.get('customer') || 'عميل',
+            rating: selectedRating,
+            comment: comment
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          document.getElementById('rating-form').style.display = 'none';
+          document.getElementById('success-message').style.display = 'block';
+        } else {
+          alert('حدث خطأ أثناء إرسال التقييم. حاول مرة أخرى.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'إرسال التقييم';
+        }
+      } catch (error) {
+        console.error('Error submitting rating:', error);
+        alert('حدث خطأ أثناء إرسال التقييم. حاول مرة أخرى.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'إرسال التقييم';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -667,7 +667,7 @@ const TicketTracking = {
       const notes = ticket.notes || [];
       console.log('[TicketTracking] Ticket notes:', notes);
       console.log('[TicketTracking] Notes count:', notes.length);
-      
+
       if (notes.length === 0) {
         notesContainer.innerHTML = `
           <div style="padding:var(--space-4);background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-md);color:var(--text-muted);font-size:0.875rem;text-align:center">
@@ -687,6 +687,17 @@ const TicketTracking = {
           </div>
         `;
         }).join('');
+      }
+    }
+
+    // Show rating button if ticket is resolved or closed
+    const rateBtn = document.getElementById('rate-ticket-btn');
+    if (rateBtn) {
+      if (ticket.status === 'resolved' || ticket.status === 'closed') {
+        rateBtn.style.display = 'inline-flex';
+        rateBtn.href = `rating.html?ticket=${ticketNumber}&id=${ticket.id}&customer=${encodeURIComponent(customerName)}`;
+      } else {
+        rateBtn.style.display = 'none';
       }
     }
 

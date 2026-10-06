@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await renderStats();
     await renderRecentTickets();
     await renderQuickChart();
+    await renderRatingsStats();
   }, 30000);
 });
 
@@ -69,6 +70,45 @@ async function renderStats() {
 
   const monthEl = document.getElementById('stat-month-new');
   if (monthEl) monthEl.textContent = `+${stats.newMonth} هذا الشهر`;
+
+  // Load ratings stats
+  await renderRatingsStats();
+}
+
+/* ── Ratings Statistics ─────────────────────────────────────── */
+async function renderRatingsStats() {
+  console.log('[Dashboard] Loading ratings stats...');
+
+  try {
+    const token = YASStorage.getSession();
+    if (!token) return;
+
+    const response = await fetch('/api/ratings/stats', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      const ratingStats = data.data;
+      console.log('[Dashboard] Ratings stats loaded:', ratingStats);
+
+      const satisfactionEl = document.getElementById('stat-satisfaction');
+      const countEl = document.getElementById('stat-ratings-count');
+
+      if (satisfactionEl) {
+        satisfactionEl.textContent = `${ratingStats.satisfaction_rate}%`;
+      }
+
+      if (countEl) {
+        countEl.textContent = `${ratingStats.total} تقييم`;
+      }
+    }
+  } catch (error) {
+    console.error('[Dashboard] Error loading ratings stats:', error);
+  }
 }
 
 /* ── Recent Tickets Table ──────────────────────────────────── */
