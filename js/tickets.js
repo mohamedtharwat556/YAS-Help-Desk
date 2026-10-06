@@ -690,19 +690,107 @@ const TicketTracking = {
       }
     }
 
-    // Show rating button if ticket is resolved or closed
-    const rateBtn = document.getElementById('rate-ticket-btn');
-    if (rateBtn) {
+    // Show rating section if ticket is resolved or closed
+    const ratingSection = document.getElementById('rating-section');
+    if (ratingSection) {
       if (ticket.status === 'resolved' || ticket.status === 'closed') {
-        rateBtn.style.display = 'inline-flex';
-        rateBtn.href = `rating.html?ticket=${ticketNumber}&id=${ticket.id}&customer=${encodeURIComponent(customerName)}`;
+        ratingSection.style.display = 'block';
+        document.getElementById('rating-ticket-number').textContent = ticketNumber;
+
+        // Initialize rating form only once
+        if (!ratingSection.hasAttribute('data-initialized')) {
+          this.initRatingForm(ticket.id, ticketNumber, customerName);
+          ratingSection.setAttribute('data-initialized', 'true');
+        }
       } else {
-        rateBtn.style.display = 'none';
+        ratingSection.style.display = 'none';
       }
     }
 
     container.classList.add('show');
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
+
+  initRatingForm(ticketId, ticketNumber, customerName) {
+    let selectedRating = 0;
+    const stars = document.querySelectorAll('.rating-star');
+
+    stars.forEach(star => {
+      star.addEventListener('click', () => {
+        selectedRating = parseInt(star.getAttribute('data-rating'));
+        this.updateRatingStars(selectedRating);
+      });
+
+      star.addEventListener('mouseenter', () => {
+        const rating = parseInt(star.getAttribute('data-rating'));
+        this.highlightRatingStars(rating);
+      });
+
+      star.addEventListener('mouseleave', () => {
+        this.updateRatingStars(selectedRating);
+      });
+    });
+
+    // Submit rating
+    const submitBtn = document.getElementById('submit-rating');
+    if (submitBtn) {
+      submitBtn.addEventListener('click', async () => {
+        if (selectedRating === 0) {
+          alert('يرجى اختيار تقييم');
+          return;
+        }
+
+        const comment = document.getElementById('rating-comment').value.trim();
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الإرسال...';
+
+        try {
+          const response = await fetch('/api/ratings', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              ticket_id: ticketId,
+              ticket_number: ticketNumber,
+              customer_name: customerName,
+              rating: selectedRating,
+              comment: comment
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById('rating-success').style.display = 'block';
+            submitBtn.style.display = 'none';
+            document.getElementById('rating-stars').style.display = 'none';
+            document.getElementById('rating-comment').style.display = 'none';
+          } else {
+            alert('حدث خطأ أثناء إرسال التقييم. حاول مرة أخرى.');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'إرسال التقييم';
+          }
+        } catch (error) {
+          console.error('Error submitting rating:', error);
+          alert('حدث خطأ أثناء إرسال التقييم. حاول مرة أخرى.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'إرسال التقييم';
+        }
+      });
+    }
+  },
+
+  highlightRatingStars(rating) {
+    const stars = document.querySelectorAll('.rating-star');
+    stars.forEach(star => {
+      const starRating = parseInt(star.getAttribute('data-rating'));
+      star.classList.toggle('active', starRating <= rating);
+    });
+  },
+
+  updateRatingStars(rating) {
+    this.highlightRatingStars(rating);
   },
 
   buildTimeline(currentStatus, activities) {
