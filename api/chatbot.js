@@ -15,9 +15,12 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  console.log('[Chatbot] API Key configured:', !!groqApiKey);
+  console.log('[Chatbot] API Key length:', groqApiKey?.length || 0);
+
   if (!groqApiKey) {
     console.error('[Chatbot] Groq API key not configured');
-    return res.status(500).json({ error: 'Chatbot not configured' });
+    return res.status(500).json({ error: 'Chatbot not configured - API key missing' });
   }
 
   try {
@@ -57,35 +60,57 @@ module.exports = async function handler(req, res) {
         }
       ];
 
-      // Call Groq API
-      const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${groqApiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'llama3-8b-8192',
-          messages: messages,
-          temperature: 0.7,
-          max_tokens: 1024
-        })
-      });
+      // Call Groq API with multiple model options
+      const models = ['llama3-8b-8192', 'llama3-70b-8192', 'mixtral-8x7b-32768'];
+      let lastError = null;
 
-      const groqData = await groqResponse.json();
+      for (const model of models) {
+        try {
+          console.log('[Chatbot] Trying model:', model);
 
-      if (groqData.error) {
-        console.error('[Chatbot] Groq API error:', groqData.error);
-        return res.status(500).json({ error: 'Failed to get response from AI' });
+          const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${groqApiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: messages,
+              temperature: 0.7,
+              max_tokens: 1024
+            })
+          });
+
+          const groqData = await groqResponse.json();
+
+          console.log('[Chatbot] Groq response status:', groqResponse.status);
+          console.log('[Chatbot] Groq response:', JSON.stringify(groqData, null, 2));
+
+          if (groqResponse.ok && groqData.choices && groqData.choices.length > 0) {
+            const assistantMessage = groqData.choices[0]?.message?.content || 'عذراً، حدث خطأ في المعالجة';
+
+            console.log('[Chatbot] AI response:', assistantMessage);
+
+            return res.status(200).json({
+              success: true,
+              message: assistantMessage
+            });
+          } else {
+            lastError = groqData.error || 'Unknown error';
+            console.error('[Chatbot] Model failed:', model, lastError);
+          }
+        } catch (modelError) {
+          lastError = modelError;
+          console.error('[Chatbot] Model error:', model, modelError);
+        }
       }
 
-      const assistantMessage = groqData.choices[0]?.message?.content || 'عذراً، حدث خطأ في المعالجة';
-
-      console.log('[Chatbot] AI response:', assistantMessage);
-
-      res.status(200).json({
-        success: true,
-        message: assistantMessage
+      // All models failed
+      console.error('[Chatbot] All models failed. Last error:', lastError);
+      return res.status(500).json({
+        error: 'Failed to get response from AI',
+        details: lastError?.message || lastError
       });
     } else {
       res.status(405).json({ error: 'Method not allowed' });
