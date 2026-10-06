@@ -2,6 +2,15 @@
    YAS Help Desk — Engineer Dashboard CSS
    ============================================================ */
 
+/* ── Table Rating Badge ───────────────────────────────────── */
+.table-rating-badge {
+  cursor: help;
+  transition: transform 0.2s;
+}
+.table-rating-badge:hover {
+  transform: scale(1.1);
+}
+
 /* ── Dashboard Layout ──────────────────────────────────────── */
 .dashboard-layout {
   display: flex;

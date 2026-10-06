@@ -93,29 +93,61 @@ module.exports = async function handler(req, res) {
       });
     } else if (req.method === 'GET') {
       // GET /api/ratings?ticket_number=XXX - Get rating for a specific ticket
+      // GET /api/ratings - Get all ratings (authenticated)
       const { ticket_number } = req.query;
 
-      if (!ticket_number) {
-        return res.status(400).json({ error: 'ticket_number parameter required' });
+      if (ticket_number) {
+        console.log('[Ratings API] Fetching rating for ticket:', ticket_number);
+
+        const { data: rating, error } = await supabase
+          .from('ratings')
+          .select('*')
+          .eq('ticket_number', ticket_number)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
+          console.error('[Ratings API] Fetch error:', error);
+          return res.status(500).json({ error: 'Failed to fetch rating', details: error.message });
+        }
+
+        res.status(200).json({
+          success: true,
+          data: rating || null
+        });
+      } else {
+        // Get all ratings (requires auth)
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const token = authHeader.substring(7);
+
+        if (!token || token.length < 10) {
+          return res.status(401).json({ error: 'Invalid token' });
+        }
+
+        console.log('[Ratings API] Fetching all ratings');
+
+        const { data: ratings, error } = await supabase
+          .from('ratings')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(100);
+
+        if (error) {
+          console.error('[Ratings API] Fetch error:', error);
+          return res.status(500).json({ error: 'Failed to fetch ratings', details: error.message });
+        }
+
+        console.log('[Ratings API] Fetched ratings count:', ratings?.length || 0);
+
+        res.status(200).json({
+          success: true,
+          data: ratings || []
+        });
       }
-
-      console.log('[Ratings API] Fetching rating for ticket:', ticket_number);
-
-      const { data: rating, error } = await supabase
-        .from('ratings')
-        .select('*')
-        .eq('ticket_number', ticket_number)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('[Ratings API] Fetch error:', error);
-        return res.status(500).json({ error: 'Failed to fetch rating', details: error.message });
-      }
-
-      res.status(200).json({
-        success: true,
-        data: rating || null
-      });
     } else {
       res.status(405).json({ error: 'Method not allowed' });
     }

@@ -169,6 +169,7 @@ const TicketManager = {
     this.renderTable();
     this.renderPagination();
     this.renderFilterCount();
+    this.loadAllRatings();
   },
 
   renderTable() {
@@ -216,8 +217,13 @@ const TicketManager = {
           </div>
         </td>
         <td>
-          <div class="fw-600">${YAS.highlightText(t.customer?.name || 'Unknown', q)}</div>
-          <div style="font-size:0.75rem;color:var(--text-muted)">${YAS.highlightText(t.customer?.phone || '—', q)}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div>
+              <div class="fw-600">${YAS.highlightText(t.customer?.name || 'Unknown', q)}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted)">${YAS.highlightText(t.customer?.phone || '—', q)}</div>
+            </div>
+            <span class="table-rating-badge" data-ticket="${ticketId}" style="display:none;background:linear-gradient(135deg,#FFD700 0%,#FFA500 100%);color:white;padding:2px 8px;border-radius:12px;font-size:0.6875rem;font-weight:700;white-space:nowrap">⭐ مُقيَّم</span>
+          </div>
         </td>
         <td>
           <div style="display:flex;align-items:center;gap:6px">
@@ -315,6 +321,35 @@ const TicketManager = {
     this.allTickets = await YASStorage.getAllTickets();
     this.allTickets = Array.isArray(this.allTickets) ? this.allTickets : [];
     this.applyFilters();
+  },
+
+  async loadAllRatings() {
+    try {
+      const token = YASStorage.getSession();
+      if (!token) return;
+
+      const response = await fetch('/api/ratings', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.data) {
+        const ratings = data.data;
+        
+        // Show badges for rated tickets
+        ratings.forEach(rating => {
+          const badge = document.querySelector(`.table-rating-badge[data-ticket="${rating.ticket_number}"]`);
+          if (badge) {
+            badge.style.display = 'inline-block';
+          }
+        });
+      }
+    } catch (error) {
+      console.error('[TicketManager] Error loading ratings:', error);
+    }
   }
 };
 
@@ -709,6 +744,12 @@ const TicketDetails = {
           // Render date
           const dateEl = document.getElementById('detail-rating-date');
           dateEl.textContent = `تم التقييم: ${YAS.formatDateTime(rating.created_at)}`;
+        }
+
+        // Show rating badge next to customer name
+        const ratingBadge = document.getElementById('cust-rating-badge');
+        if (ratingBadge) {
+          ratingBadge.style.display = 'inline-block';
         }
       }
     } catch (error) {
