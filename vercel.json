@@ -9,14 +9,6 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/ratings",
-      "destination": "/api/ratings.js"
-    },
-    {
-      "source": "/api/ratings/:path*",
-      "destination": "/api/ratings.js"
-    },
-    {
       "source": "/api/:path*",
       "destination": "/api/:path*.js"
     }
