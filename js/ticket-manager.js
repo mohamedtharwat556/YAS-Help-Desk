@@ -439,6 +439,9 @@ const TicketDetails = {
     this.setEl('dev-detail-type',    YAS.DeviceTypeLabels[t.device?.type] || t.device?.type || 'Unknown');
     this.setEl('dev-detail-brand',   t.device?.brand || '—');
     this.setEl('dev-detail-model',   t.device?.model || '—');
+
+    // Load rating
+    this.loadRating(ticketId);
     this.setEl('dev-detail-serial',  t.device?.serial_number || '—');
     this.setEl('dev-detail-date',    t.device?.purchase_date || t.device?.purchaseDate ? YAS.formatDate(t.device?.purchase_date || t.device?.purchaseDate) : '—');
     this.setHTML('dev-detail-warranty', YAS.warrantyBadge(t.device?.warranty_status || t.device?.warranty || 'unknown'));
@@ -674,6 +677,42 @@ const TicketDetails = {
           <p>لم يتم العثور على الطلب المطلوب</p>
           <a href="tickets.html" class="btn btn-primary" style="margin-top:16px">العودة إلى الطلبات</a>
         </div>`;
+    }
+  },
+
+  async loadRating(ticketNumber) {
+    try {
+      const response = await fetch(`/api/ratings?ticket_number=${ticketNumber}`);
+      const data = await response.json();
+
+      if (data.success && data.data) {
+        const rating = data.data;
+        const ratingCard = document.getElementById('rating-card');
+        
+        if (ratingCard) {
+          ratingCard.style.display = 'block';
+          
+          // Render stars
+          const stars = '⭐'.repeat(rating.rating) + '☆'.repeat(5 - rating.rating);
+          document.getElementById('detail-rating-stars').textContent = stars;
+          document.getElementById('detail-rating-score').textContent = `${rating.rating}/5`;
+          
+          // Render comment
+          const commentEl = document.getElementById('detail-rating-comment');
+          if (rating.comment) {
+            commentEl.textContent = rating.comment;
+            commentEl.style.display = 'block';
+          } else {
+            commentEl.style.display = 'none';
+          }
+          
+          // Render date
+          const dateEl = document.getElementById('detail-rating-date');
+          dateEl.textContent = `تم التقييم: ${YAS.formatDateTime(rating.created_at)}`;
+        }
+      }
+    } catch (error) {
+      console.error('[TicketDetails] Error loading rating:', error);
     }
   }
 };

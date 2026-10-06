@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
   // Handle CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -54,6 +54,18 @@ module.exports = async function handler(req, res) {
         has_comment: !!comment
       });
 
+      // Check if rating already exists for this ticket
+      const { data: existingRating, error: checkError } = await supabase
+        .from('ratings')
+        .select('*')
+        .eq('ticket_number', ticket_number)
+        .single();
+
+      if (existingRating) {
+        console.log('[Ratings API] Rating already exists for ticket:', ticket_number);
+        return res.status(400).json({ error: 'Rating already submitted for this ticket' });
+      }
+
       // Insert rating
       const { data: ratingData, error: ratingError } = await supabase
         .from('ratings')
@@ -78,6 +90,31 @@ module.exports = async function handler(req, res) {
         success: true,
         message: 'Rating saved successfully',
         data: ratingData
+      });
+    } else if (req.method === 'GET') {
+      // GET /api/ratings?ticket_number=XXX - Get rating for a specific ticket
+      const { ticket_number } = req.query;
+
+      if (!ticket_number) {
+        return res.status(400).json({ error: 'ticket_number parameter required' });
+      }
+
+      console.log('[Ratings API] Fetching rating for ticket:', ticket_number);
+
+      const { data: rating, error } = await supabase
+        .from('ratings')
+        .select('*')
+        .eq('ticket_number', ticket_number)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('[Ratings API] Fetch error:', error);
+        return res.status(500).json({ error: 'Failed to fetch rating', details: error.message });
+      }
+
+      res.status(200).json({
+        success: true,
+        data: rating || null
       });
     } else {
       res.status(405).json({ error: 'Method not allowed' });

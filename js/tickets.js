@@ -712,6 +712,42 @@ const TicketTracking = {
   },
 
   initRatingForm(ticketId, ticketNumber, customerName) {
+    // Check if rating already exists
+    fetch(`/api/ratings?ticket_number=${ticketNumber}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          // Rating already exists, show it instead of form
+          const existingRating = data.data;
+          const ratingSection = document.getElementById('rating-section');
+          
+          // Hide form elements
+          document.getElementById('rating-stars').style.display = 'none';
+          document.getElementById('rating-comment').style.display = 'none';
+          document.getElementById('submit-rating').style.display = 'none';
+          
+          // Show existing rating
+          const successDiv = document.getElementById('rating-success');
+          successDiv.style.display = 'block';
+          successDiv.innerHTML = `
+            <div style="font-size:48px;margin-bottom:12px">⭐</div>
+            <h4 style="color:var(--success);margin-bottom:8px">تم التقييم بالفعل</h4>
+            <p style="font-size:0.875rem;color:var(--text-muted)">التقييم: ${existingRating.rating}/5 نجوم</p>
+            ${existingRating.comment ? `<p style="font-size:0.875rem;color:var(--text-muted);margin-top:8px">"${existingRating.comment}"</p>` : ''}
+          `;
+        } else {
+          // No rating exists, show the form
+          this.setupRatingForm(ticketId, ticketNumber, customerName);
+        }
+      })
+      .catch(error => {
+        console.error('Error checking existing rating:', error);
+        // Show form anyway if check fails
+        this.setupRatingForm(ticketId, ticketNumber, customerName);
+      });
+  },
+
+  setupRatingForm(ticketId, ticketNumber, customerName) {
     let selectedRating = 0;
     const stars = document.querySelectorAll('.rating-star');
 
@@ -767,9 +803,15 @@ const TicketTracking = {
             document.getElementById('rating-stars').style.display = 'none';
             document.getElementById('rating-comment').style.display = 'none';
           } else {
-            alert('حدث خطأ أثناء إرسال التقييم. حاول مرة أخرى.');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'إرسال التقييم';
+            if (data.error === 'Rating already submitted for this ticket') {
+              alert('لقد قمت بتقييم هذه التذكرة بالفعل');
+              // Refresh to show existing rating
+              location.reload();
+            } else {
+              alert('حدث خطأ أثناء إرسال التقييم. حاول مرة أخرى.');
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'إرسال التقييم';
+            }
           }
         } catch (error) {
           console.error('Error submitting rating:', error);
