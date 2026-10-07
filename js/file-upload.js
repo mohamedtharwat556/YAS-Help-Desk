@@ -407,37 +407,75 @@ window.viewFile = function(fileId) {
 
 // View file from URL (for Supabase Storage files)
 window.viewFileFromUrl = function(url, name) {
-  console.log('[viewFileFromUrl] Called with URL:', url);
+  console.log('[viewFileFromUrl] Opening image:', url);
 
-  // Create modal
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay';
-  modal.id = 'file-viewer-modal';
-  modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: flex; justify-content: center; align-items: center;';
-  modal.innerHTML = `
-    <div style="position: relative; max-width: 95vw; max-height: 95vh; display: flex; flex-direction: column;">
-      <button onclick="this.closest('.modal-overlay').remove()" style="position: absolute; top: -40px; right: 0; background: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #000; font-weight: bold;">×</button>
-      <img src="${url}" alt="${name}" style="max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 8px;">
-    </div>
+  // Create a simple overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'image-viewer-overlay';
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 100000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
   `;
 
-  document.body.appendChild(modal);
+  const img = document.createElement('img');
+  img.src = url;
+  img.alt = name;
+  img.style.cssText = `
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  `;
 
-  // Close on click outside
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      document.body.removeChild(modal);
+  const closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '×';
+  closeBtn.style.cssText = `
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    color: black;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100001;
+  `;
+
+  const closeOverlay = () => {
+    document.body.removeChild(overlay);
+  };
+
+  closeBtn.onclick = closeOverlay;
+  overlay.onclick = (e) => {
+    if (e.target === overlay) closeOverlay();
+  };
+
+  document.addEventListener('keydown', function escapeHandler(e) {
+    if (e.key === 'Escape') {
+      closeOverlay();
+      document.removeEventListener('keydown', escapeHandler);
     }
   });
 
-  // Close on escape key
-  const escapeHandler = (e) => {
-    if (e.key === 'Escape') {
-      document.body.removeChild(modal);
-      document.removeEventListener('keydown', escapeHandler);
-    }
-  };
-  document.addEventListener('keydown', escapeHandler);
+  overlay.appendChild(closeBtn);
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
 };
 
 /* ── CSS for File Upload ─────────────────────────────────────── */
