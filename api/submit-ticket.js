@@ -37,7 +37,60 @@ module.exports = async function handler(req, res) {
 
       const { customer, device, request_type, priority = 'medium', description, files = [] } = body || {};
 
-      console.log('[SUBMIT-TICKET] Parsed request data:', { customer, device, request_type, priority, description });
+      console.log('[SUBMIT-TICKET] Parsed request data:', { customer, device, request_type, priority, description, filesCount: files?.length });
+
+      // Upload files to Supabase Storage if provided
+      let uploadedFileUrls = [];
+      if (files && files.length > 0) {
+        console.log('[SUBMIT-TICKET] Uploading files to Supabase Storage:', files.length);
+        for (const file of files) {
+          try {
+            // file should have: { name, type, data (base64) }
+            if (file.data && file.name) {
+              // Convert base64 to buffer
+              const base64Data = file.data.replace(/^data:image\/\w+;base64,/, '');
+              const buffer = Buffer.from(base64Data, 'base64');
+
+              // Generate unique filename
+              const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${file.name}`;
+              const filePath = `tickets/${fileName}`;
+
+              // Upload to Supabase Storage
+              const { data: uploadData, error: uploadError } = await supabase
+                .storage
+                .from('ticket-files')
+                .upload(filePath, buffer, {
+                  contentType: file.type,
+                  upsert: false
+                });
+
+              if (uploadError) {
+                console.error('[SUBMIT-TICKET] File upload error:', uploadError);
+                continue;
+              }
+
+              // Get public URL
+              const { data: publicUrlData } = supabase
+                .storage
+                .from('ticket-files')
+                .getPublicUrl(filePath);
+
+              uploadedFileUrls.push({
+                id: file.id || fileName,
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                url: publicUrlData.publicUrl
+              });
+
+              console.log('[SUBMIT-TICKET] File uploaded successfully:', fileName);
+            }
+          } catch (fileError) {
+            console.error('[SUBMIT-TICKET] File processing error:', fileError);
+          }
+        }
+        console.log('[SUBMIT-TICKET] Total files uploaded:', uploadedFileUrls.length);
+      }
 
       // Validate required fields
       if (!request_type) {
@@ -206,7 +259,7 @@ module.exports = async function handler(req, res) {
             request_type,
             priority,
             description,
-            files,
+            files: uploadedFileUrls,
             status: 'received',
             assigned_user_id: adamUserId
           })

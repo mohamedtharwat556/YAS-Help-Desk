@@ -366,10 +366,16 @@ const TicketForm = {
   submitTicket() {
     this.collectStepData(3);
 
-    // Get uploaded files
+    // Get uploaded files - send full file data including base64
     if (this.fileUploader) {
       const uploadedFiles = this.fileUploader.getFiles();
-      this.data.request.files = uploadedFiles.map(f => f.id);
+      this.data.request.files = uploadedFiles.map(f => ({
+        id: f.id,
+        name: f.name,
+        type: f.type,
+        size: f.size,
+        data: f.data
+      }));
     }
 
     const btn = document.getElementById('submit-ticket');

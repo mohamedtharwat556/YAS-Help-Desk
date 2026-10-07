@@ -232,8 +232,48 @@ function displayAttachedFiles(containerId, fileIds) {
   const container = document.getElementById(containerId);
   if (!container || !fileIds || fileIds.length === 0) return;
 
+  console.log('[displayAttachedFiles] Displaying files:', fileIds);
+
+  // Files from Supabase have URLs, check if they have url property
+  const hasUrls = fileIds.some(f => f.url);
+
+  if (hasUrls) {
+    // Files from Supabase Storage with URLs
+    const files = fileIds;
+    console.log('[displayAttachedFiles] Using Supabase URLs:', files.length);
+
+    container.innerHTML = `
+      <div class="attached-files-section">
+        <h4 style="margin-bottom: var(--space-3); font-size: 0.9375rem;">الملفات المرفقة</h4>
+        <div class="attached-files-grid">
+          ${files.map(file => `
+            <div class="attached-file-card">
+              <div class="attached-file-preview">
+                ${file.type && file.type.startsWith('image/')
+                  ? `<img src="${file.url}" alt="${file.name}" class="file-image-preview" onclick="window.viewFileFromUrl('${file.url}', '${file.name}')" style="cursor:pointer">`
+                  : getFileIconSVG(file.type)
+                }
+              </div>
+              <div class="attached-file-info">
+                <div class="attached-file-name" title="${file.name}">${file.name}</div>
+                <div class="attached-file-size">${file.size ? formatFileSize(file.size) : '—'}</div>
+              </div>
+              <div class="attached-file-actions">
+                <a href="${file.url}" download="${file.name}" class="icon-btn btn-sm" title="تحميل">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                </a>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Fallback to localStorage
   const allFiles = getAllUploadedFiles();
-  console.log('[displayAttachedFiles] Looking for fileIds:', fileIds);
+  console.log('[displayAttachedFiles] Looking for fileIds in localStorage:', fileIds);
   console.log('[displayAttachedFiles] All files in localStorage:', allFiles.length);
   const files = allFiles.filter(f => fileIds.includes(f.id));
   console.log('[displayAttachedFiles] Found matching files:', files.length);
@@ -267,7 +307,7 @@ function displayAttachedFiles(containerId, fileIds) {
             </div>
             <div class="attached-file-actions">
               <button class="icon-btn btn-sm" onclick="window.downloadFile('${file.id}')" title="تحميل">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2-3"/></svg>
               </button>
             </div>
           </div>
@@ -345,6 +385,51 @@ window.viewFile = function(fileId) {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           تحميل
         </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Close handlers
+  modal.querySelectorAll('.modal-close').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+  });
+
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+};
+
+// View file from URL (for Supabase Storage files)
+window.viewFileFromUrl = function(url, name) {
+  console.log('[viewFileFromUrl] Called with URL:', url);
+
+  // Create modal
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.id = 'file-viewer-modal';
+  modal.innerHTML = `
+    <div class="modal file-viewer-modal">
+      <div class="modal-header">
+        <h3 class="modal-title">${name}</h3>
+        <button class="modal-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body" style="display: flex; justify-content: center; align-items: center; background: #000;">
+        <img src="${url}" alt="${name}" style="max-width: 100%; max-height: 70vh; object-fit: contain;">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary modal-close">إغلاق</button>
+        <a href="${url}" download="${name}" class="btn btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          تحميل
+        </a>
       </div>
     </div>
   `;
@@ -562,9 +647,10 @@ window.YASFileUpload = {
   displayFiles: displayAttachedFiles,
   download: window.downloadFile,
   view: window.viewFile,
+  viewFromUrl: window.viewFileFromUrl,
   getAll: getAllUploadedFiles,
   save: saveUploadedFile,
   delete: deleteUploadedFile
 };
 
-console.log('[FileUpload] Initialized, viewFile and downloadFile available globally');
+console.log('[FileUpload] Initialized, viewFile, viewFileFromUrl and downloadFile available globally');
