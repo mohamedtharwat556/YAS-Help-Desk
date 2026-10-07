@@ -496,17 +496,7 @@ const TicketDetails = {
 
     if (waBtn) {
       const waNumber = t.customer?.whatsapp || t.customer?.phone;
-      // Format number: if starts with 0, add +20 (Egypt). If starts with 966, add +. If already has +, keep it.
-      let formattedNumber = waNumber;
-      if (waNumber) {
-        if (waNumber.startsWith('0')) {
-          formattedNumber = '+20' + waNumber.substring(1);
-        } else if (waNumber.startsWith('966')) {
-          formattedNumber = '+' + waNumber;
-        } else if (!waNumber.startsWith('+')) {
-          formattedNumber = '+20' + waNumber; // Default to Egypt
-        }
-      }
+      const formattedNumber = this.formatWhatsAppNumber(waNumber);
       const waMsg    = `مرحباً ${t.customer?.name}، بخصوص طلب الدعم الفني رقم ${ticketId}`;
       waBtn.href = YAS.buildWhatsAppLink(formattedNumber, waMsg);
       waBtn.target = '_blank';
@@ -731,6 +721,19 @@ const TicketDetails = {
     const ticketId = this.ticket.id || this.ticket.ticket_number;
     this.ticket = YASStorage.getTicketById(ticketId);
     this.renderActivities();
+  },
+
+  formatWhatsAppNumber(number) {
+    if (!number) return number;
+    // Format number: if starts with 0, add +20 (Egypt). If starts with 966, add +. If already has +, keep it.
+    if (number.startsWith('0')) {
+      return '+20' + number.substring(1);
+    } else if (number.startsWith('966')) {
+      return '+' + number;
+    } else if (!number.startsWith('+')) {
+      return '+20' + number; // Default to Egypt
+    }
+    return number;
   },
 
   setEl(id, text) {
