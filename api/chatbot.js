@@ -19,6 +19,9 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Message required' });
       }
 
+      console.log('[Chatbot] API Key exists:', !!groqApiKey);
+      console.log('[Chatbot] API Key length:', groqApiKey?.length || 0);
+
       // Try Groq API
       if (groqApiKey) {
         try {
@@ -38,6 +41,8 @@ module.exports = async function handler(req, res) {
 رابط تتبع الطلب: https://yas-help-desk.vercel.app/tracking.html
 رابط دليل المشاكل: https://yas-help-desk.vercel.app/troubleshooting.html`;
 
+          console.log('[Chatbot] Calling Groq API...');
+
           const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -55,21 +60,31 @@ module.exports = async function handler(req, res) {
             })
           });
 
+          console.log('[Chatbot] Groq response status:', response.status);
+
           const data = await response.json();
+
+          console.log('[Chatbot] Groq response:', JSON.stringify(data, null, 2));
 
           if (response.ok && data.choices && data.choices[0]) {
             const aiMessage = data.choices[0].message.content;
+            console.log('[Chatbot] AI response received');
             return res.status(200).json({
               success: true,
               message: aiMessage
             });
+          } else {
+            console.error('[Chatbot] Groq API returned error:', data);
           }
         } catch (apiError) {
           console.error('[Chatbot] Groq API error:', apiError);
         }
+      } else {
+        console.log('[Chatbot] No API key configured');
       }
 
       // Fallback response
+      console.log('[Chatbot] Using fallback response');
       return res.status(200).json({
         success: true,
         message: 'عذراً، AI غير متاح حالياً. يمكنك:\n\n• <a href="https://yas-help-desk.vercel.app/support.html" target="_blank">تسجيل طلب</a>\n• <a href="https://yas-help-desk.vercel.app/tracking.html" target="_blank">تتبع طلب</a>\n• <a href="https://wa.me/201101267185" target="_blank">واتساب: +201101267185</a>'
