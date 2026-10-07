@@ -1,5 +1,5 @@
-// Chatbot endpoint - Groq API with simple fallback
-const groqApiKey = process.env.GROQ_API_KEY;
+// Chatbot endpoint - Hugging Face API (free)
+const hfApiKey = process.env.HF_API_KEY;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,11 +19,10 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Message required' });
       }
 
-      console.log('[Chatbot] API Key exists:', !!groqApiKey);
-      console.log('[Chatbot] API Key length:', groqApiKey?.length || 0);
+      console.log('[Chatbot] API Key exists:', !!hfApiKey);
 
-      // Try Groq API
-      if (groqApiKey) {
+      // Try Hugging Face API
+      if (hfApiKey) {
         try {
           const systemPrompt = `أنت مساعد خدمة عملاء لـ YAS Help Desk. مهمتك مساعدة العملاء في:
 - الإجابة عن الأسئلة المتعلقة بالدعم الفني
@@ -41,50 +40,44 @@ module.exports = async function handler(req, res) {
 رابط تتبع الطلب: https://yas-help-desk.vercel.app/tracking.html
 رابط دليل المشاكل: https://yas-help-desk.vercel.app/troubleshooting.html`;
 
-          console.log('[Chatbot] Calling Groq API...');
-
-          const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          const response = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${groqApiKey}`,
+              'Authorization': `Bearer ${hfApiKey}`,
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              model: 'llama3-8b-8192',
-              messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: message }
-              ],
-              temperature: 0.7,
-              max_tokens: 512
+              inputs: `<s>[INST] ${systemPrompt}\n\nالعميل: ${message} [/INST]`,
+              parameters: {
+                max_new_tokens: 512,
+                temperature: 0.7,
+                return_full_text: false
+              }
             })
           });
 
-          console.log('[Chatbot] Groq response status:', response.status);
-
           const data = await response.json();
 
-          console.log('[Chatbot] Groq response:', JSON.stringify(data, null, 2));
+          console.log('[Chatbot] HF response status:', response.status);
 
-          if (response.ok && data.choices && data.choices[0]) {
-            const aiMessage = data.choices[0].message.content;
+          if (response.ok && data && data[0]) {
+            const aiMessage = data[0].generated_text;
             console.log('[Chatbot] AI response received');
             return res.status(200).json({
               success: true,
               message: aiMessage
             });
           } else {
-            console.error('[Chatbot] Groq API returned error:', data);
+            console.error('[Chatbot] HF API error:', data);
           }
         } catch (apiError) {
-          console.error('[Chatbot] Groq API error:', apiError);
+          console.error('[Chatbot] HF API error:', apiError);
         }
       } else {
         console.log('[Chatbot] No API key configured');
       }
 
       // Fallback response
-      console.log('[Chatbot] Using fallback response');
       return res.status(200).json({
         success: true,
         message: 'عذراً، AI غير متاح حالياً. يمكنك:\n\n• <a href="https://yas-help-desk.vercel.app/support.html" target="_blank">تسجيل طلب</a>\n• <a href="https://yas-help-desk.vercel.app/tracking.html" target="_blank">تتبع طلب</a>\n• <a href="https://wa.me/201101267185" target="_blank">واتساب: +201101267185</a>'
