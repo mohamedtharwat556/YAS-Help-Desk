@@ -496,10 +496,16 @@ const TicketDetails = {
 
     if (waBtn) {
       const waNumber = t.customer?.whatsapp || t.customer?.phone;
-      // Add country code for Egypt if missing
+      // Format number: if starts with 0, add +20 (Egypt). If starts with 966, add +. If already has +, keep it.
       let formattedNumber = waNumber;
-      if (waNumber && !waNumber.startsWith('+')) {
-        formattedNumber = '+20' + waNumber;
+      if (waNumber) {
+        if (waNumber.startsWith('0')) {
+          formattedNumber = '+20' + waNumber.substring(1);
+        } else if (waNumber.startsWith('966')) {
+          formattedNumber = '+' + waNumber;
+        } else if (!waNumber.startsWith('+')) {
+          formattedNumber = '+20' + waNumber; // Default to Egypt
+        }
       }
       const waMsg    = `مرحباً ${t.customer?.name}، بخصوص طلب الدعم الفني رقم ${ticketId}`;
       waBtn.href = YAS.buildWhatsAppLink(formattedNumber, waMsg);
