@@ -245,9 +245,7 @@ function displayAttachedFiles(containerId, fileIds) {
           <div class="attached-file-card">
             <div class="attached-file-preview">
               ${file.type.startsWith('image/')
-                ? `<a href="${file.data}" target="_blank" class="file-image-link">
-                     <img src="${file.data}" alt="${file.name}" class="file-image-preview">
-                   </a>`
+                ? `<img src="${file.data}" alt="${file.name}" class="file-image-preview" onclick="viewFile('${file.id}')" style="cursor:pointer">`
                 : getFileIconSVG(file.type)
               }
             </div>
@@ -479,13 +477,6 @@ const fileUploadCSS = `
   overflow: hidden;
 }
 
-.file-image-link {
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-}
-
 .file-image-preview {
   width: 100%;
   height: 100%;
@@ -551,3 +542,7 @@ window.YASFileUpload = {
   save: saveUploadedFile,
   delete: deleteUploadedFile
 };
+
+// Also expose viewFile and downloadFile globally for onclick handlers
+window.viewFile = viewFile;
+window.downloadFile = downloadFile;
