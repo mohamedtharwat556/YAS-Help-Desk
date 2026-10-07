@@ -413,41 +413,31 @@ window.viewFileFromUrl = function(url, name) {
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
   modal.id = 'file-viewer-modal';
+  modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: flex; justify-content: center; align-items: center;';
   modal.innerHTML = `
-    <div class="modal file-viewer-modal">
-      <div class="modal-header">
-        <h3 class="modal-title">${name}</h3>
-        <button class="modal-close">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="modal-body" style="display: flex; justify-content: center; align-items: center; background: #000;">
-        <img src="${url}" alt="${name}" style="max-width: 100%; max-height: 70vh; object-fit: contain;">
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary modal-close">إغلاق</button>
-        <a href="${url}" download="${name}" class="btn btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          تحميل
-        </a>
-      </div>
+    <div style="position: relative; max-width: 95vw; max-height: 95vh; display: flex; flex-direction: column;">
+      <button onclick="this.closest('.modal-overlay').remove()" style="position: absolute; top: -40px; right: 0; background: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #000; font-weight: bold;">×</button>
+      <img src="${url}" alt="${name}" style="max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 8px;">
     </div>
   `;
 
   document.body.appendChild(modal);
 
-  // Close handlers
-  modal.querySelectorAll('.modal-close').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.body.removeChild(modal);
-    });
-  });
-
+  // Close on click outside
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       document.body.removeChild(modal);
     }
   });
+
+  // Close on escape key
+  const escapeHandler = (e) => {
+    if (e.key === 'Escape') {
+      document.body.removeChild(modal);
+      document.removeEventListener('keydown', escapeHandler);
+    }
+  };
+  document.addEventListener('keydown', escapeHandler);
 };
 
 /* ── CSS for File Upload ─────────────────────────────────────── */
@@ -626,13 +616,20 @@ const fileUploadCSS = `
 
 /* File Viewer Modal */
 .file-viewer-modal {
-  max-width: 90vw;
-  max-height: 90vh;
+  max-width: 95vw;
+  max-height: 95vh;
 }
 
 .file-viewer-modal .modal-body {
   padding: 0;
   border-radius: var(--radius-lg);
+  background: #000;
+}
+
+.file-viewer-modal .modal-body img {
+  max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
 }
 `;
 
