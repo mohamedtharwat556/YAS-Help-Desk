@@ -35,7 +35,7 @@ module.exports = async function handler(req, res) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          from: 'YAS Help Desk <notifications@yas-help-desk.vercel.app>',
+          from: 'YAS Help Desk <onboarding@resend.dev>',
           to: to,
           subject: subject,
           html: html || text,
