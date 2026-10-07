@@ -411,7 +411,7 @@ module.exports = async function handler(req, res) {
 تواصل معنا: https://wa.me/201101267185
           `;
 
-          await fetch('https://yas-help-desk.vercel.app/api/send-email', {
+          fetch('https://yas-help-desk.vercel.app/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -420,9 +420,9 @@ module.exports = async function handler(req, res) {
               html: emailHtml,
               text: emailText
             })
-          });
+          }).catch(err => console.error('[GetTickets API] Email notification error:', err));
 
-          console.log('[GetTickets API] Email notification sent for status change');
+          console.log('[GetTickets API] Email notification queued for status change');
         } catch (emailError) {
           console.error('[GetTickets API] Email notification error:', emailError);
         }
@@ -500,7 +500,7 @@ module.exports = async function handler(req, res) {
 تواصل معنا: https://wa.me/201101267185
           `;
 
-          await fetch('https://yas-help-desk.vercel.app/api/send-email', {
+          fetch('https://yas-help-desk.vercel.app/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -509,9 +509,9 @@ module.exports = async function handler(req, res) {
               html: emailHtml,
               text: emailText
             })
-          });
+          }).catch(err => console.error('[GetTickets API] Email notification error:', err));
 
-          console.log('[GetTickets API] Email notification sent for ticket closure');
+          console.log('[GetTickets API] Email notification queued for ticket closure');
         } catch (emailError) {
           console.error('[GetTickets API] Email notification error:', emailError);
         }

@@ -372,7 +372,7 @@ ${dashboardUrl}
 تواصل معنا: https://wa.me/201101267185
           `;
 
-          await fetch('https://yas-help-desk.vercel.app/api/send-email', {
+          fetch('https://yas-help-desk.vercel.app/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -381,9 +381,9 @@ ${dashboardUrl}
               html: emailHtml,
               text: emailText
             })
-          });
+          }).catch(err => console.error('[SUBMIT-TICKET] Email notification error:', err));
 
-          console.log('[SUBMIT-TICKET] Email notification sent to customer');
+          console.log('[SUBMIT-TICKET] Email notification queued');
         } catch (emailError) {
           console.error('[SUBMIT-TICKET] Email notification error:', emailError);
           // Don't fail the ticket creation if email fails
