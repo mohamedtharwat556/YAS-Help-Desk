@@ -496,8 +496,13 @@ const TicketDetails = {
 
     if (waBtn) {
       const waNumber = t.customer?.whatsapp || t.customer?.phone;
+      // Add country code for Egypt if missing
+      let formattedNumber = waNumber;
+      if (waNumber && !waNumber.startsWith('+')) {
+        formattedNumber = '+20' + waNumber;
+      }
       const waMsg    = `مرحباً ${t.customer?.name}، بخصوص طلب الدعم الفني رقم ${ticketId}`;
-      waBtn.href = YAS.buildWhatsAppLink(waNumber, waMsg);
+      waBtn.href = YAS.buildWhatsAppLink(formattedNumber, waMsg);
       waBtn.target = '_blank';
       waBtn.addEventListener('click', () => {
         const ticketId = t.id || t.ticket_number;
