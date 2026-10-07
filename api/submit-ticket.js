@@ -45,15 +45,22 @@ module.exports = async function handler(req, res) {
         console.log('[SUBMIT-TICKET] Uploading files to Supabase Storage:', files.length);
         for (const file of files) {
           try {
+            console.log('[SUBMIT-TICKET] Processing file:', file.name, file.type);
             // file should have: { name, type, data (base64) }
             if (file.data && file.name) {
-              // Convert base64 to buffer
-              const base64Data = file.data.replace(/^data:image\/\w+;base64,/, '');
+              // Convert base64 to buffer - handle both data:image/... and plain base64
+              let base64Data = file.data;
+              if (base64Data.includes(',')) {
+                base64Data = base64Data.split(',')[1];
+              }
               const buffer = Buffer.from(base64Data, 'base64');
+              console.log('[SUBMIT-TICKET] Buffer size:', buffer.length);
 
               // Generate unique filename
               const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}-${file.name}`;
               const filePath = `tickets/${fileName}`;
+
+              console.log('[SUBMIT-TICKET] Uploading to path:', filePath);
 
               // Upload to Supabase Storage
               const { data: uploadData, error: uploadError } = await supabase
@@ -69,18 +76,23 @@ module.exports = async function handler(req, res) {
                 continue;
               }
 
+              console.log('[SUBMIT-TICKET] Upload data:', uploadData);
+
               // Get public URL
               const { data: publicUrlData } = supabase
                 .storage
                 .from('ticket-files')
                 .getPublicUrl(filePath);
 
+              const fileUrl = publicUrlData.publicUrl;
+              console.log('[SUBMIT-TICKET] Public URL:', fileUrl);
+
               uploadedFileUrls.push({
                 id: file.id || fileName,
                 name: file.name,
                 type: file.type,
                 size: file.size,
-                url: publicUrlData.publicUrl
+                url: fileUrl
               });
 
               console.log('[SUBMIT-TICKET] File uploaded successfully:', fileName);
