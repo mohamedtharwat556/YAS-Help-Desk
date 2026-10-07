@@ -231,12 +231,24 @@ function initFileUpload(containerId, inputId, listId, options = {}) {
 function displayAttachedFiles(containerId, fileIds) {
   const container = document.getElementById(containerId);
   if (!container || !fileIds || fileIds.length === 0) return;
-  
+
   const allFiles = getAllUploadedFiles();
+  console.log('[displayAttachedFiles] Looking for fileIds:', fileIds);
+  console.log('[displayAttachedFiles] All files in localStorage:', allFiles.length);
   const files = allFiles.filter(f => fileIds.includes(f.id));
-  
-  if (files.length === 0) return;
-  
+  console.log('[displayAttachedFiles] Found matching files:', files.length);
+
+  if (files.length === 0) {
+    console.warn('[displayAttachedFiles] No files found in localStorage. Files may have been uploaded in a different browser session.');
+    container.innerHTML = `
+      <div class="attached-files-section">
+        <h4 style="margin-bottom: var(--space-3); font-size: 0.9375rem;">الملفات المرفقة</h4>
+        <p style="color: var(--text-muted); font-size: 0.875rem;">الملفات غير متوفرة في هذا المتصفح (تم رفعها من متصفح آخر)</p>
+      </div>
+    `;
+    return;
+  }
+
   container.innerHTML = `
     <div class="attached-files-section">
       <h4 style="margin-bottom: var(--space-3); font-size: 0.9375rem;">الملفات المرفقة</h4>
@@ -245,7 +257,7 @@ function displayAttachedFiles(containerId, fileIds) {
           <div class="attached-file-card">
             <div class="attached-file-preview">
               ${file.type.startsWith('image/')
-                ? `<img src="${file.data}" alt="${file.name}" class="file-image-preview" onclick="viewFile('${file.id}')" style="cursor:pointer">`
+                ? `<img src="${file.data}" alt="${file.name}" class="file-image-preview" onclick="window.viewFile('${file.id}')" style="cursor:pointer">`
                 : getFileIconSVG(file.type)
               }
             </div>
@@ -254,7 +266,7 @@ function displayAttachedFiles(containerId, fileIds) {
               <div class="attached-file-size">${file.sizeFormatted}</div>
             </div>
             <div class="attached-file-actions">
-              <button class="icon-btn btn-sm" onclick="downloadFile('${file.id}')" title="تحميل">
+              <button class="icon-btn btn-sm" onclick="window.downloadFile('${file.id}')" title="تحميل">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               </button>
             </div>
