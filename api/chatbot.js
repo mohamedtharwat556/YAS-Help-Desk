@@ -1,4 +1,4 @@
-// Chatbot endpoint - Cohere API (free tier)
+// Chatbot endpoint - Cohere API with correct format
 const cohereApiKey = process.env.COHERE_API_KEY;
 
 module.exports = async function handler(req, res) {
@@ -21,8 +21,9 @@ module.exports = async function handler(req, res) {
 
       console.log('[Chatbot] Message:', message);
       console.log('[Chatbot] Cohere API Key exists:', !!cohereApiKey);
+      console.log('[Chatbot] API Key length:', cohereApiKey?.length || 0);
 
-      // Try Cohere API
+      // Try Cohere API with correct format
       if (cohereApiKey) {
         try {
           const systemPrompt = `أنت مساعد خدمة عملاء لـ YAS Help Desk. مهمتك مساعدة العملاء في:
@@ -41,31 +42,37 @@ module.exports = async function handler(req, res) {
 رابط تتبع الطلب: https://yas-help-desk.vercel.app/tracking.html
 رابط دليل المشاكل: https://yas-help-desk.vercel.app/troubleshooting.html`;
 
-          const response = await fetch('https://api.cohere.ai/v1/chat', {
+          console.log('[Chatbot] Calling Cohere API...');
+
+          const response = await fetch('https://api.cohere.ai/v1/generate', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${cohereApiKey}`,
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'X-Client-Name': 'YAS Help Desk'
             },
             body: JSON.stringify({
-              message: message,
-              chat_history: [
-                { role: 'SYSTEM', message: systemPrompt }
-              ],
               model: 'command',
+              prompt: `${systemPrompt}\n\nالعميل: ${message}\n\nالمساعد:`,
+              max_tokens: 300,
               temperature: 0.7,
-              max_tokens: 512
+              k: 0,
+              stop_sequences: [],
+              return_likelihoods: 'NONE'
             })
           });
 
-          const data = await response.json();
           console.log('[Chatbot] Cohere response status:', response.status);
 
-          if (response.ok && data.text) {
-            console.log('[Chatbot] AI response received');
+          const data = await response.json();
+          console.log('[Chatbot] Cohere response:', JSON.stringify(data, null, 2));
+
+          if (response.ok && data.generations && data.generations[0]) {
+            const aiMessage = data.generations[0].text;
+            console.log('[Chatbot] AI response received:', aiMessage);
             return res.status(200).json({
               success: true,
-              message: data.text
+              message: aiMessage
             });
           } else {
             console.error('[Chatbot] Cohere error:', data);
