@@ -328,19 +328,22 @@ module.exports = async function handler(req, res) {
       }
 
       // Send email notification for status change
-      if (body.status && body.status !== existingTicket.status && customer) {
-        try {
-          const statusLabels = {
-            'received': 'مستلمة',
-            'contacting': 'جاري التواصل',
-            'diagnosing': 'جاري الفحص',
-            'maintenance': 'قيد الصيانة',
-            'waiting': 'بانتظار العميل',
-            'resolved': 'تم الحل',
-            'closed': 'مغلق'
-          };
+      if (body.status && body.status !== existingTicket.status && customer && customer.email) {
+        // Validate email is ASCII only
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (emailRegex.test(customer.email)) {
+          try {
+            const statusLabels = {
+              'received': 'مستلمة',
+              'contacting': 'جاري التواصل',
+              'diagnosing': 'جاري الفحص',
+              'maintenance': 'قيد الصيانة',
+              'waiting': 'بانتظار العميل',
+              'resolved': 'تم الحل',
+              'closed': 'مغلق'
+            };
 
-          const emailHtml = `
+            const emailHtml = `
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -398,9 +401,9 @@ module.exports = async function handler(req, res) {
   </div>
 </body>
 </html>
-          `;
+            `;
 
-          const emailText = `
+            const emailText = `
 تحديث حالة التذكرة - YAS Help Desk
 
 رقم التذكرة: ${ticket.ticket_number}
@@ -409,29 +412,35 @@ module.exports = async function handler(req, res) {
 
 لتتبع حالة تذكرتك: https://yas-help-desk.vercel.app/tracking.html
 تواصل معنا: https://wa.me/201101267185
-          `;
+            `;
 
-          fetch('https://yas-help-desk.vercel.app/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: customer.email || customer.phone + '@example.com',
-              subject: `تحديث حالة التذكرة - ${ticket.ticket_number}`,
-              html: emailHtml,
-              text: emailText
-            })
-          }).catch(err => console.error('[GetTickets API] Email notification error:', err));
+            fetch('https://yas-help-desk.vercel.app/api/send-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                to: customer.email,
+                subject: `تحديث حالة التذكرة - ${ticket.ticket_number}`,
+                html: emailHtml,
+                text: emailText
+              })
+            }).catch(err => console.error('[GetTickets API] Email notification error:', err));
 
-          console.log('[GetTickets API] Email notification queued for status change');
-        } catch (emailError) {
-          console.error('[GetTickets API] Email notification error:', emailError);
+            console.log('[GetTickets API] Email notification queued for status change');
+          } catch (emailError) {
+            console.error('[GetTickets API] Email notification error:', emailError);
+          }
+        } else {
+          console.log('[GetTickets API] Invalid email format, skipping notification');
         }
       }
 
       // Send email notification for ticket closure
-      if (body.status === 'closed' && existingTicket.status !== 'closed' && customer) {
-        try {
-          const emailHtml = `
+      if (body.status === 'closed' && existingTicket.status !== 'closed' && customer && customer.email) {
+        // Validate email is ASCII only
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (emailRegex.test(customer.email)) {
+          try {
+            const emailHtml = `
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -486,9 +495,9 @@ module.exports = async function handler(req, res) {
   </div>
 </body>
 </html>
-          `;
+            `;
 
-          const emailText = `
+            const emailText = `
 تم إغلاق التذكرة - YAS Help Desk
 
 رقم التذكرة: ${ticket.ticket_number}
@@ -498,22 +507,25 @@ module.exports = async function handler(req, res) {
 
 لتتبع حالة تذكرتك: https://yas-help-desk.vercel.app/tracking.html
 تواصل معنا: https://wa.me/201101267185
-          `;
+            `;
 
-          fetch('https://yas-help-desk.vercel.app/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: customer.email || customer.phone + '@example.com',
-              subject: `تم إغلاق التذكرة - ${ticket.ticket_number}`,
-              html: emailHtml,
-              text: emailText
-            })
-          }).catch(err => console.error('[GetTickets API] Email notification error:', err));
+            fetch('https://yas-help-desk.vercel.app/api/send-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                to: customer.email,
+                subject: `تم إغلاق التذكرة - ${ticket.ticket_number}`,
+                html: emailHtml,
+                text: emailText
+              })
+            }).catch(err => console.error('[GetTickets API] Email notification error:', err));
 
-          console.log('[GetTickets API] Email notification queued for ticket closure');
-        } catch (emailError) {
-          console.error('[GetTickets API] Email notification error:', emailError);
+            console.log('[GetTickets API] Email notification queued for ticket closure');
+          } catch (emailError) {
+            console.error('[GetTickets API] Email notification error:', emailError);
+          }
+        } else {
+          console.log('[GetTickets API] Invalid email format, skipping notification');
         }
       }
 

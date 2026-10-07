@@ -287,8 +287,12 @@ ${dashboardUrl}
         }
 
         // Send email notification to customer
-        try {
-          const emailHtml = `
+        if (customer.email) {
+          // Validate email is ASCII only
+          const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+          if (emailRegex.test(customer.email)) {
+            try {
+              const emailHtml = `
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -356,9 +360,9 @@ ${dashboardUrl}
   </div>
 </body>
 </html>
-          `;
+              `;
 
-          const emailText = `
+              const emailText = `
 تذكرة دعم جديدة - YAS Help Desk
 
 رقم التذكرة: ${finalTicketNumber}
@@ -370,23 +374,28 @@ ${dashboardUrl}
 
 لتتبع حالة تذكرتك: https://yas-help-desk.vercel.app/tracking.html
 تواصل معنا: https://wa.me/201101267185
-          `;
+              `;
 
-          fetch('https://yas-help-desk.vercel.app/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: customer.email || customer.phone + '@example.com',
-              subject: `تذكرة دعم جديدة - ${finalTicketNumber}`,
-              html: emailHtml,
-              text: emailText
-            })
-          }).catch(err => console.error('[SUBMIT-TICKET] Email notification error:', err));
+              fetch('https://yas-help-desk.vercel.app/api/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  to: customer.email,
+                  subject: `تذكرة دعم جديدة - ${finalTicketNumber}`,
+                  html: emailHtml,
+                  text: emailText
+                })
+              }).catch(err => console.error('[SUBMIT-TICKET] Email notification error:', err));
 
-          console.log('[SUBMIT-TICKET] Email notification queued');
-        } catch (emailError) {
-          console.error('[SUBMIT-TICKET] Email notification error:', emailError);
-          // Don't fail the ticket creation if email fails
+              console.log('[SUBMIT-TICKET] Email notification queued');
+            } catch (emailError) {
+              console.error('[SUBMIT-TICKET] Email notification error:', emailError);
+            }
+          } else {
+            console.log('[SUBMIT-TICKET] Invalid email format, skipping notification');
+          }
+        } else {
+          console.log('[SUBMIT-TICKET] No email provided, skipping notification');
         }
 
         res.status(201).json({
