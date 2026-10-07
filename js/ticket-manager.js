@@ -637,6 +637,26 @@ const TicketDetails = {
 
         YAS.showToast('تم تحديث حالة الطلب بنجاح', 'success');
 
+        // Open WhatsApp with status update message
+        const waNumber = this.ticket.customer?.whatsapp || this.ticket.customer?.phone;
+        if (waNumber) {
+          const statusLabels = {
+            received:    'تم الاستلام',
+            reviewing:   'قيد المراجعة',
+            contacting:  'جاري التواصل',
+            diagnosing:  'جاري الفحص',
+            maintenance: 'قيد الصيانة',
+            waiting:     'بانتظار العميل',
+            resolved:    'تم الحل',
+            closed:      'مغلق'
+          };
+          const statusLabel = statusLabels[newStatus] || newStatus;
+          const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم تحديث حالة طلبك ${this.ticket.ticket_number} إلى: ${statusLabel}\n\n${note ? `ملاحظة: ${note}` : ''}`;
+          const formattedNumber = this.formatWhatsAppNumber(waNumber);
+          const waLink = YAS.buildWhatsAppLink(formattedNumber, waMsg);
+          window.open(waLink, '_blank');
+        }
+
         // Flash animation
         const headerCard = document.getElementById('ticket-header-card');
         if (headerCard) {
@@ -685,12 +705,22 @@ const TicketDetails = {
           message:     `هل تريد إغلاق الطلب ${ticketId}؟`,
           confirmText: 'نعم، إغلاق',
           type:        'warning',
-          onConfirm: () => {
-            YASStorage.updateTicketStatus(ticketId, 'closed', 'تم إغلاق الطلب');
-            this.ticket = YASStorage.getTicketById(ticketId);
+          onConfirm: async () => {
+            await YASStorage.updateTicketStatus(ticketId, 'closed', 'تم إغلاق الطلب');
+            this.ticket = await YASStorage.getTicketById(ticketId);
             this.setHTML('detail-status', YAS.statusBadge(this.ticket.status));
             this.renderActivities();
             YAS.showToast('تم إغلاق الطلب', 'success');
+
+            // Open WhatsApp with closure message and rating link
+            const waNumber = this.ticket.customer?.whatsapp || this.ticket.customer?.phone;
+            if (waNumber) {
+              const trackingUrl = `https://yas-help-desk.vercel.app/tracking.html?ticket=${ticketId}`;
+              const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم إغلاق طلبك ${ticketId} بنجاح.\n\nيمكنك تقييم الخدمة من خلال:\n${trackingUrl}\n\nشكراً لتعاملكم معنا!`;
+              const formattedNumber = this.formatWhatsAppNumber(waNumber);
+              const waLink = YAS.buildWhatsAppLink(formattedNumber, waMsg);
+              window.open(waLink, '_blank');
+            }
           }
         });
       });
