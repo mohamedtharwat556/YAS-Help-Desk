@@ -136,16 +136,36 @@ class ChatbotWidget {
     const container = document.getElementById('chatbot-messages');
     const messageDiv = document.createElement('div');
     messageDiv.className = `chatbot-message ${type}`;
-    
+
     const time = new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' });
-    
+
+    // Allow HTML in bot messages for links, escape HTML in user messages
+    const content = type === 'bot' ? text : this.escapeHtml(text);
+
     messageDiv.innerHTML = `
-      ${text}
+      ${content}
       <div class="time">${time}</div>
     `;
-    
+
+    // Add click handlers for links to open in new tab
+    if (type === 'bot') {
+      const links = messageDiv.querySelectorAll('a');
+      links.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.open(link.href, '_blank');
+        });
+      });
+    }
+
     container.appendChild(messageDiv);
     container.scrollTop = container.scrollHeight;
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   showTyping() {
