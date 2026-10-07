@@ -516,9 +516,6 @@ module.exports = async function handler(req, res) {
           console.error('[GetTickets API] Email notification error:', emailError);
         }
       }
-          assignedUser = user;
-        }
-      }
 
       const enrichedTicket = {
         ...ticket,
