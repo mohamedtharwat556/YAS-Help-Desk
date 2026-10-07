@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>التحليلات — YAS Help Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@vercel/analytics/dist/analytics.production.min.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); }
+    va('init', {
+      debug: false,
+      mode: 'auto'
+    });
+  </script>
+</head>
+<body>
+
+<div class="dashboard-layout">
+
+  <!-- ── Sidebar ─────────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="logo-mark" style="width:34px;height:34px;background:var(--primary);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:#fff;font-size:0.875rem;font-weight:800;font-family:var(--font-ui);flex-shrink:0">YAS</div>
+      <div>
+        <div class="brand">YAS Help Desk</div>
+        <div class="tagline">Engineer Dashboard</div>
+      </div>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">الرئيسية</div>
+
+      <a href="dashboard.html" class="nav-item" data-page="dashboard.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        نظرة عامة
+      </a>
+
+      <div class="nav-section-label">إدارة الطلبات</div>
+
+      <a href="tickets.html" class="nav-item" data-page="tickets.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-4-4z"/><polyline points="15 5 15 9 19 9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>
+        الطلبات
+        <span class="nav-badge" id="nav-badge-tickets">0</span>
+      </a>
+
+      <a href="customers.html" class="nav-item" data-page="customers.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        العملاء
+      </a>
+
+      <a href="devices.html" class="nav-item" data-page="devices.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        الأجهزة
+      </a>
+
+      <div class="nav-section-label">الخدمات</div>
+
+      <a href="maintenance.html" class="nav-item" data-page="maintenance.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        الصيانة
+      </a>
+
+      <a href="warranty.html" class="nav-item" data-page="warranty.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        الضمان
+      </a>
+
+      <div class="nav-section-label">التحليلات</div>
+
+      <a href="reports.html" class="nav-item" data-page="reports.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        التقارير
+      </a>
+
+      <a href="analytics.html" class="nav-item active" data-page="analytics.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        إحصائيات الموقع
+      </a>
+
+      <div class="nav-section-label">النظام</div>
+
+      <a href="settings.html" class="nav-item" data-page="settings.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        الإعدادات
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-user-initials">AF</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-user-name">Eng. Adam Farouk</div>
+          <div class="user-role" id="sidebar-user-role">Admin</div>
+        </div>
+      </div>
+      <button id="logoutBtn" class="logout-btn">تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <!-- ── Main Content ─────────────────────────────────────────── -->
+  <main class="main">
+    <header class="header">
+      <h1>📉 التحليلات</h1>
+      <div class="header-actions">
+        <span class="header-date" id="currentDate"></span>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Quick Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <div class="stat-label">الزوار اليوم</div>
+            <div class="stat-value" id="visitorsToday">-</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📊</div>
+          <div class="stat-info">
+            <div class="stat-label">إجمالي الزوار</div>
+            <div class="stat-value" id="totalVisitors">-</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-info">
+            <div class="stat-label">متوسط الوقت</div>
+            <div class="stat-value" id="avgTime">-</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-info">
+            <div class="stat-label">معدل الارتداد</div>
+            <div class="stat-value" id="bounceRate">-</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- External Analytics Links -->
+      <div class="card">
+        <h2 class="card-title">🔗 Vercel Analytics</h2>
+        <p class="card-description">
+          للإحصائيات التفصيلية عن الزوار، المصادر، الأجهزة، والمزيد، قم بزيارة Vercel Analytics
+        </p>
+        <div class="analytics-links">
+          <a href="https://vercel.com/dashboard" target="_blank" class="cta-button">
+            📊 فتح Vercel Analytics
+          </a>
+        </div>
+      </div>
+
+      <!-- Ticket Statistics -->
+      <div class="card">
+        <h2 class="card-title">🎫 إحصائيات التذاكر</h2>
+        <div class="stats-grid">
+          <div class="stat-card small">
+            <div class="stat-info">
+              <div class="stat-label">التذاكر الكلية</div>
+              <div class="stat-value" id="totalTickets">-</div>
+            </div>
+          </div>
+          <div class="stat-card small">
+            <div class="stat-info">
+              <div class="stat-label">مفتوحة</div>
+              <div class="stat-value" id="openTickets">-</div>
+            </div>
+          </div>
+          <div class="stat-card small">
+            <div class="stat-info">
+              <div class="stat-label">مغلقة</div>
+              <div class="stat-value" id="closedTickets">-</div>
+            </div>
+          </div>
+          <div class="stat-card small">
+            <div class="stat-info">
+              <div class="stat-label">التقييمات</div>
+              <div class="stat-value" id="totalRatings">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity -->
+      <div class="card">
+        <h2 class="card-title">📝 النشاط الأخير</h2>
+        <div id="recentActivity" class="activity-list">
+          <p class="empty-state">جاري التحميل...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/analytics.js"></script>
+</body>
+</html>
