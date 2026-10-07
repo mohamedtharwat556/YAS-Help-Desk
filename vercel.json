@@ -9,6 +9,10 @@
   "version": 2,
   "rewrites": [
     {
+      "source": "/api/chatbot",
+      "destination": "/api/chatbot.js"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/:path*.js"
     }
