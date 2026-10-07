@@ -273,33 +273,45 @@ function getFileIconSVG(type) {
 }
 
 /* ── File Download ───────────────────────────────────────────── */
-function downloadFile(fileId) {
+window.downloadFile = function(fileId) {
+  console.log('[downloadFile] Called with fileId:', fileId);
   const allFiles = getAllUploadedFiles();
   const file = allFiles.find(f => f.id === fileId);
-  
+
+  console.log('[downloadFile] Found file:', !!file);
+
   if (!file) {
-    YAS.showToast('الملف غير موجود', 'error');
+    console.error('[downloadFile] File not found');
+    if (window.YAS && YAS.showToast) {
+      YAS.showToast('الملف غير موجود', 'error');
+    }
     return;
   }
-  
+
   const link = document.createElement('a');
   link.href = file.data;
   link.download = file.name;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
-}
+};
 
 /* ── File Viewer Modal ───────────────────────────────────────── */
-function viewFile(fileId) {
+window.viewFile = function(fileId) {
+  console.log('[viewFile] Called with fileId:', fileId);
   const allFiles = getAllUploadedFiles();
   const file = allFiles.find(f => f.id === fileId);
-  
+
+  console.log('[viewFile] Found file:', !!file);
+
   if (!file || !file.type.startsWith('image/')) {
-    YAS.showToast('لا يمكن عرض هذا الملف', 'error');
+    console.error('[viewFile] Invalid file:', file);
+    if (window.YAS && YAS.showToast) {
+      YAS.showToast('لا يمكن عرض هذا الملف', 'error');
+    }
     return;
   }
-  
+
   // Create modal
   const modal = document.createElement('div');
   modal.className = 'modal-overlay';
@@ -317,29 +329,29 @@ function viewFile(fileId) {
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary modal-close">إغلاق</button>
-        <button class="btn btn-primary" onclick="downloadFile('${fileId}')">
+        <button class="btn btn-primary" onclick="window.downloadFile('${fileId}')">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           تحميل
         </button>
       </div>
     </div>
   `;
-  
+
   document.body.appendChild(modal);
-  
+
   // Close handlers
   modal.querySelectorAll('.modal-close').forEach(btn => {
     btn.addEventListener('click', () => {
       document.body.removeChild(modal);
     });
   });
-  
+
   modal.addEventListener('click', (e) => {
     if (e.target === modal) {
       document.body.removeChild(modal);
     }
   });
-}
+};
 
 /* ── CSS for File Upload ─────────────────────────────────────── */
 const fileUploadCSS = `
@@ -536,13 +548,11 @@ document.head.appendChild(styleSheet);
 window.YASFileUpload = {
   init: initFileUpload,
   displayFiles: displayAttachedFiles,
-  download: downloadFile,
-  view: viewFile,
+  download: window.downloadFile,
+  view: window.viewFile,
   getAll: getAllUploadedFiles,
   save: saveUploadedFile,
   delete: deleteUploadedFile
 };
 
-// Also expose viewFile and downloadFile globally for onclick handlers
-window.viewFile = viewFile;
-window.downloadFile = downloadFile;
+console.log('[FileUpload] Initialized, viewFile and downloadFile available globally');
