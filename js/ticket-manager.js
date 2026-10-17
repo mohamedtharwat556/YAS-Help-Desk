@@ -490,6 +490,8 @@ const TicketDetails = {
     const serialNumber = t.device?.serial_number || '—';
     this.setEl('dev-detail-serial', serialNumber);
 
+    this.setEl('dev-detail-date', t.device?.purchase_date || t.device?.purchaseDate ? YAS.formatDate(t.device?.purchase_date || t.device?.purchaseDate) : '—');
+
     this.setHTML('dev-detail-warranty', YAS.warrantyBadge(t.device?.warranty_status || t.device?.warranty || 'unknown'));
 
     // Description
