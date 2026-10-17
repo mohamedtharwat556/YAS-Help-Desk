@@ -27,7 +27,6 @@ const TicketForm = {
 
     this.bindStepButtons();
     this.bindDeviceSelection();
-    this.bindPrioritySelection();
     this.bindFileUpload();
     this.updateStepUI();
   },
@@ -58,23 +57,7 @@ const TicketForm = {
     });
   },
 
-  bindPrioritySelection() {
-    // Default to medium
-    const mediumOpt = document.querySelector('.priority-option[data-value="medium"]');
-    document.querySelectorAll('.priority-option').forEach(o => o.classList.remove('selected'));
-    if (mediumOpt) mediumOpt.classList.add('selected');
-    const hiddenInput = document.getElementById('priority-hidden');
-    if (hiddenInput) hiddenInput.value = 'medium';
 
-    document.querySelectorAll('.priority-option').forEach(option => {
-      option.addEventListener('click', () => {
-        document.querySelectorAll('.priority-option').forEach(o => o.classList.remove('selected'));
-        option.classList.add('selected');
-        const h = document.getElementById('priority-hidden');
-        if (h) h.value = option.getAttribute('data-value');
-      });
-    });
-  },
 
   bindFileUpload() {
     // Initialize the new file upload system
@@ -269,18 +252,11 @@ const TicketForm = {
 
     if (step === 3) {
       const type     = document.getElementById('request-type');
-      const priority = document.getElementById('priority-hidden');
       const desc     = document.getElementById('problem-desc');
 
       // Request type validation
       if (!type?.value) {
         this.markError(type, 'request-type-error', 'نوع الطلب مطلوب');
-        valid = false;
-      }
-
-      // Priority validation
-      if (!priority?.value) {
-        YAS.showToast('يرجى اختيار الأولوية', 'warning');
         valid = false;
       }
 
@@ -339,7 +315,7 @@ const TicketForm = {
     if (step === 3) {
       this.data.request = {
         type:        document.getElementById('request-type')?.value || '',
-        priority:    document.getElementById('priority-hidden')?.value || 'medium',
+        priority:    'medium',
         description: document.getElementById('problem-desc')?.value.trim() || ''
       };
     }
@@ -388,7 +364,6 @@ const TicketForm = {
     // Request - Use i18n translation functions if available
     const requestTypeLabel = typeof translateIssueType !== 'undefined' ? translateIssueType(d.request.type) : (YAS.RequestTypeLabels[d.request.type] || d.request.type);
     set('review-req-type',  requestTypeLabel);
-    setHTML('review-priority', YAS.priorityBadge(d.request.priority));
     set('review-desc', d.request.description);
   },
 
@@ -457,7 +432,6 @@ const TicketForm = {
 *واتساب:* ${this.data.customer.whatsapp || this.data.customer.phone}
 *الجهاز:* ${this.data.device.brand} ${this.data.device.model}
 *نوع الطلب:* ${this.data.request.type}
-*الأولوية:* ${this.data.request.priority}
 *الوصف:* ${this.data.request.description}
 
 💡 *لإخبار العميل بكود التتبع:*
@@ -654,7 +628,6 @@ const TicketTracking = {
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
           ${YAS.statusBadge(ticket.status)}
-          ${YAS.priorityBadge(requestPriority)}
         </div>
       `;
     }
