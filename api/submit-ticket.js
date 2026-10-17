@@ -275,7 +275,7 @@ module.exports = async function handler(req, res) {
             priority,
             description,
             files: uploadedFileUrls,
-            status: 'received',
+            status: 'submitted',
             assigned_user_id: adamUserId
           })
           .select('*')

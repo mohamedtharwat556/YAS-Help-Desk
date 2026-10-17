@@ -641,14 +641,10 @@ const TicketDetails = {
         const waNumber = this.ticket.customer?.whatsapp || this.ticket.customer?.phone;
         if (waNumber) {
           const statusLabels = {
-            received:    'تم الاستلام',
+            submitted:   'تم ارسال الطلب',
             reviewing:   'قيد المراجعة',
-            contacting:  'جاري التواصل',
-            diagnosing:  'جاري الفحص',
-            maintenance: 'قيد الصيانة',
             waiting:     'بانتظار العميل',
-            resolved:    'تم الحل',
-            closed:      'مغلق'
+            closed:      'تم الحل (مغلق)'
           };
           const statusLabel = statusLabels[newStatus] || newStatus;
           const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم تحديث حالة طلبك ${this.ticket.ticket_number} إلى: ${statusLabel}\n\n${note ? `ملاحظة: ${note}` : ''}`;

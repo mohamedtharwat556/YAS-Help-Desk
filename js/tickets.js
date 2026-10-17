@@ -847,20 +847,18 @@ const TicketTracking = {
     const steps = [
       { key: 'create',      label: 'تم إنشاء الطلب' },
       { key: 'assign',      label: 'تم استلام الطلب' },
+      { key: 'submitted',   label: 'تم ارسال الطلب',  status: 'submitted' },
       { key: 'reviewing',   label: 'قيد المراجعة',    status: 'reviewing' },
-      { key: 'contacting',  label: 'جاري التواصل',    status: 'contacting' },
-      { key: 'diagnosing',  label: 'جاري الفحص',      status: 'diagnosing' },
-      { key: 'maintenance', label: 'قيد الصيانة',     status: 'maintenance' },
-      { key: 'resolved',    label: 'تم الحل',         status: 'resolved' },
-      { key: 'closed',      label: 'مغلق',            status: 'closed' }
+      { key: 'waiting',     label: 'بانتظار العميل',  status: 'waiting' },
+      { key: 'closed',      label: 'تم الحل (مغلق)',  status: 'closed' }
     ];
 
-    const statusOrder = ['received', 'reviewing', 'contacting', 'diagnosing', 'maintenance', 'waiting', 'resolved', 'closed'];
+    const statusOrder = ['submitted', 'reviewing', 'waiting', 'closed'];
     const currentIdx  = statusOrder.indexOf(currentStatus);
 
     return steps.map((step, idx) => {
       const isDone   = idx <= currentIdx || (activities && activities.some(a => a.type === step.key));
-      const isActive = step.status === currentStatus || (idx === 0 && currentStatus === 'received');
+      const isActive = step.status === currentStatus || (idx === 0 && currentStatus === 'submitted');
 
       let dotClass = '';
       if (isActive) dotClass = 'active';

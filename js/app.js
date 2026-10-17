@@ -80,24 +80,16 @@ function getDeviceIcon(type) {
 
 /* ── Label Maps ────────────────────────────────────────────── */
 const StatusLabels = {
-  received:    'تم الاستلام',
+  submitted:   'تم ارسال الطلب',
   reviewing:   'قيد المراجعة',
-  contacting:  'جاري التواصل',
-  diagnosing:  'جاري الفحص',
-  maintenance: 'قيد الصيانة',
   waiting:     'بانتظار العميل',
-  resolved:    'تم الحل',
-  closed:      'مغلق'
+  closed:      'تم الحل (مغلق)'
 };
 
 const StatusBadgeClass = {
-  received:    'badge-received',
+  submitted:   'badge-submitted',
   reviewing:   'badge-reviewing',
-  contacting:  'badge-contacting',
-  diagnosing:  'badge-diagnosing',
-  maintenance: 'badge-maintenance',
   waiting:     'badge-waiting',
-  resolved:    'badge-resolved',
   closed:      'badge-closed'
 };
 

@@ -251,14 +251,10 @@ async function updateTicketStatus(id, newStatus, note = '') {
       if (!currentTicket) return null;
 
       const statusLabels = {
-        received:    'تم الاستلام',
+        submitted:   'تم ارسال الطلب',
         reviewing:   'قيد المراجعة',
-        contacting:  'جاري التواصل',
-        diagnosing:  'جاري الفحص',
-        maintenance: 'قيد الصيانة',
         waiting:     'بانتظار العميل',
-        resolved:    'تم الحل',
-        closed:      'مغلق'
+        closed:      'تم الحل (مغلق)'
       };
 
       const activityLabel = statusLabels[newStatus] || newStatus || 'غير محدد';
@@ -291,7 +287,7 @@ async function updateTicketStatus(id, newStatus, note = '') {
       const response = await YAS_API.updateTicket(id, updateData);
 
       if (response.success) {
-        if (newStatus === 'resolved' || newStatus === 'closed') {
+        if (newStatus === 'closed') {
           addNotification({
             type:    'resolved',
             title:   'تم حل الطلب',
@@ -311,14 +307,10 @@ async function updateTicketStatus(id, newStatus, note = '') {
   if (!ticket) return null;
 
   const statusLabels = {
-    received:    'تم الاستلام',
+    submitted:   'تم ارسال الطلب',
     reviewing:   'قيد المراجعة',
-    contacting:  'جاري التواصل',
-    diagnosing:  'جاري الفحص',
-    maintenance: 'قيد الصيانة',
     waiting:     'بانتظار العميل',
-    resolved:    'تم الحل',
-    closed:      'مغلق'
+    closed:      'تم الحل (مغلق)'
   };
 
   const activityLabel = statusLabels[newStatus] || newStatus || 'غير محدد';
@@ -335,7 +327,7 @@ async function updateTicketStatus(id, newStatus, note = '') {
     activities: [...(ticket.activities || []), activity]
   });
 
-  if (newStatus === 'resolved' || newStatus === 'closed') {
+  if (newStatus === 'closed') {
     addNotification({
       type:    'resolved',
       title:   'تم حل الطلب',
