@@ -487,8 +487,12 @@ const TicketDetails = {
     const serialStatus = t.device?.serial_status || 'available';
     this.setEl('dev-detail-serial-status', serialStatusLabels[serialStatus] || serialStatus);
 
-    const serialNumber = t.device?.serial_number || '—';
-    this.setEl('dev-detail-serial', serialNumber);
+    // Show serial number only if status is 'available' and number exists
+    if (serialStatus === 'available' && t.device?.serial_number) {
+      this.setEl('dev-detail-serial', t.device.serial_number);
+    } else {
+      this.setEl('dev-detail-serial', '—');
+    }
 
     this.setEl('dev-detail-date', t.device?.purchase_date || t.device?.purchaseDate ? YAS.formatDate(t.device?.purchase_date || t.device?.purchaseDate) : '—');
 
