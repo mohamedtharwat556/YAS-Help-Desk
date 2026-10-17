@@ -157,15 +157,13 @@ module.exports = async function handler(req, res) {
           type: device.type,
           brand: device.brand,
           model: device.model,
+          serial_status: device.serial_status || 'available',
           warranty_status: device.warranty_status || 'unknown'
         };
 
-        // Only add serial_number and purchase_date if they exist
-        if (device.serial_number) {
+        // Only add serial_number if serial_status is 'available'
+        if (device.serial_status === 'available' && device.serial_number) {
           deviceData.serial_number = device.serial_number;
-        }
-        if (device.purchase_date) {
-          deviceData.purchase_date = device.purchase_date;
         }
 
         console.log('[SUBMIT-TICKET] Device data to insert:', deviceData);

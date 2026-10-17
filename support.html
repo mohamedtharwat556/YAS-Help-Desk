@@ -258,25 +258,25 @@
               </div>
             </div>
 
-            <div class="form-row">
-              <div class="form-group">
-                <label for="device-serial" data-i18n="label_serial_number">الرقم التسلسلي (Serial Number)</label>
-                <input type="text" id="device-serial" data-i18n-placeholder="placeholder_serial_number" placeholder="اختياري — يساعد في التتبع" dir="ltr" style="text-align:center">
-                <div class="form-error" id="device-serial-error"></div>
-              </div>
-              <div class="form-group">
-                <label for="purchase-date" data-i18n="label_purchase_date">تاريخ الشراء</label>
-                <input type="date" id="purchase-date">
-                <div class="form-error" id="device-purchase-error"></div>
-              </div>
+            <div class="form-group">
+              <label for="serial-status" data-i18n="label_serial_status">الرقم التسلسلي</label>
+              <select id="serial-status">
+                <option value="available" data-i18n="serial_available">الكود موجود على الجهاز</option>
+                <option value="not_available" data-i18n="serial_not_available">الكود غير موجود</option>
+                <option value="cannot_access" data-i18n="serial_cannot_access">الكود خلف الشاشة لا استطيع الحصول عليه</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="serial-input-group">
+              <label for="device-serial" data-i18n="label_serial_number">أدخل الرقم التسلسلي</label>
+              <input type="text" id="device-serial" data-i18n-placeholder="placeholder_serial_number" placeholder="أدخل الرقم التسلسلي" dir="ltr" style="text-align:center">
+              <div class="form-error" id="device-serial-error"></div>
             </div>
 
             <div class="form-group">
-              <label for="warranty-status" data-i18n="label_warranty">حالة الضمان</label>
+              <label for="warranty-status" data-i18n="label_warranty">الضمان</label>
               <select id="warranty-status">
-                <option value="unknown" data-i18n="warranty_unknown">غير محدد</option>
                 <option value="active" data-i18n="warranty_active">الضمان ساري</option>
-                <option value="expiring" data-i18n="warranty_expiring">الضمان يقترب من الانتهاء</option>
                 <option value="expired" data-i18n="warranty_expired">الضمان منتهي</option>
               </select>
             </div>

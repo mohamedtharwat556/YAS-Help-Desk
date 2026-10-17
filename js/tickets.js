@@ -86,6 +86,22 @@ const TicketForm = {
         { maxFiles: 5, maxSize: 10 * 1024 * 1024 }
       );
     }
+
+    // Bind serial status dropdown
+    const serialStatus = document.getElementById('serial-status');
+    const serialInputGroup = document.getElementById('serial-input-group');
+    if (serialStatus && serialInputGroup) {
+      const updateSerialInput = () => {
+        if (serialStatus.value === 'available') {
+          serialInputGroup.style.display = 'block';
+        } else {
+          serialInputGroup.style.display = 'none';
+          document.getElementById('device-serial').value = '';
+        }
+      };
+      serialStatus.addEventListener('change', updateSerialInput);
+      updateSerialInput(); // Initial state
+    }
   },
 
   nextStep() {
@@ -308,12 +324,13 @@ const TicketForm = {
     }
 
     if (step === 2) {
+      const serialStatus = document.getElementById('serial-status')?.value || 'available';
       this.data.device = {
         type:         document.getElementById('device-type-hidden')?.value || '',
         brand:        document.getElementById('device-brand')?.value.trim() || '',
         model:        document.getElementById('device-model')?.value.trim() || '',
-        serial_number: document.getElementById('device-serial')?.value.trim() || '',
-        purchase_date: document.getElementById('purchase-date')?.value || '',
+        serial_status: serialStatus,
+        serial_number: serialStatus === 'available' ? (document.getElementById('device-serial')?.value.trim() || '') : '',
         warranty_status: document.getElementById('warranty-status')?.value || 'unknown'
       };
     }
@@ -352,8 +369,19 @@ const TicketForm = {
     set('review-device-type',   deviceTypeLabel);
     set('review-device-brand',  d.device.brand);
     set('review-device-model',  d.device.model);
-    set('review-device-serial', d.device.serial_number);
-    set('review-purchase-date', d.device.purchase_date ? YAS.formatDate(d.device.purchase_date) : '—');
+
+    // Serial status display
+    const serialStatusLabels = {
+      'available': 'الكود موجود',
+      'not_available': 'الكود غير موجود',
+      'cannot_access': 'الكود خلف الشاشة'
+    };
+    const serialStatusText = serialStatusLabels[d.device.serial_status] || d.device.serial_status;
+    const serialDisplay = d.device.serial_status === 'available' && d.device.serial_number
+      ? `${serialStatusText}: ${d.device.serial_number}`
+      : serialStatusText;
+    set('review-device-serial', serialDisplay);
+
     setHTML('review-warranty', YAS.warrantyBadge(d.device.warranty_status || d.device.warranty));
 
     // Request - Use i18n translation functions if available
