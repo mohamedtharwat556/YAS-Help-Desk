@@ -478,22 +478,6 @@ const TicketDetails = {
     // Load rating
     this.loadRating(ticketId);
 
-    // Serial status and number
-    const serialStatusLabels = {
-      'available': 'الكود موجود على الجهاز',
-      'not_available': 'الكود غير موجود',
-      'cannot_access': 'الكود خلف الشاشة لا استطيع الحصول عليه'
-    };
-    const serialStatus = t.device?.serial_status || 'available';
-    this.setEl('dev-detail-serial-status', serialStatusLabels[serialStatus] || serialStatus);
-
-    // Show serial number only if status is 'available' and number exists
-    if (serialStatus === 'available' && t.device?.serial_number) {
-      this.setEl('dev-detail-serial', t.device.serial_number);
-    } else {
-      this.setEl('dev-detail-serial', '—');
-    }
-
     this.setEl('dev-detail-date', t.device?.purchase_date || t.device?.purchaseDate ? YAS.formatDate(t.device?.purchase_date || t.device?.purchaseDate) : '—');
 
     this.setHTML('dev-detail-warranty', YAS.warrantyBadge(t.device?.warranty_status || t.device?.warranty || 'unknown'));
