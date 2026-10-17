@@ -305,6 +305,7 @@ const TicketForm = {
         model:        document.getElementById('device-model')?.value.trim() || '',
         serial_status: serialStatus,
         serial_number: serialStatus === 'available' ? (document.getElementById('device-serial')?.value.trim() || '') : '',
+        purchase_date: document.getElementById('purchase-date')?.value || '',
         warranty_status: document.getElementById('warranty-status')?.value || 'unknown'
       };
     }
@@ -355,6 +356,8 @@ const TicketForm = {
       ? `${serialStatusText}: ${d.device.serial_number}`
       : serialStatusText;
     set('review-device-serial', serialDisplay);
+
+    set('review-purchase-date', d.device.purchase_date ? YAS.formatDate(d.device.purchase_date) : '—');
 
     setHTML('review-warranty', YAS.warrantyBadge(d.device.warranty_status || d.device.warranty));
 

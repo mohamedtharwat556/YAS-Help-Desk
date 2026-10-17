@@ -166,6 +166,11 @@ module.exports = async function handler(req, res) {
           deviceData.serial_number = device.serial_number;
         }
 
+        // Add purchase_date if provided
+        if (device.purchase_date) {
+          deviceData.purchase_date = device.purchase_date;
+        }
+
         console.log('[SUBMIT-TICKET] Device data to insert:', deviceData);
 
         const result = await supabase
