@@ -264,9 +264,6 @@ const TicketForm = {
       if (!desc?.value.trim()) {
         this.markError(desc, 'desc-error', 'وصف المشكلة مطلوب');
         valid = false;
-      } else if (desc.value.trim().length < 20) {
-        this.markError(desc, 'desc-error', 'يرجى وصف المشكلة بشكل كافٍ (20 حرف على الأقل)');
-        valid = false;
       } else if (desc.value.trim().length > 2000) {
         this.markError(desc, 'desc-error', 'الوصف طويل جداً (أقصى 2000 حرف)');
         valid = false;

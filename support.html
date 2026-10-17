@@ -303,24 +303,20 @@
             </div>
 
             <div class="form-group">
-              <label for="request-type" class="required" data-i18n="label_issue_type">نوع الطلب</label>
+              <label for="request-type" class="required">نوع الطلب</label>
               <select id="request-type">
-                <option value="" data-i18n="select_issue_type">اختر نوع الطلب</option>
-                <option value="technical" data-i18n="issue_technical">دعم فني — مشكلة تقنية</option>
-                <option value="maintenance" data-i18n="issue_maintenance">صيانة — فحص وإصلاح</option>
-                <option value="warranty" data-i18n="issue_warranty">ضمان — استفسار أو طلب ضمان</option>
-                <option value="complaint" data-i18n="issue_complaint">شكوى — مشكلة في الخدمة</option>
-                <option value="inquiry" data-i18n="issue_inquiry">استفسار — سؤال عن منتج أو خدمة</option>
-                <option value="installation" data-i18n="issue_installation">تركيب — إعداد وتركيب</option>
-                <option value="followup" data-i18n="issue_followup">متابعة — طلب سابق</option>
-                <option value="other" data-i18n="issue_other">أخرى</option>
+                <option value="">اختر نوع الطلب</option>
+                <option value="technical">دعم فني — مشكلة تقنية</option>
+                <option value="maintenance">صيانة — فحص وإصلاح</option>
+                <option value="inquiry">استفسار — سؤال عن منتج أو خدمة</option>
+                <option value="other">أخرى</option>
               </select>
               <div class="form-error" id="request-type-error"></div>
             </div>
 
             <div class="form-group">
-              <label for="problem-desc" class="required" data-i18n="label_description">وصف المشكلة</label>
-              <textarea id="problem-desc" rows="5" data-i18n-placeholder="placeholder_description" placeholder="صف المشكلة بالتفصيل: متى بدأت؟ ما هي الأعراض؟ هل جربت أي حلول؟ ما تأثيرها على عملك؟"></textarea>
+              <label for="problem-desc" class="required">وصف المشكلة</label>
+              <textarea id="problem-desc" rows="5" placeholder="صف المشكلة بالتفصيل"></textarea>
               <div class="form-error" id="desc-error"></div>
               <div class="form-hint" data-i18n="hint_description">كلما كان الوصف أوضح، كلما تمكنا من مساعدتك أسرع</div>
             </div>
