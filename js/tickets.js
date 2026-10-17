@@ -846,7 +846,6 @@ const TicketTracking = {
   buildTimeline(currentStatus, activities) {
     const steps = [
       { key: 'create',      label: 'تم إنشاء الطلب' },
-      { key: 'assign',      label: 'تم استلام الطلب' },
       { key: 'submitted',   label: 'تم ارسال الطلب',  status: 'submitted' },
       { key: 'reviewing',   label: 'قيد المراجعة',    status: 'reviewing' },
       { key: 'waiting',     label: 'بانتظار العميل',  status: 'waiting' },
