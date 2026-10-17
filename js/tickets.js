@@ -100,7 +100,8 @@ const TicketForm = {
         }
       };
       serialStatus.addEventListener('change', updateSerialInput);
-      updateSerialInput(); // Initial state
+      // Start with input hidden
+      serialInputGroup.style.display = 'none';
     }
   },
 
@@ -372,9 +373,9 @@ const TicketForm = {
 
     // Serial status display
     const serialStatusLabels = {
-      'available': 'الكود موجود',
+      'available': 'الكود موجود على الجهاز',
       'not_available': 'الكود غير موجود',
-      'cannot_access': 'الكود خلف الشاشة'
+      'cannot_access': 'الكود خلف الشاشة لا استطيع الحصول عليه'
     };
     const serialStatusText = serialStatusLabels[d.device.serial_status] || d.device.serial_status;
     const serialDisplay = d.device.serial_status === 'available' && d.device.serial_number

@@ -158,7 +158,7 @@ module.exports = async function handler(req, res) {
           brand: device.brand,
           model: device.model,
           serial_status: device.serial_status || 'available',
-          warranty_status: device.warranty_status || 'unknown'
+          warranty_status: device.warranty_status || 'active'
         };
 
         // Only add serial_number if serial_status is 'available'

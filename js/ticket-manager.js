@@ -480,9 +480,9 @@ const TicketDetails = {
 
     // Serial status and number
     const serialStatusLabels = {
-      'available': 'الكود موجود',
+      'available': 'الكود موجود على الجهاز',
       'not_available': 'الكود غير موجود',
-      'cannot_access': 'الكود خلف الشاشة'
+      'cannot_access': 'الكود خلف الشاشة لا استطيع الحصول عليه'
     };
     const serialStatus = t.device?.serial_status || 'available';
     this.setEl('dev-detail-serial-status', serialStatusLabels[serialStatus] || serialStatus);
