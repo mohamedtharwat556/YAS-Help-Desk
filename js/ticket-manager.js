@@ -249,6 +249,9 @@ const TicketManager = {
             <button class="btn btn-ghost btn-sm" data-tooltip="تحديث الحالة" onclick="openStatusModal('${t.id}','${t.status}')">
               ${YAS.Icons.edit}
             </button>
+            <button class="btn btn-danger btn-sm" data-tooltip="حذف الطلب" onclick="deleteTicket('${t.id}')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </button>
           </div>
         </td>
       </tr>
@@ -808,13 +811,42 @@ const TicketDetails = {
   }
 };
 
+/* ── Delete Ticket Function ───────────────────────────────────── */
+async function deleteTicket(ticketId) {
+  if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+
+  try {
+    const token = localStorage.getItem('yas_token');
+    const response = await fetch(`/api/tickets?id=${ticketId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      YAS.showToast('تم حذف الطلب بنجاح', 'success');
+      // Refresh the table
+      TicketManager.loadTickets();
+    } else {
+      YAS.showToast('فشل حذف الطلب', 'error');
+    }
+  } catch (error) {
+    console.error('Delete ticket error:', error);
+    YAS.showToast('حدث خطأ أثناء حذف الطلب', 'error');
+  }
+}
+
 /* ── Init ──────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
   // Only init TicketManager if we're on tickets.html
   if (document.getElementById('tickets-table-body')) {
     TicketManager.init();
   }
-  
+
   // Only init TicketDetails if we're on ticket-details.html
   if (document.getElementById('ticket-detail-container')) {
     TicketDetails.init();
