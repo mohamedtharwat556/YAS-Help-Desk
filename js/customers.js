@@ -207,19 +207,19 @@ const CustomerDetails = {
       tbody.innerHTML = tickets.map(t => `
         <tr style="cursor:pointer" onclick="window.location.href='ticket-details.html?id=${t.id}'">
           <td>
-            <span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem">${t.id}</span>
+            <span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem">${t.ticket_number || t.id}</span>
           </td>
-          <td>${YAS.RequestTypeLabels[t.request.type] || t.request.type}</td>
+          <td>${YAS.RequestTypeLabels[t.request_type || t.request?.type] || t.request_type || t.request?.type}</td>
           <td>
             <div style="display:flex;align-items:center;gap:6px">
-              ${YAS.getDeviceIcon(t.device.type)}
-              ${t.device.brand} ${t.device.model}
+              ${YAS.getDeviceIcon(t.device?.type)}
+              ${t.device?.brand || ''} ${t.device?.model || ''}
             </div>
           </td>
-          <td>${YAS.priorityBadge(t.request.priority)}</td>
+          <td>${YAS.priorityBadge(t.priority)}</td>
           <td>${YAS.statusBadge(t.status)}</td>
-          <td style="font-size:0.8125rem;color:var(--text-muted)">${YAS.formatDate(t.createdAt)}</td>
-          <td style="font-size:0.8125rem;color:var(--text-muted)">${YAS.timeAgo(t.updatedAt)}</td>
+          <td style="font-size:0.8125rem;color:var(--text-muted)">${YAS.formatDate(t.created_at || t.createdAt)}</td>
+          <td style="font-size:0.8125rem;color:var(--text-muted)">${YAS.timeAgo(t.updated_at || t.updatedAt)}</td>
         </tr>
       `).join('');
     }
