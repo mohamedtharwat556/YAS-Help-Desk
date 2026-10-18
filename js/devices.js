@@ -57,17 +57,14 @@ const DevicesPage = {
   },
 
   renderStats() {
-    const totalEl = document.getElementById('dev-stat-total');
-    const activeEl = document.getElementById('dev-stat-active');
-    const resolvedEl = document.getElementById('dev-stat-resolved');
+    const setCount = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) YAS.animateCount(el, val, 600);
+    };
 
-    const totalDevices = this.devices.length;
-    const activeWarranty = this.devices.filter(d => d.warranty_status === 'active').length;
-    const expiredWarranty = this.devices.filter(d => d.warranty_status === 'expired').length;
-
-    if (totalEl) YAS.animateCount(totalEl, totalDevices, 600);
-    if (activeEl) YAS.animateCount(activeEl, activeWarranty, 600);
-    if (resolvedEl) YAS.animateCount(resolvedEl, expiredWarranty, 600);
+    setCount('dev-stat-total', this.devices.length);
+    setCount('dev-stat-warranty-active', this.devices.filter(d => d.warranty_status === 'active').length);
+    setCount('dev-stat-warranty-expired', this.devices.filter(d => d.warranty_status === 'expired').length);
   },
 
   renderStats() {
@@ -77,8 +74,8 @@ const DevicesPage = {
     };
 
     setCount('dev-stat-total', this.devices.length);
-    setCount('dev-stat-warranty-active', this.devices.filter(d => d.warranty === 'active').length);
-    setCount('dev-stat-warranty-expired', this.devices.filter(d => d.warranty === 'expired').length);
+    setCount('dev-stat-warranty-active', this.devices.filter(d => d.warranty_status === 'active').length);
+    setCount('dev-stat-warranty-expired', this.devices.filter(d => d.warranty_status === 'expired').length);
   },
 
   bindSearch() {
@@ -114,7 +111,7 @@ const DevicesPage = {
     }
 
     if (filterType) data = data.filter(d => d.type === filterType);
-    if (filterWarr) data = data.filter(d => d.warranty_status === filterWarr);
+    if (filterWarr) data = data.filter(d => (d.warranty_status || d.warranty) === filterWarr);
 
     this.filtered = data;
     this.renderTable();
@@ -153,9 +150,9 @@ const DevicesPage = {
             </div>
           </td>
           <td style="font-size:0.875rem">${d.customer.name}</td>
-          <td style="font-family:var(--font-ui);font-size:0.8125rem">${YAS.highlightText(d.serial_number || '—', q)}</td>
-          <td style="font-size:0.8125rem">${d.purchaseDate ? YAS.formatDate(d.purchaseDate) : '—'}</td>
-          <td>${YAS.warrantyBadge(d.warranty)}</td>
+          <td style="font-family:var(--font-ui);font-size:0.8125rem">${YAS.highlightText(d.serial_status === 'available' ? (d.serial_number || '—') : '—', q)}</td>
+          <td style="font-size:0.8125rem">${d.purchase_date ? YAS.formatDate(d.purchase_date) : '—'}</td>
+          <td>${YAS.warrantyBadge(d.warranty_status || d.warranty || 'unknown')}</td>
           <td>
             ${openTickets > 0
               ? `<span class="badge badge-reviewing">${openTickets}</span>`
