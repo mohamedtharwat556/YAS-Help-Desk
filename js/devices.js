@@ -157,8 +157,8 @@ const DevicesPage = {
                 'not_available': 'الكود غير موجود',
                 'cannot_access': 'الكود خلف الشاشة'
               };
-              const status = statusLabels[d.serial_status] || d.serial_status || '—';
-              const number = d.serial_status === 'available' && d.serial_number ? ` (${d.serial_number})` : '';
+              const status = statusLabels[d.serial_status] || d.serial_status || (d.serial_number ? 'الكود موجود' : 'غير محدد');
+              const number = (d.serial_status === 'available' || d.serial_number) && d.serial_number ? ` (${d.serial_number})` : '';
               return YAS.highlightText(status + number, q);
             })()}
           </td>
