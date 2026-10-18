@@ -150,7 +150,18 @@ const DevicesPage = {
             </div>
           </td>
           <td style="font-size:0.875rem">${d.customer.name}</td>
-          <td style="font-family:var(--font-ui);font-size:0.8125rem">${YAS.highlightText(d.serial_status === 'available' ? (d.serial_number || '—') : '—', q)}</td>
+          <td style="font-size:0.8125rem">
+            ${(() => {
+              const statusLabels = {
+                'available': 'الكود موجود',
+                'not_available': 'الكود غير موجود',
+                'cannot_access': 'الكود خلف الشاشة'
+              };
+              const status = statusLabels[d.serial_status] || d.serial_status || '—';
+              const number = d.serial_status === 'available' && d.serial_number ? ` (${d.serial_number})` : '';
+              return YAS.highlightText(status + number, q);
+            })()}
+          </td>
           <td style="font-size:0.8125rem">${d.purchase_date ? YAS.formatDate(d.purchase_date) : '—'}</td>
           <td>${YAS.warrantyBadge(d.warranty_status || d.warranty || 'unknown')}</td>
           <td>
