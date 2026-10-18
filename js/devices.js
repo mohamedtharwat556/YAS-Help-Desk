@@ -214,9 +214,25 @@ const DeviceDetails = {
     setEl('dev-type-label',  YAS.DeviceTypeLabels[d.type] || d.type);
     setEl('dev-brand',       d.brand);
     setEl('dev-model',       d.model);
-    setEl('dev-serial',      d.serial_number);
-    setEl('dev-purchase',    d.purchaseDate ? YAS.formatDate(d.purchaseDate) : '—');
-    setHTML('dev-warranty',  YAS.warrantyBadge(d.warranty));
+
+    // Serial status and number
+    const serialStatusLabels = {
+      'available': 'الكود موجود على الجهاز',
+      'not_available': 'الكود غير موجود',
+      'cannot_access': 'الكود خلف الشاشة لا استطيع الحصول عليه'
+    };
+    const serialStatus = d.serial_status || 'available';
+    setEl('dev-serial-status', serialStatusLabels[serialStatus] || serialStatus);
+
+    // Show serial number only if status is 'available' and number exists
+    if (serialStatus === 'available' && d.serial_number) {
+      setEl('dev-serial', d.serial_number);
+    } else {
+      setEl('dev-serial', '—');
+    }
+
+    setEl('dev-purchase',    d.purchase_date ? YAS.formatDate(d.purchase_date) : '—');
+    setHTML('dev-warranty',  YAS.warrantyBadge(d.warranty_status || d.warranty || 'unknown'));
 
     // Owner
     setEl('dev-owner-name',  c.name);
@@ -236,11 +252,11 @@ const DeviceDetails = {
     if (tbody) {
       tbody.innerHTML = tickets.map(t => `
         <tr style="cursor:pointer" onclick="window.location.href='ticket-details.html?id=${t.id}'">
-          <td><span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem">${t.id}</span></td>
-          <td>${YAS.RequestTypeLabels[t.request.type] || t.request.type}</td>
-          <td>${YAS.priorityBadge(t.request.priority)}</td>
+          <td><span class="fw-700 text-primary" style="font-family:var(--font-ui);font-size:0.8125rem">${t.ticket_number || t.id}</span></td>
+          <td>${YAS.RequestTypeLabels[t.request_type || t.request?.type] || t.request_type || t.request?.type}</td>
+          <td>${YAS.priorityBadge(t.priority)}</td>
           <td>${YAS.statusBadge(t.status)}</td>
-          <td style="font-size:0.8125rem;color:var(--text-muted)">${YAS.formatDate(t.createdAt)}</td>
+          <td style="font-size:0.8125rem;color:var(--text-muted)">${YAS.formatDate(t.created_at || t.createdAt)}</td>
         </tr>
       `).join('');
     }
