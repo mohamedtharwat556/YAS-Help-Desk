@@ -816,7 +816,7 @@ async function deleteTicket(ticketId) {
   if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
 
   try {
-    const token = localStorage.getItem('yas_token');
+    const token = localStorage.getItem('yas_api_token');
     const response = await fetch(`/api/tickets?id=${ticketId}`, {
       method: 'DELETE',
       headers: {
