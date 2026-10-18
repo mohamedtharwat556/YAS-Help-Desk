@@ -29,8 +29,8 @@ function renderSummaryStats(tickets) {
   };
 
   animate('rep-total',    tickets.length);
-  animate('rep-resolved', tickets.filter(t => ['resolved','closed'].includes(t.status)).length);
-  animate('rep-open',     tickets.filter(t => !['resolved','closed'].includes(t.status)).length);
+  animate('rep-resolved', tickets.filter(t => t.status === 'closed').length);
+  animate('rep-open',     tickets.filter(t => !['closed'].includes(t.status)).length);
   animate('rep-urgent',   tickets.filter(t => t.priority === 'critical').length);
 }
 
@@ -40,14 +40,10 @@ function renderStatusChart(tickets) {
   if (!container) return;
 
   const items = [
-    { label: 'تم الاستلام',     key: 'received',    color: '#7C3AED' },
+    { label: 'تم ارسال الطلب', key: 'submitted',  color: '#7C3AED' },
     { label: 'قيد المراجعة',    key: 'reviewing',   color: '#B45309' },
-    { label: 'جاري التواصل',    key: 'contacting',  color: '#1D4ED8' },
-    { label: 'جاري الفحص',      key: 'diagnosing',  color: '#DC2626' },
-    { label: 'قيد الصيانة',     key: 'maintenance', color: '#92400E' },
     { label: 'بانتظار العميل',  key: 'waiting',     color: '#374151' },
-    { label: 'تم الحل',         key: 'resolved',    color: '#059669' },
-    { label: 'مغلق',            key: 'closed',      color: '#64748B' }
+    { label: 'تم الحل (مغلق)',  key: 'closed',      color: '#059669' }
   ];
 
   const max = Math.max(...items.map(i => tickets.filter(t => t.status === i.key).length), 1);
@@ -148,19 +144,15 @@ function renderTypeChart(tickets) {
   if (!container) return;
 
   const types = [
-    { label: 'دعم فني',  key: 'technical',    color: '#1A56DB' },
-    { label: 'صيانة',    key: 'maintenance',  color: '#7C3AED' },
-    { label: 'ضمان',     key: 'warranty',     color: '#0EA5E9' },
-    { label: 'شكوى',     key: 'complaint',    color: '#EF4444' },
-    { label: 'استفسار',  key: 'inquiry',      color: '#F59E0B' },
-    { label: 'تركيب',    key: 'installation', color: '#10B981' },
-    { label: 'متابعة',   key: 'followup',     color: '#64748B' },
-    { label: 'أخرى',     key: 'other',        color: '#94A3B8' }
+    { label: 'دعم فني',  key: 'technical', color: '#1A56DB' },
+    { label: 'صيانة',    key: 'maintenance', color: '#7C3AED' },
+    { label: 'استفسار',  key: 'inquiry',    color: '#F59E0B' },
+    { label: 'أخرى',     key: 'other',      color: '#94A3B8' }
   ];
 
   const data = types.map(t => ({
     ...t,
-    count: tickets.filter(tk => tk.request_type === t.key).length
+    count: tickets.filter(tk => tk.request_type === t.key || tk.request?.type === t.key).length
   }));
 
   const max = Math.max(...data.map(d => d.count), 1);
