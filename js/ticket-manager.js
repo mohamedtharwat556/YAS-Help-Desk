@@ -830,7 +830,7 @@ async function deleteTicket(ticketId) {
     if (result.success) {
       YAS.showToast('تم حذف الطلب بنجاح', 'success');
       // Refresh the table
-      TicketManager.loadTickets();
+      TicketManager.init();
     } else {
       YAS.showToast('فشل حذف الطلب', 'error');
     }
