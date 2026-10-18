@@ -229,17 +229,6 @@
 
       </div>
 
-      <!-- Priority breakdown -->
-      <div class="chart-card">
-        <div class="chart-title">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h12M3 9h9M3 13h6"/><path d="M17 5l4 4-4 4V5z"/></svg>
-          توزيع الأولويات
-        </div>
-        <div id="chart-priority" style="display:flex;gap:var(--space-5);flex-wrap:wrap;padding-top:var(--space-2)">
-          <div class="loading-dots" style="justify-content:center;padding:40px"><span></span><span></span><span></span></div>
-        </div>
-      </div>
-
     </main>
   </div>
 </div>
@@ -254,32 +243,5 @@
 <script src="js/notifications.js"></script>
 <script src="js/export.js"></script>
 <script src="js/reports.js"></script>
-<script>
-  // Priority chart — built inline after reports.js renders
-  document.addEventListener('DOMContentLoaded', async () => {
-    setTimeout(async () => {
-      const tickets = await YASStorage.getAllTickets();
-      const container = document.getElementById('chart-priority');
-      if (!container) return;
-      const priorities = [
-        { key: 'low',      label: 'عادية',  color: '#6B7280' },
-        { key: 'medium',   label: 'مهمة',   color: '#3B82F6' },
-        { key: 'high',     label: 'عالية',  color: '#F59E0B' },
-        { key: 'critical', label: 'عاجلة',  color: '#EF4444' }
-      ];
-      const total = tickets.length || 1;
-      container.innerHTML = priorities.map(p => {
-        const count = tickets.filter(t => t.priority === p.key || t.request?.priority === p.key).length;
-        const pct   = Math.round(count / total * 100);
-        return `
-          <div style="flex:1;min-width:160px;background:var(--surface-secondary);border:1px solid var(--border);border-radius:var(--radius-lg);padding:var(--space-5);text-align:center;border-top:3px solid ${p.color}">
-            <div style="font-size:2rem;font-weight:800;color:${p.color};font-family:var(--font-ui);line-height:1">${count}</div>
-            <div style="font-size:0.9rem;font-weight:700;color:var(--text);margin:6px 0 4px">${p.label}</div>
-            <div style="font-size:0.8125rem;color:var(--text-muted)">${pct}% من الإجمالي</div>
-          </div>`;
-      }).join('');
-    }, 200);
-  });
-</script>
 </body>
 </html>
