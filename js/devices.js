@@ -35,6 +35,7 @@ const DevicesPage = {
           type: device.type || 'unknown',
           brand: device.brand || 'Unknown',
           model: device.model || 'Unknown',
+          serial_status: device.serial_status || 'available',
           serial_number: device.serial_number || '',
           purchase_date: device.purchase_date || device.purchaseDate || '',
           warranty_status: device.warranty_status || device.warranty || 'unknown',
@@ -47,6 +48,10 @@ const DevicesPage = {
       d.tickets.push(t);
       const ticketDate = t.created_at || t.createdAt;
       if (ticketDate > d.lastService) d.lastService = ticketDate;
+      // Update serial_status if this ticket has it and current doesn't
+      if (device.serial_status && !d.serial_status) {
+        d.serial_status = device.serial_status;
+      }
     });
 
     this.devices  = Array.from(map.values());
@@ -54,17 +59,6 @@ const DevicesPage = {
 
     this.renderStats();
     this.renderTable();
-  },
-
-  renderStats() {
-    const setCount = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) YAS.animateCount(el, val, 600);
-    };
-
-    setCount('dev-stat-total', this.devices.length);
-    setCount('dev-stat-warranty-active', this.devices.filter(d => d.warranty_status === 'active').length);
-    setCount('dev-stat-warranty-expired', this.devices.filter(d => d.warranty_status === 'expired').length);
   },
 
   renderStats() {
