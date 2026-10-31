@@ -64,38 +64,42 @@ class ChatbotWidget {
     widget.className = 'chatbot-widget';
     widget.innerHTML = `
       <button class="chatbot-toggle" id="chatbot-toggle" aria-label="فتح الشات">
-        <svg class="chat-icon robot-svg" viewBox="0 0 100 100">
+        <svg class="chat-icon robot-svg" viewBox="0 0 100 100" style="width: 60px; height: 60px;">
           <!-- Antenna -->
-          <line class="robot-antenna" x1="50" y1="20" x2="50" y2="5" />
-          <circle cx="50" cy="5" r="4" fill="#00ff88" />
+          <line class="robot-antenna" x1="50" y1="18" x2="50" y2="5" stroke="#00ff88" stroke-width="3" />
+          <circle cx="50" cy="5" r="4" fill="#00ff88" filter="url(#glow)" />
           
           <!-- Robot Head -->
-          <rect class="robot-head" x="20" y="25" width="60" height="50" rx="15" ry="15" fill="url(#robotGradient)" />
+          <rect class="robot-head" x="22" y="22" width="56" height="48" rx="12" ry="12" fill="url(#robotGradient)" stroke="#000000" stroke-width="2" />
           
           <!-- Eyes - Glowing Cyan -->
-          <ellipse class="robot-eye" cx="38" cy="45" rx="8" ry="10" fill="#00ffff" />
-          <ellipse class="robot-eye" cx="62" cy="45" rx="8" ry="10" fill="#00ffff" />
+          <ellipse class="robot-eye" cx="38" cy="42" rx="7" ry="9" fill="#00ffff" filter="url(#glow)" />
+          <ellipse class="robot-eye" cx="62" cy="42" rx="7" ry="9" fill="#00ffff" filter="url(#glow)" />
+          
+          <!-- Eye highlights -->
+          <ellipse cx="40" cy="40" rx="2" ry="2" fill="rgba(255,255,255,0.8)" />
+          <ellipse cx="64" cy="40" rx="2" ry="2" fill="rgba(255,255,255,0.8)" />
           
           <!-- Mouth -->
-          <path d="M 40 65 Q 50 72 60 65" stroke="#00ff88" stroke-width="3" fill="none" stroke-linecap="round" />
+          <path d="M 42 62 Q 50 68 58 62" stroke="#00ff88" stroke-width="2.5" fill="none" stroke-linecap="round" filter="url(#glow)" />
           
           <!-- Cheeks - Neon Pink -->
-          <ellipse cx="28" cy="58" rx="6" ry="4" fill="rgba(255, 0, 128, 0.6)" />
-          <ellipse cx="72" cy="58" rx="6" ry="4" fill="rgba(255, 0, 128, 0.6)" />
+          <ellipse cx="30" cy="54" rx="5" ry="3" fill="rgba(255, 0, 128, 0.5)" filter="url(#glow)" />
+          <ellipse cx="70" cy="54" rx="5" ry="3" fill="rgba(255, 0, 128, 0.5)" filter="url(#glow)" />
           
           <!-- Ears - Neon Green -->
-          <rect x="12" y="40" width="8" height="20" rx="4" fill="#00ff88" />
-          <rect x="80" y="40" width="8" height="20" rx="4" fill="#00ff88" />
+          <rect x="14" y="38" width="8" height="16" rx="3" fill="#00ff88" stroke="#000000" stroke-width="1" filter="url(#glow)" />
+          <rect x="78" y="38" width="8" height="16" rx="3" fill="#00ff88" stroke="#000000" stroke-width="1" filter="url(#glow)" />
           
           <!-- Gradient Definition - Black/Gray -->
           <defs>
             <linearGradient id="robotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
-              <stop offset="50%" style="stop-color:#2d2d2d;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#3d3d3d;stop-opacity:1" />
+              <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#1a1a1a;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
             </linearGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
               <feMerge>
                 <feMergeNode in="coloredBlur"/>
                 <feMergeNode in="SourceGraphic"/>
@@ -103,7 +107,7 @@ class ChatbotWidget {
             </filter>
           </defs>
         </svg>
-        <svg class="close-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg class="close-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
