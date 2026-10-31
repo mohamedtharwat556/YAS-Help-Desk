@@ -65,49 +65,46 @@ class ChatbotWidget {
     widget.innerHTML = `
       <button class="chatbot-toggle" id="chatbot-toggle" aria-label="فتح الشات">
         <svg class="chat-icon robot-svg" viewBox="0 0 100 100" style="width: 60px; height: 60px;">
-          <!-- Antenna -->
-          <line class="robot-antenna" x1="50" y1="18" x2="50" y2="5" stroke="#00ff88" stroke-width="3" />
-          <circle cx="50" cy="5" r="4" fill="#00ff88" filter="url(#glow)" />
+          <!-- Robot Body -->
+          <ellipse cx="50" cy="55" rx="35" ry="38" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
           
           <!-- Robot Head -->
-          <rect class="robot-head" x="22" y="22" width="56" height="48" rx="12" ry="12" fill="url(#robotGradient)" stroke="#000000" stroke-width="2" />
+          <circle cx="50" cy="35" r="22" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
           
-          <!-- Eyes - Glowing Cyan -->
-          <ellipse class="robot-eye" cx="38" cy="42" rx="7" ry="9" fill="#00ffff" filter="url(#glow)" />
-          <ellipse class="robot-eye" cx="62" cy="42" rx="7" ry="9" fill="#00ffff" filter="url(#glow)" />
+          <!-- Eyes -->
+          <circle cx="42" cy="32" r="5" fill="#1a56db" />
+          <circle cx="58" cy="32" r="5" fill="#1a56db" />
           
           <!-- Eye highlights -->
-          <ellipse cx="40" cy="40" rx="2" ry="2" fill="rgba(255,255,255,0.8)" />
-          <ellipse cx="64" cy="40" rx="2" ry="2" fill="rgba(255,255,255,0.8)" />
+          <circle cx="44" cy="30" r="2" fill="rgba(255,255,255,0.9)" />
+          <circle cx="60" cy="30" r="2" fill="rgba(255,255,255,0.9)" />
           
-          <!-- Mouth -->
-          <path d="M 42 62 Q 50 68 58 62" stroke="#00ff88" stroke-width="2.5" fill="none" stroke-linecap="round" filter="url(#glow)" />
+          <!-- Smile -->
+          <path d="M 43 42 Q 50 48 57 42" stroke="#1a56db" stroke-width="2" fill="none" stroke-linecap="round" />
           
-          <!-- Cheeks - Neon Pink -->
-          <ellipse cx="30" cy="54" rx="5" ry="3" fill="rgba(255, 0, 128, 0.5)" filter="url(#glow)" />
-          <ellipse cx="70" cy="54" rx="5" ry="3" fill="rgba(255, 0, 128, 0.5)" filter="url(#glow)" />
+          <!-- Arms -->
+          <ellipse cx="15" cy="55" rx="8" ry="20" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
+          <ellipse cx="85" cy="55" rx="8" ry="20" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
           
-          <!-- Ears - Neon Green -->
-          <rect x="14" y="38" width="8" height="16" rx="3" fill="#00ff88" stroke="#000000" stroke-width="1" filter="url(#glow)" />
-          <rect x="78" y="38" width="8" height="16" rx="3" fill="#00ff88" stroke="#000000" stroke-width="1" filter="url(#glow)" />
+          <!-- Hands with glowing circles -->
+          <circle cx="15" cy="75" r="6" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
+          <circle cx="85" cy="75" r="6" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
           
-          <!-- Gradient Definition - Black/Gray -->
-          <defs>
-            <linearGradient id="robotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
-              <stop offset="50%" style="stop-color:#1a1a1a;stop-opacity:1" />
-              <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
-            </linearGradient>
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
-              <feMerge>
-                <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
+          <!-- Glowing circles around right hand -->
+          <circle cx="85" cy="75" r="10" fill="none" stroke="#1a56db" stroke-width="2" opacity="0.6">
+            <animate attributeName="r" values="10;14;10" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="85" cy="75" r="14" fill="none" stroke="#1a56db" stroke-width="1.5" opacity="0.4">
+            <animate attributeName="r" values="14;18;14" dur="2s" repeatCount="indefinite" begin="0.5s" />
+            <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite" begin="0.5s" />
+          </circle>
+          
+          <!-- Antenna -->
+          <line x1="50" y1="13" x2="50" y2="5" stroke="#1a56db" stroke-width="2" />
+          <circle cx="50" cy="5" r="3" fill="#1a56db" />
         </svg>
-        <svg class="close-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg class="close-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
