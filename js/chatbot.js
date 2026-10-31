@@ -64,18 +64,21 @@ class ChatbotWidget {
     widget.className = 'chatbot-widget';
     widget.innerHTML = `
       <button class="chatbot-toggle" id="chatbot-toggle" aria-label="فتح الشات">
-        <svg class="chat-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="chat-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="10"/>
           <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
           <line x1="9" y1="9" x2="9.01" y2="9"/>
           <line x1="15" y1="9" x2="15.01" y2="9"/>
         </svg>
-        <svg class="close-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg class="close-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
           <div style="position: relative; z-index: 1;">
-            <h3>🤖 مساعد الدعم الذكي</h3>
+            <h3>
+              <span class="logo-icon">YAS</span>
+              مساعد الدعم الذكي
+            </h3>
             <span class="status">متصل الآن ⚡</span>
           </div>
           <button class="chatbot-close" id="chatbot-close" aria-label="إغلاق" style="position: relative; z-index: 1;">
@@ -88,6 +91,16 @@ class ChatbotWidget {
             <div class="time">الآن</div>
           </div>
         </div>
+        <div class="chatbot-suggestions">
+          <p class="chatbot-suggestions-title">💡 اقتراحات سريعة:</p>
+          <div class="chatbot-suggestions-list">
+            <button class="chatbot-suggestion-btn" data-question="كيف أسجل طلب؟">كيف أسجل طلب؟</button>
+            <button class="chatbot-suggestion-btn" data-question="كيف أتابع طلبي؟">كيف أتابع طلبي؟</button>
+            <button class="chatbot-suggestion-btn" data-question="ما هي حالات الطلب؟">حالات الطلب</button>
+            <button class="chatbot-suggestion-btn" data-question="كيف أتواصل معكم؟">التواصل معنا</button>
+            <button class="chatbot-suggestion-btn" data-question="ما هي ساعات العمل؟">ساعات العمل</button>
+          </div>
+        </div>
         <div class="chatbot-input-area">
           <input type="text" class="chatbot-input" id="chatbot-input" placeholder="اكتب رسالتك هنا..." maxlength="500">
           <button class="chatbot-send" id="chatbot-send" aria-label="إرسال">
@@ -98,6 +111,19 @@ class ChatbotWidget {
     `;
 
     document.body.appendChild(widget);
+    this.bindSuggestionButtons();
+  }
+
+  bindSuggestionButtons() {
+    const suggestionBtns = document.querySelectorAll('.chatbot-suggestion-btn');
+    suggestionBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const question = btn.getAttribute('data-question');
+        const input = document.getElementById('chatbot-input');
+        input.value = question;
+        this.sendMessage();
+      });
+    });
   }
 
   bindEvents() {
