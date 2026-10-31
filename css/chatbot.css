@@ -88,44 +88,44 @@
 .chatbot-toggle::after {
   content: '🤖 مساعد YAS - انقر للدردش';
   position: absolute;
-  bottom: 110px;
+  bottom: 100px;
   left: 50%;
-  transform: translateX(-50%) translateY(10px);
+  transform: translateX(-50%);
   background: #1a56db;
   color: #ffffff;
-  padding: 14px 24px;
-  border-radius: 16px;
-  font-size: 0.95rem;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.85rem;
   font-weight: 700;
   white-space: nowrap;
   box-shadow: 
-    0 12px 32px rgba(26, 86, 219, 0.5),
-    0 0 0 3px rgba(26, 86, 219, 0.3);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  pointer-events: none;
+    0 8px 24px rgba(26, 86, 219, 0.5),
+    0 0 0 2px rgba(26, 86, 219, 0.3);
+  opacity: 1;
+  visibility: visible;
   z-index: 10000;
-  border: 3px solid #ffffff;
+  border: 2px solid #ffffff;
+  animation: tooltipPulse 2s ease-in-out infinite;
 }
 
 .chatbot-toggle:hover::after {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0);
-  animation: tooltipPulse 1.5s ease-in-out infinite;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+.chatbot-toggle.open::after {
+  display: none;
 }
 
 @keyframes tooltipPulse {
   0%, 100% {
     box-shadow: 
-      0 12px 32px rgba(26, 86, 219, 0.5),
-      0 0 0 3px rgba(26, 86, 219, 0.3);
+      0 8px 24px rgba(26, 86, 219, 0.5),
+      0 0 0 2px rgba(26, 86, 219, 0.3);
   }
   50% {
     box-shadow: 
-      0 16px 40px rgba(26, 86, 219, 0.7),
-      0 0 0 5px rgba(26, 86, 219, 0.4);
+      0 12px 32px rgba(26, 86, 219, 0.7),
+      0 0 0 4px rgba(26, 86, 219, 0.4);
   }
 }
 
