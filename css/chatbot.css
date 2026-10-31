@@ -76,7 +76,7 @@
 }
 
 .chatbot-toggle:hover {
-  transform: scale(1.1);
+  transform: scale(1.15);
   box-shadow: 
     0 40px 100px rgba(0, 0, 0, 0.7),
     0 25px 60px rgba(0, 0, 0, 0.5),
@@ -86,9 +86,42 @@
   animation: none;
 }
 
+.chatbot-toggle::after {
+  content: 'مرحباً بك في بوت YAS 🤖';
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: #00ffff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 2px rgba(0, 255, 255, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 10000;
+  border: 2px solid #00ffff;
+}
+
+.chatbot-toggle:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
 .chatbot-toggle.open {
-  transform: scale(0.95);
   animation: none;
+}
+
+.chatbot-toggle.open::after {
+  display: none;
 }
 
 .robot-svg {

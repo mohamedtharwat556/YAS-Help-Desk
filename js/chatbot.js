@@ -170,7 +170,12 @@ class ChatbotWidget {
     const send = document.getElementById('chatbot-send');
     const window = document.getElementById('chatbot-window');
 
-    toggle.addEventListener('click', () => this.toggle());
+    toggle.addEventListener('click', () => {
+      if (!this.isOpen) {
+        this.toggle();
+      }
+    });
+    
     close.addEventListener('click', () => this.toggle());
 
     send.addEventListener('click', () => this.sendMessage());
