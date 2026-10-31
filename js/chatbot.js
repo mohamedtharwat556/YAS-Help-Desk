@@ -58,6 +58,14 @@ class ChatbotWidget {
     this.createWidget();
     this.createTopWidget();
     this.bindEvents();
+    
+    // Hide top widget message after 5 seconds
+    setTimeout(() => {
+      const topToggle = document.getElementById('chatbot-toggle-top');
+      if (topToggle) {
+        topToggle.classList.add('message-hidden');
+      }
+    }, 5000);
   }
 
   createWidget() {

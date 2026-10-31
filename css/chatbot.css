@@ -16,6 +16,45 @@
 }
 
 .chatbot-widget-top .chatbot-toggle::after {
+  content: 'تحدث مع بوت YAS';
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a56db;
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 
+    0 4px 12px rgba(26, 86, 219, 0.4),
+    0 0 0 1px rgba(26, 86, 219, 0.2);
+  opacity: 1;
+  visibility: visible;
+  z-index: 999999;
+  border: 2px solid #ffffff;
+  pointer-events: none;
+  animation: fadeOutAfter5s 5s forwards;
+}
+
+@keyframes fadeOutAfter5s {
+  0%, 80% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.chatbot-widget-top .chatbot-toggle.open::after {
+  display: none;
+}
+
+.chatbot-widget-top .chatbot-toggle.message-hidden::after {
   display: none;
 }
 
