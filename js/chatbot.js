@@ -64,13 +64,39 @@ class ChatbotWidget {
     widget.className = 'chatbot-widget';
     widget.innerHTML = `
       <button class="chatbot-toggle" id="chatbot-toggle" aria-label="فتح الشات">
-        <svg class="chat-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
-          <line x1="9" y1="9" x2="9.01" y2="9"/>
-          <line x1="15" y1="9" x2="15.01" y2="9"/>
+        <svg class="chat-icon robot-svg" viewBox="0 0 100 100">
+          <!-- Antenna -->
+          <line class="robot-antenna" x1="50" y1="20" x2="50" y2="5" />
+          <circle cx="50" cy="5" r="4" fill="#1a56db" />
+          
+          <!-- Robot Head -->
+          <rect class="robot-head" x="20" y="25" width="60" height="50" rx="15" ry="15" fill="url(#robotGradient)" />
+          
+          <!-- Eyes -->
+          <ellipse class="robot-eye" cx="38" cy="45" rx="8" ry="10" />
+          <ellipse class="robot-eye" cx="62" cy="45" rx="8" ry="10" />
+          
+          <!-- Mouth -->
+          <path d="M 40 65 Q 50 72 60 65" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" />
+          
+          <!-- Cheeks -->
+          <ellipse cx="28" cy="58" rx="6" ry="4" fill="rgba(255, 182, 193, 0.5)" />
+          <ellipse cx="72" cy="58" rx="6" ry="4" fill="rgba(255, 182, 193, 0.5)" />
+          
+          <!-- Ears -->
+          <rect x="12" y="40" width="8" height="20" rx="4" fill="#1a56db" />
+          <rect x="80" y="40" width="8" height="20" rx="4" fill="#1a56db" />
+          
+          <!-- Gradient Definition -->
+          <defs>
+            <linearGradient id="robotGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#1a56db;stop-opacity:1" />
+              <stop offset="50%" style="stop-color:#1e40af;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#1e3a8a;stop-opacity:1" />
+            </linearGradient>
+          </defs>
         </svg>
-        <svg class="close-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <svg class="close-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
       <div class="chatbot-window" id="chatbot-window">
         <div class="chatbot-header">
