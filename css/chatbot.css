@@ -3,7 +3,7 @@
   position: fixed;
   bottom: 24px;
   left: 24px;
-  z-index: 9999;
+  z-index: 999999;
   font-family: 'Cairo', sans-serif;
 }
 
@@ -91,7 +91,7 @@
     0 0 0 1px rgba(26, 86, 219, 0.2);
   opacity: 1;
   visibility: visible;
-  z-index: 10000;
+  z-index: 999999;
   border: 2px solid #ffffff;
   pointer-events: none;
 }
@@ -182,6 +182,7 @@
   overflow: hidden;
   animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   backdrop-filter: blur(20px);
+  z-index: 999999;
 }
 
 @keyframes slideUp {
