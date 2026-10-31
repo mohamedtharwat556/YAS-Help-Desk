@@ -56,6 +56,7 @@ class ChatbotWidget {
   init() {
     // Create widget HTML
     this.createWidget();
+    this.createTopWidget();
     this.bindEvents();
   }
 
@@ -146,6 +147,66 @@ class ChatbotWidget {
 
     document.body.appendChild(widget);
     this.bindSuggestionButtons();
+  }
+
+  createTopWidget() {
+    const topWidget = document.createElement('div');
+    topWidget.className = 'chatbot-widget-top';
+    topWidget.innerHTML = `
+      <button class="chatbot-toggle" id="chatbot-toggle-top" aria-label="فتح الشات" style="width: 70px; height: 70px;">
+        <svg class="chat-icon robot-svg" viewBox="0 0 100 100" style="width: 45px; height: 45px;">
+          <!-- Robot Body -->
+          <ellipse cx="50" cy="55" rx="35" ry="38" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
+          
+          <!-- Robot Head -->
+          <circle cx="50" cy="35" r="22" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
+          
+          <!-- Eyes -->
+          <circle cx="42" cy="32" r="5" fill="#1a56db" />
+          <circle cx="58" cy="32" r="5" fill="#1a56db" />
+          
+          <!-- Eye highlights -->
+          <circle cx="44" cy="30" r="2" fill="rgba(255,255,255,0.9)" />
+          <circle cx="60" cy="30" r="2" fill="rgba(255,255,255,0.9)" />
+          
+          <!-- Smile -->
+          <path d="M 43 42 Q 50 48 57 42" stroke="#1a56db" stroke-width="2" fill="none" stroke-linecap="round" />
+          
+          <!-- Arms -->
+          <ellipse cx="15" cy="55" rx="8" ry="20" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
+          <ellipse cx="85" cy="55" rx="8" ry="20" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
+          
+          <!-- Hands with glowing circles -->
+          <circle cx="15" cy="75" r="6" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
+          <circle cx="85" cy="75" r="6" fill="#ffffff" stroke="#1a56db" stroke-width="2" />
+          
+          <!-- Glowing circles around right hand -->
+          <circle cx="85" cy="75" r="10" fill="none" stroke="#1a56db" stroke-width="2" opacity="0.6">
+            <animate attributeName="r" values="10;14;10" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="85" cy="75" r="14" fill="none" stroke="#1a56db" stroke-width="1.5" opacity="0.4">
+            <animate attributeName="r" values="14;18;14" dur="2s" repeatCount="indefinite" begin="0.5s" />
+            <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite" begin="0.5s" />
+          </circle>
+          
+          <!-- Antenna -->
+          <line x1="50" y1="13" x2="50" y2="5" stroke="#1a56db" stroke-width="2" />
+          <circle cx="50" cy="5" r="3" fill="#1a56db" />
+        </svg>
+        <svg class="close-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    `;
+
+    document.body.appendChild(topWidget);
+
+    // Bind top toggle event
+    const topToggle = document.getElementById('chatbot-toggle-top');
+    topToggle.addEventListener('click', () => {
+      if (!this.isOpen) {
+        this.toggle();
+      }
+    });
   }
 
   bindSuggestionButtons() {
