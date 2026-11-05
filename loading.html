@@ -376,6 +376,16 @@
       speechSynthesis.onvoiceschanged = loadVoices;
     }
 
+    // Preload voices by speaking a short silent utterance
+    function preloadVoice() {
+      const utterance = new SpeechSynthesisUtterance('');
+      utterance.volume = 0;
+      synth.speak(utterance);
+    }
+
+    // Call preload after voices are loaded
+    setTimeout(preloadVoice, 1000);
+
     function speak(text, callback) {
       if (synth.speaking) {
         synth.cancel();
@@ -383,15 +393,17 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 0.8;
-      utterance.pitch = 0.6;
+      utterance.rate = 1.0;
+      utterance.pitch = 0.9;
       utterance.volume = 1;
 
-      // Try to find best Arabic voice
+      // Try to find best Arabic voice - prioritize Microsoft
       const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
       
-      // Priority order for voice selection
+      // Priority order for voice selection - Microsoft voices first
       const preferredVoices = [
+        'microsoft hoda',
+        'microsoft naayf',
         'microsoft',
         'google',
         'hoda',
@@ -399,9 +411,7 @@
         'zahra',
         'maged',
         'hany',
-        'salma',
-        'female',
-        'male'
+        'salma'
       ];
 
       let selectedVoice = null;
@@ -475,10 +485,10 @@
       }
     }
 
-    // Start after a short delay
+    // Start after a short delay - give voices time to load
     setTimeout(() => {
       typeWelcome();
-    }, 1000);
+    }, 1500);
 
     // Continue button - open chatbot and redirect
     continueBtn.addEventListener('click', () => {
