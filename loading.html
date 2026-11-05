@@ -285,21 +285,26 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    // Enhanced Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0x1a56db, 1);
+    const directionalLight = new THREE.DirectionalLight(0x1a56db, 1.2);
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    const pointLight = new THREE.PointLight(0x3b82f6, 1, 100);
+    const pointLight = new THREE.PointLight(0x3b82f6, 1.5, 100);
     pointLight.position.set(0, 5, 0);
     scene.add(pointLight);
 
-    const rimLight = new THREE.DirectionalLight(0x60a5fa, 0.5);
+    const rimLight = new THREE.DirectionalLight(0x60a5fa, 0.8);
     rimLight.position.set(-5, 0, -5);
     scene.add(rimLight);
+
+    // Add fill light
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    fillLight.position.set(0, 2, 5);
+    scene.add(fillLight);
 
     // Robot Group
     const robot = new THREE.Group();
@@ -307,22 +312,22 @@
     // Materials
     const bodyMaterial = new THREE.MeshStandardMaterial({ 
       color: 0xffffff,
-      metalness: 0.3,
-      roughness: 0.4
+      metalness: 0.4,
+      roughness: 0.3
     });
 
     const accentMaterial = new THREE.MeshStandardMaterial({ 
       color: 0x1a56db,
-      metalness: 0.5,
-      roughness: 0.3
+      metalness: 0.6,
+      roughness: 0.2
     });
 
     const glowMaterial = new THREE.MeshStandardMaterial({ 
       color: 0x3b82f6,
       emissive: 0x3b82f6,
-      emissiveIntensity: 0.5,
-      metalness: 0.8,
-      roughness: 0.2
+      emissiveIntensity: 0.6,
+      metalness: 0.9,
+      roughness: 0.1
     });
 
     // Head
@@ -331,27 +336,54 @@
     head.position.y = 2.5;
     robot.add(head);
 
-    // Eyes
+    // Eyes (repositioned for better eye contact)
     const eyeGeometry = new THREE.SphereGeometry(0.25, 16, 16);
     const leftEye = new THREE.Mesh(eyeGeometry, accentMaterial);
-    leftEye.position.set(-0.4, 2.6, 0.9);
+    leftEye.position.set(-0.4, 2.6, 0.95);
     robot.add(leftEye);
 
     const rightEye = new THREE.Mesh(eyeGeometry, accentMaterial);
-    rightEye.position.set(0.4, 2.6, 0.9);
+    rightEye.position.set(0.4, 2.6, 0.95);
     robot.add(rightEye);
 
     // Eye glow
     const eyeGlowGeometry = new THREE.SphereGeometry(0.3, 16, 16);
     const leftEyeGlow = new THREE.Mesh(eyeGlowGeometry, glowMaterial);
-    leftEyeGlow.position.set(-0.4, 2.6, 0.85);
+    leftEyeGlow.position.set(-0.4, 2.6, 0.9);
     leftEyeGlow.scale.set(1.2, 1.2, 0.5);
     robot.add(leftEyeGlow);
 
     const rightEyeGlow = new THREE.Mesh(eyeGlowGeometry, glowMaterial);
-    rightEyeGlow.position.set(0.4, 2.6, 0.85);
+    rightEyeGlow.position.set(0.4, 2.6, 0.9);
     rightEyeGlow.scale.set(1.2, 1.2, 0.5);
     robot.add(rightEyeGlow);
+
+    // Mouth (new - for realistic facial animation)
+    const mouthGeometry = new THREE.BoxGeometry(0.4, 0.1, 0.1);
+    const mouthMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0x1a56db,
+      metalness: 0.5,
+      roughness: 0.3
+    });
+    const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
+    mouth.position.set(0, 2.2, 1.1);
+    robot.add(mouth);
+
+    // Eyebrows (for expressions)
+    const eyebrowGeometry = new THREE.BoxGeometry(0.3, 0.05, 0.05);
+    const eyebrowMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0x1a56db,
+      metalness: 0.5,
+      roughness: 0.3
+    });
+    
+    const leftEyebrow = new THREE.Mesh(eyebrowGeometry, eyebrowMaterial);
+    leftEyebrow.position.set(-0.4, 2.85, 1.1);
+    robot.add(leftEyebrow);
+
+    const rightEyebrow = new THREE.Mesh(eyebrowGeometry, eyebrowMaterial);
+    rightEyebrow.position.set(0.4, 2.85, 1.1);
+    robot.add(rightEyebrow);
 
     // Body
     const bodyGeometry = new THREE.CylinderGeometry(1, 1.2, 2, 32);
@@ -405,21 +437,34 @@
     camera.position.set(0, 1.5, 6);
     camera.lookAt(0, 1.5, 0);
 
-    // Particles - lighter
+    // Enhanced Particles
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 200;
+    const particlesCount = 300;
     const posArray = new Float32Array(particlesCount * 3);
+    const colorArray = new Float32Array(particlesCount * 3);
 
     for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 15;
+      posArray[i] = (Math.random() - 0.5) * 20;
+    }
+
+    // Add colors to particles
+    for (let i = 0; i < particlesCount; i++) {
+      const color = new THREE.Color();
+      color.setHSL(0.6 + Math.random() * 0.1, 0.8, 0.6);
+      colorArray[i * 3] = color.r;
+      colorArray[i * 3 + 1] = color.g;
+      colorArray[i * 3 + 2] = color.b;
     }
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.03,
-      color: 0x3b82f6,
+      size: 0.04,
+      vertexColors: true,
       transparent: true,
-      opacity: 0.4
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending
     });
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
@@ -432,11 +477,20 @@
     let isRobotLoaded = false;
     let isTalking = false;
     let typingTimeout = null;
+    let facialExpression = 'neutral'; // neutral, happy, surprised, interested
 
-    // Mouse movement
+    // Enhanced mouse movement for stronger interaction
     document.addEventListener('mousemove', (event) => {
       mouseX = (event.clientX / window.innerWidth) * 2 - 1;
       mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    // Touch support for mobile
+    document.addEventListener('touchmove', (event) => {
+      if (event.touches.length > 0) {
+        mouseX = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+      }
     });
 
     // Animation loop
@@ -446,33 +500,88 @@
       // Robot floating
       robot.position.y = Math.sin(Date.now() * 0.001) * 0.1;
 
-      // Robot rotation based on mouse
-      targetRotationY = mouseX * 0.3;
-      targetRotationX = mouseY * 0.2;
-      robot.rotation.y += (targetRotationY - robot.rotation.y) * 0.05;
-      robot.rotation.x += (targetRotationX - robot.rotation.x) * 0.05;
+      // Enhanced robot rotation based on mouse - stronger interaction
+      targetRotationY = mouseX * 0.5;
+      targetRotationX = mouseY * 0.3;
+      robot.rotation.y += (targetRotationY - robot.rotation.y) * 0.08;
+      robot.rotation.x += (targetRotationX - robot.rotation.x) * 0.08;
 
-      // Particles animation - very subtle
-      particles.rotation.y += 0.0002;
-      particles.rotation.x += 0.0001;
+      // Eyes follow mouse more closely
+      leftEye.rotation.z = mouseX * 0.2;
+      rightEye.rotation.z = mouseX * 0.2;
+      leftEye.rotation.x = -mouseY * 0.1;
+      rightEye.rotation.x = -mouseY * 0.1;
 
-      // Eye glow pulsing
-      const glowIntensity = 0.3 + Math.sin(Date.now() * 0.003) * 0.2;
+      // Enhanced particles animation
+      particles.rotation.y += 0.0003;
+      particles.rotation.x += 0.00015;
+      particles.position.y = Math.sin(Date.now() * 0.0005) * 0.5;
+
+      // Eye glow pulsing - more dynamic
+      const glowIntensity = 0.4 + Math.sin(Date.now() * 0.004) * 0.3;
       leftEyeGlow.material.emissiveIntensity = glowIntensity;
       rightEyeGlow.material.emissiveIntensity = glowIntensity;
 
       // Antenna tip pulsing
-      antennaTip.material.emissiveIntensity = 0.5 + Math.sin(Date.now() * 0.005) * 0.3;
+      antennaTip.material.emissiveIntensity = 0.6 + Math.sin(Date.now() * 0.006) * 0.4;
 
-      // Talking animation - more realistic mouth movement
+      // Enhanced talking animation with realistic mouth movement
       if (isTalking) {
-        chest.scale.y = 1 + Math.sin(Date.now() * 0.03) * 0.12;
-        head.rotation.y = Math.sin(Date.now() * 0.012) * 0.08;
-        head.rotation.x = Math.sin(Date.now() * 0.008) * 0.04;
+        // Mouth moves up and down like real speech
+        mouth.scale.y = 1 + Math.sin(Date.now() * 0.035) * 0.5;
+        mouth.scale.x = 1 + Math.sin(Date.now() * 0.04) * 0.2;
+        
+        // Chest breathing
+        chest.scale.y = 1 + Math.sin(Date.now() * 0.03) * 0.15;
+        chest.scale.x = 1 + Math.sin(Date.now() * 0.025) * 0.05;
+        
+        // Head movement during speech
+        head.rotation.y = Math.sin(Date.now() * 0.015) * 0.1;
+        head.rotation.x = Math.sin(Date.now() * 0.01) * 0.06;
+        
+        // Eyebrows for interested expression
+        leftEyebrow.rotation.z = 0.1;
+        rightEyebrow.rotation.z = -0.1;
+        leftEyebrow.position.y = 2.85 + Math.sin(Date.now() * 0.02) * 0.05;
+        rightEyebrow.position.y = 2.85 + Math.sin(Date.now() * 0.02) * 0.05;
+        
+        // Hands micro-movement
+        leftHand.position.y = -0.4 + Math.sin(Date.now() * 0.025) * 0.05;
+        rightHand.position.y = -0.4 + Math.sin(Date.now() * 0.025) * 0.05;
       } else {
+        // Reset to neutral
+        mouth.scale.y = 1;
+        mouth.scale.x = 1;
         chest.scale.y = 1;
+        chest.scale.x = 1;
         head.rotation.y = 0;
         head.rotation.x = 0;
+        leftEyebrow.rotation.z = 0;
+        rightEyebrow.rotation.z = 0;
+        leftEyebrow.position.y = 2.85;
+        rightEyebrow.position.y = 2.85;
+        leftHand.position.y = -0.4;
+        rightHand.position.y = -0.4;
+      }
+
+      // Facial expressions based on context
+      if (facialExpression === 'happy') {
+        leftEyebrow.rotation.z = -0.2;
+        rightEyebrow.rotation.z = 0.2;
+        leftEyebrow.position.y = 2.9;
+        rightEyebrow.position.y = 2.9;
+      } else if (facialExpression === 'surprised') {
+        leftEyebrow.position.y = 2.95;
+        rightEyebrow.position.y = 2.95;
+        leftEye.scale.set(1.2, 1.2, 1.2);
+        rightEye.scale.set(1.2, 1.2, 1.2);
+      } else if (facialExpression === 'interested') {
+        leftEyebrow.rotation.z = 0.15;
+        rightEyebrow.rotation.z = -0.15;
+      } else {
+        // Neutral
+        leftEye.scale.set(1, 1, 1);
+        rightEye.scale.set(1, 1, 1);
       }
 
       renderer.render(scene, camera);
@@ -518,7 +627,7 @@
 
     // Wait for robot to be fully visible before starting speech
     setTimeout(() => {
-      if (isRobotLoaded) {
+      if (isRobotLoaded && !currentMessageIndex) {
         const loadingText = document.getElementById('loading-text');
         loadingText.textContent = '';
         startWelcomeSequence();
@@ -604,15 +713,18 @@
 
       utterance.onstart = () => {
         isTalking = true;
+        facialExpression = 'interested';
       };
 
       utterance.onend = () => {
         isTalking = false;
+        facialExpression = 'neutral';
         if (callback) callback();
       };
 
       utterance.onerror = () => {
         isTalking = false;
+        facialExpression = 'neutral';
         if (callback) callback();
       };
 
@@ -660,6 +772,15 @@
 
       currentMessageIndex = index;
       
+      // Set facial expression based on message
+      if (index === 0) {
+        facialExpression = 'happy';
+      } else if (index === 1) {
+        facialExpression = 'interested';
+      } else {
+        facialExpression = 'happy';
+      }
+      
       // Hide previous message
       speechBubble.classList.remove('visible');
       speechBubble.classList.add('hide');
@@ -693,24 +814,6 @@
         });
       }, 500);
     }
-
-    // Mark robot as loaded immediately - it's already visible
-    setTimeout(() => {
-      isRobotLoaded = true;
-      if (loadingText) {
-        loadingText.textContent = 'جاري التحميل...';
-      }
-    }, 500);
-
-    // Wait for robot to be fully visible before starting speech
-    setTimeout(() => {
-      if (isRobotLoaded && !currentMessageIndex) {
-        if (loadingText) {
-          loadingText.textContent = '';
-        }
-        startWelcomeSequence();
-      }
-    }, 2500);
 
     // Continue button
     continueBtn.addEventListener('click', () => {
