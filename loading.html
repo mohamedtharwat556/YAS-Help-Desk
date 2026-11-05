@@ -368,6 +368,7 @@
 
     function loadVoices() {
       voices = synth.getVoices();
+      console.log('Available voices:', voices.map(v => v.name + ' (' + v.lang + ')'));
     }
 
     loadVoices();
@@ -382,23 +383,48 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 0.85;
-      utterance.pitch = 0.8;
+      utterance.rate = 0.8;
+      utterance.pitch = 0.6;
       utterance.volume = 1;
 
-      // Try to find male Arabic voice
+      // Try to find best Arabic voice
       const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
-      // Prefer male voices (often have 'Male' in name or lower pitch voices)
-      const maleVoice = arabicVoices.find(voice => 
-        voice.name.toLowerCase().includes('male') ||
-        voice.name.toLowerCase().includes('hussein') ||
-        voice.name.toLowerCase().includes('mohamed')
-      );
       
-      if (maleVoice) {
-        utterance.voice = maleVoice;
-      } else if (arabicVoices.length > 0) {
-        utterance.voice = arabicVoices[0];
+      // Priority order for voice selection
+      const preferredVoices = [
+        'microsoft',
+        'google',
+        'hoda',
+        'naayf',
+        'zahra',
+        'maged',
+        'hany',
+        'salma',
+        'female',
+        'male'
+      ];
+
+      let selectedVoice = null;
+      
+      // Try to find preferred voices
+      for (const pref of preferredVoices) {
+        const found = arabicVoices.find(voice => 
+          voice.name.toLowerCase().includes(pref)
+        );
+        if (found) {
+          selectedVoice = found;
+          break;
+        }
+      }
+
+      // If no preferred voice found, use first Arabic voice
+      if (!selectedVoice && arabicVoices.length > 0) {
+        selectedVoice = arabicVoices[0];
+      }
+
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        console.log('Using voice:', selectedVoice.name);
       }
 
       utterance.onend = callback;
