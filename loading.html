@@ -431,6 +431,7 @@
     let targetRotationY = 0;
     let isRobotLoaded = false;
     let isTalking = false;
+    let typingTimeout = null;
 
     // Mouse movement
     document.addEventListener('mousemove', (event) => {
@@ -628,6 +629,11 @@
     const replayBtn = document.getElementById('replay-btn');
 
     function typeText(element, text, callback) {
+      // Clear any existing typing
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+      
       let index = 0;
       element.textContent = '';
       element.classList.add('visible');
@@ -636,9 +642,10 @@
         if (index < text.length) {
           element.textContent = text.substring(0, index + 1);
           index++;
-          setTimeout(type, 60);
-        } else if (callback) {
-          callback();
+          typingTimeout = setTimeout(type, 70);
+        } else {
+          typingTimeout = null;
+          if (callback) callback();
         }
       }
       
@@ -653,23 +660,25 @@
 
       currentMessageIndex = index;
       
-      // Hide previous message if exists
+      // Hide previous message
       speechBubble.classList.remove('visible');
       speechBubble.classList.add('hide');
       
+      // Wait for hide animation, then show new message
       setTimeout(() => {
         speechBubble.classList.remove('hide');
+        
+        // Type the text
         typeText(speechBubble, messages[index], () => {
-          // Start speaking after typing is complete
-          setTimeout(() => {
-            speak(messages[index], () => {
-              setTimeout(() => {
-                showMessage(index + 1, callback);
-              }, 1000);
-            });
-          }, 300);
+          // After typing, speak the text
+          speak(messages[index], () => {
+            // After speaking, wait then show next message
+            setTimeout(() => {
+              showMessage(index + 1, callback);
+            }, 1200);
+          });
         });
-      }, 300);
+      }, 400);
     }
 
     function startWelcomeSequence() {
@@ -695,7 +704,7 @@
 
     // Wait for robot to be fully visible before starting speech
     setTimeout(() => {
-      if (isRobotLoaded) {
+      if (isRobotLoaded && !currentMessageIndex) {
         if (loadingText) {
           loadingText.textContent = '';
         }
@@ -741,6 +750,11 @@
     // Replay button
     replayBtn.addEventListener('click', () => {
       synth.cancel();
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+        typingTimeout = null;
+      }
+      currentMessageIndex = 0;
       continueBtn.classList.remove('visible');
       speechBubble.classList.remove('visible');
       speechBubble.classList.add('hide');
