@@ -382,14 +382,23 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 0.9;
-      utterance.pitch = 1;
+      utterance.rate = 0.85;
+      utterance.pitch = 0.8;
       utterance.volume = 1;
 
-      // Try to find Arabic voice
-      const arabicVoice = voices.find(voice => voice.lang.includes('ar'));
-      if (arabicVoice) {
-        utterance.voice = arabicVoice;
+      // Try to find male Arabic voice
+      const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
+      // Prefer male voices (often have 'Male' in name or lower pitch voices)
+      const maleVoice = arabicVoices.find(voice => 
+        voice.name.toLowerCase().includes('male') ||
+        voice.name.toLowerCase().includes('hussein') ||
+        voice.name.toLowerCase().includes('mohamed')
+      );
+      
+      if (maleVoice) {
+        utterance.voice = maleVoice;
+      } else if (arabicVoices.length > 0) {
+        utterance.voice = arabicVoices[0];
       }
 
       utterance.onend = callback;
@@ -403,7 +412,7 @@
     const continueBtn = document.getElementById('continue-btn');
 
     // Type welcome message
-    let welcomeText = 'مرحباً بك أيها العميل 🤖';
+    let welcomeText = 'مرحباً أيها العميل المميز 🤖';
     let welcomeIndex = 0;
 
     function typeWelcome() {
@@ -414,7 +423,7 @@
       } else {
         // Speak welcome message
         setTimeout(() => {
-          speak('مرحبا بك أيها العميل', () => {
+          speak('مرحبا أيها العميل المميز', () => {
             // Show sub message
             setTimeout(() => {
               typeSubMessage();
@@ -424,7 +433,7 @@
       }
     }
 
-    let subText = 'للتحدث معي انقر على كلمة متابعة التي تحتي 👇';
+    let subText = 'للتحدث معي انقر على المتابعة 👇';
     let subIndex = 0;
 
     function typeSubMessage() {
@@ -435,7 +444,7 @@
       } else {
         // Speak sub message
         setTimeout(() => {
-          speak('للتحدث معي انقر على كلمة متابعة التي تحتي');
+          speak('للتحدث معي انقر على المتابعة');
         }, 500);
       }
     }
