@@ -709,11 +709,10 @@
     }
 
     function getBestMaleVoice() {
+      console.log('All available voices:', voices.map(v => v.name + ' (' + v.lang + ')'));
+      
+      // Try Arabic male voices first
       const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
-      
-      console.log('All Arabic voices:', arabicVoices.map(v => v.name));
-      
-      // Priority: Male voices first - expanded list
       const maleKeywords = ['male', 'naayf', 'mohamed', 'hany', 'maged', 'ahmed', 'karim', 'omar', 'adam', 'david', 'daniel', 'alex', 'hussein', 'ali', 'sayed', 'khaled', 'mahmoud', 'youssef', 'ibraheem'];
       
       for (const keyword of maleKeywords) {
@@ -721,14 +720,28 @@
           voice.name.toLowerCase().includes(keyword)
         );
         if (found) {
-          console.log('Selected male voice:', found.name);
+          console.log('Selected Arabic male voice:', found.name);
           return found;
         }
       }
 
-      // Try to avoid female voices
-      const femaleKeywords = ['female', 'zira', 'hoda', 'fatima', 'amira', 'lara', 'nour', 'salma'];
-      const nonFemaleVoices = arabicVoices.filter(voice => 
+      // Try English male voices as fallback (will speak Arabic with English male voice)
+      const englishVoices = voices.filter(voice => voice.lang.includes('en'));
+      const englishMaleKeywords = ['male', 'david', 'daniel', 'mark', 'james', 'robert', 'thomas', 'alex', 'chris', 'google us english', 'microsoft david', 'microsoft mark'];
+      
+      for (const keyword of englishMaleKeywords) {
+        const found = englishVoices.find(voice => 
+          voice.name.toLowerCase().includes(keyword)
+        );
+        if (found) {
+          console.log('Selected English male voice for Arabic text:', found.name);
+          return found;
+        }
+      }
+
+      // Fallback to any non-female voice
+      const femaleKeywords = ['female', 'zira', 'hoda', 'fatima', 'amira', 'lara', 'nour', 'salma', 'samantha', 'victoria', 'jenny', 'karen', 'kate'];
+      const nonFemaleVoices = voices.filter(voice => 
         !femaleKeywords.some(keyword => voice.name.toLowerCase().includes(keyword))
       );
       
@@ -737,28 +750,10 @@
         return nonFemaleVoices[0];
       }
 
-      // Fallback to Microsoft voices (usually high quality)
-      const microsoftVoices = arabicVoices.filter(voice => 
-        voice.name.toLowerCase().includes('microsoft')
-      );
-      if (microsoftVoices.length > 0) {
-        console.log('Selected Microsoft voice:', microsoftVoices[0].name);
-        return microsoftVoices[0];
-      }
-
-      // Fallback to Google voices
-      const googleVoices = arabicVoices.filter(voice => 
-        voice.name.toLowerCase().includes('google')
-      );
-      if (googleVoices.length > 0) {
-        console.log('Selected Google voice:', googleVoices[0].name);
-        return googleVoices[0];
-      }
-
-      // Fallback to any Arabic voice
-      if (arabicVoices.length > 0) {
-        console.log('Selected fallback voice:', arabicVoices[0].name);
-        return arabicVoices[0];
+      // Last fallback - use any voice but with very low pitch
+      if (voices.length > 0) {
+        console.log('Selected fallback voice:', voices[0].name);
+        return voices[0];
       }
 
       return null;
@@ -776,14 +771,14 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 0.8; // Slower for deeper voice
-      utterance.pitch = 0.5; // Much lower pitch for very deep male voice
+      utterance.rate = 0.75; // Slower for deeper voice
+      utterance.pitch = 0.4; // Very low pitch for deep male voice
       utterance.volume = 1;
 
       const selectedVoice = getBestMaleVoice();
       if (selectedVoice) {
         utterance.voice = selectedVoice;
-        console.log('Using voice:', selectedVoice.name, 'Pitch:', utterance.pitch, 'Rate:', utterance.rate);
+        console.log('Using voice:', selectedVoice.name, 'Language:', selectedVoice.lang, 'Pitch:', utterance.pitch, 'Rate:', utterance.rate);
       } else {
         console.log('No voice selected, using default');
       }
