@@ -1,5 +1,18 @@
 // Groq AI Chatbot API - Vercel Serverless Function
 export default async function handler(req, res) {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Credentials', true);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+  );
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -16,8 +29,11 @@ export default async function handler(req, res) {
     const groqApiKey = process.env.GROQ_API_KEY;
     
     if (!groqApiKey) {
+      console.error('GROQ_API_KEY not configured');
       return res.status(500).json({ error: 'GROQ_API_KEY not configured' });
     }
+
+    console.log('Groq API Key exists, making request...');
 
     // System prompt for YAS Help Desk chatbot
     const systemPrompt = `أنت مساعد دعم فني ذكي لشركة YAS Help Desk. مهمتك مساعدة العملاء في:
@@ -52,6 +68,8 @@ export default async function handler(req, res) {
       { role: 'user', content: message }
     ];
 
+    console.log('Sending request to Groq API...');
+
     // Call Groq API
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -68,13 +86,17 @@ export default async function handler(req, res) {
       })
     });
 
+    console.log('Groq API response status:', response.status);
+
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.text();
       console.error('Groq API error:', errorData);
-      return res.status(500).json({ error: 'Failed to get response from AI' });
+      return res.status(500).json({ error: 'Failed to get response from AI', details: errorData });
     }
 
     const data = await response.json();
+    console.log('Groq API response:', data);
+    
     const aiResponse = data.choices[0].message.content;
 
     return res.status(200).json({ 
@@ -84,6 +106,6 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Chatbot API error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error', details: error.message });
   }
 }
