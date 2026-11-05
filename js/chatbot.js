@@ -558,6 +558,8 @@ class ChatbotWidget {
   }
 
   async getGroqResponse(message) {
+    console.log('Calling Groq API with message:', message);
+    
     const response = await fetch('/api/chatbot', {
       method: 'POST',
       headers: {
@@ -569,11 +571,16 @@ class ChatbotWidget {
       })
     });
 
+    console.log('Groq API response status:', response.status);
+
     if (!response.ok) {
-      throw new Error('Groq API request failed');
+      const errorText = await response.text();
+      console.error('Groq API error response:', errorText);
+      throw new Error('Groq API request failed: ' + errorText);
     }
 
     const data = await response.json();
+    console.log('Groq API response data:', data);
     return data.response;
   }
 
