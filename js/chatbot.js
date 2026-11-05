@@ -632,6 +632,16 @@ class ChatbotWidget {
       }, 2000);
       return 'حسناً! سأساعدك في تسجيل مشكلتك 📝\n\nسيتم نقلك تلقائياً إلى صفحة تسجيل الطلب بعد ثانيتين...';
     }
+
+    // Check for tracking phrases - redirect to tracking page
+    const trackingPhrases = ['ما هو رقم طلبي', 'أريد تتبع طلبي', 'حالة طلبي', 'رقم طلبي', 'تتبع', 'طلبي'];
+    if (trackingPhrases.some(phrase => normalizedMessage.includes(this.normalizeArabic(phrase)))) {
+      // Show message then redirect
+      setTimeout(() => {
+        window.location.href = 'tracking.html';
+      }, 2000);
+      return 'حسناً! سأساعدك في تتبع طلبك 🔍\n\nسيتم نقلك تلقائياً إلى صفحة تتبع الطلب بعد ثانيتين...\n\nستحتاج رقم الطلب (مثل: YAS-SUP-XXXXX)';
+    }
     
     // Direct exact match
     if (this.faqDatabase[normalizedMessage]) {
