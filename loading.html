@@ -59,39 +59,34 @@
       transform: translateX(-50%);
       background: rgba(255, 255, 255, 0.95);
       color: #0a0e27;
-      padding: 20px 30px;
-      border-radius: 20px;
-      font-size: 1.5rem;
+      padding: 25px 35px;
+      border-radius: 25px;
+      font-size: 1.4rem;
       font-weight: 700;
-      max-width: 400px;
+      max-width: 450px;
       text-align: center;
       box-shadow: 
-        0 10px 40px rgba(26, 86, 219, 0.3),
+        0 15px 50px rgba(26, 86, 219, 0.3),
         0 0 0 3px rgba(255, 255, 255, 0.2);
       opacity: 0;
-      animation: bubbleFadeIn 0.5s ease forwards;
+      transform: translateX(-50%) translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
       z-index: 10;
+    }
+
+    .speech-bubble.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .speech-bubble::after {
       content: '';
       position: absolute;
-      bottom: -15px;
+      bottom: -18px;
       left: 50%;
       transform: translateX(-50%);
-      border: 15px solid transparent;
+      border: 18px solid transparent;
       border-top-color: rgba(255, 255, 255, 0.95);
-    }
-
-    @keyframes bubbleFadeIn {
-      from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
     }
 
     .continue-btn {
@@ -168,11 +163,45 @@
       z-index: 10;
     }
 
+    .audio-controls {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .audio-btn {
+      padding: 10px 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .audio-btn:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .audio-btn.active {
+      background: rgba(26, 86, 219, 0.3);
+      border-color: rgba(26, 86, 219, 0.5);
+      color: white;
+    }
+
     @media (max-width: 768px) {
       .speech-bubble {
-        font-size: 1.2rem;
-        padding: 15px 20px;
-        max-width: 300px;
+        font-size: 1.1rem;
+        padding: 20px 25px;
+        max-width: 320px;
       }
 
       .continue-btn {
@@ -186,6 +215,16 @@
         padding: 8px 20px;
         font-size: 0.8rem;
       }
+
+      .audio-controls {
+        top: 20px;
+        left: 20px;
+      }
+
+      .audio-btn {
+        padding: 8px 12px;
+        font-size: 0.75rem;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -196,6 +235,10 @@
       .continue-btn:hover {
         transform: translateX(-50%) translateY(0) scale(1);
       }
+
+      .speech-bubble {
+        transition: none;
+      }
     }
   </style>
 </head>
@@ -203,10 +246,14 @@
   <div id="canvas-container"></div>
   
   <div class="loading-overlay" id="loading-overlay">
+    <div class="audio-controls">
+      <button class="audio-btn" id="mute-btn">🔊 صوت</button>
+      <button class="audio-btn" id="replay-btn">🔄 إعادة</button>
+    </div>
     <div class="speech-bubble" id="speech-bubble"></div>
     <button class="continue-btn" id="continue-btn">متابعة</button>
     <button class="skip-btn" id="skip-btn">تخطي</button>
-    <div class="loading-text">جاري التحميل...</div>
+    <div class="loading-text" id="loading-text">جاري تحميل المجسم...</div>
   </div>
 
   <script>
@@ -348,21 +395,21 @@
     camera.position.set(0, 1.5, 6);
     camera.lookAt(0, 1.5, 0);
 
-    // Particles
+    // Particles - lighter
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 500;
+    const particlesCount = 200;
     const posArray = new Float32Array(particlesCount * 3);
 
     for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 20;
+      posArray[i] = (Math.random() - 0.5) * 15;
     }
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.05,
+      size: 0.03,
       color: 0x3b82f6,
       transparent: true,
-      opacity: 0.6
+      opacity: 0.4
     });
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
@@ -372,6 +419,8 @@
     let mouseY = 0;
     let targetRotationX = 0;
     let targetRotationY = 0;
+    let isRobotLoaded = false;
+    let isTalking = false;
 
     // Mouse movement
     document.addEventListener('mousemove', (event) => {
@@ -392,9 +441,9 @@
       robot.rotation.y += (targetRotationY - robot.rotation.y) * 0.05;
       robot.rotation.x += (targetRotationX - robot.rotation.x) * 0.05;
 
-      // Particles animation
-      particles.rotation.y += 0.0005;
-      particles.rotation.x += 0.0002;
+      // Particles animation - very subtle
+      particles.rotation.y += 0.0002;
+      particles.rotation.x += 0.0001;
 
       // Eye glow pulsing
       const glowIntensity = 0.3 + Math.sin(Date.now() * 0.003) * 0.2;
@@ -403,6 +452,15 @@
 
       // Antenna tip pulsing
       antennaTip.material.emissiveIntensity = 0.5 + Math.sin(Date.now() * 0.005) * 0.3;
+
+      // Talking animation
+      if (isTalking) {
+        chest.scale.y = 1 + Math.sin(Date.now() * 0.025) * 0.08;
+        head.rotation.y = Math.sin(Date.now() * 0.01) * 0.05;
+      } else {
+        chest.scale.y = 1;
+        head.rotation.y = 0;
+      }
 
       renderer.render(scene, camera);
     }
@@ -416,12 +474,28 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
+    // Mark robot as loaded after animation starts
+    setTimeout(() => {
+      isRobotLoaded = true;
+      const loadingText = document.getElementById('loading-text');
+      loadingText.textContent = 'جاري التحميل...';
+    }, 2000);
+
     // Speech Synthesis
     const synth = window.speechSynthesis;
     let voices = [];
+    let isMuted = false;
+    let currentMessageIndex = 0;
+
+    const messages = [
+      'مرحباً أيها العميل المميز!',
+      'هل أنت مستعد؟ رحلتك معنا تبدأ الآن، وأنا هنا لأرافقك في كل خطوة!',
+      'للتحدث معي، انقر على متابعة.'
+    ];
 
     function loadVoices() {
       voices = synth.getVoices();
+      console.log('Available voices:', voices.map(v => v.name + ' (' + v.lang + ')'));
     }
 
     loadVoices();
@@ -429,50 +503,76 @@
       speechSynthesis.onvoiceschanged = loadVoices;
     }
 
+    function getBestMaleVoice() {
+      const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
+      
+      // Priority: Male voices first
+      const maleKeywords = ['male', 'naayf', 'mohamed', 'hany', 'maged', 'ahmed', 'karim', 'omar'];
+      
+      for (const keyword of maleKeywords) {
+        const found = arabicVoices.find(voice => 
+          voice.name.toLowerCase().includes(keyword)
+        );
+        if (found) {
+          console.log('Selected male voice:', found.name);
+          return found;
+        }
+      }
+
+      // Fallback to Microsoft voices (usually high quality)
+      const microsoftVoices = arabicVoices.filter(voice => 
+        voice.name.toLowerCase().includes('microsoft')
+      );
+      if (microsoftVoices.length > 0) {
+        console.log('Selected Microsoft voice:', microsoftVoices[0].name);
+        return microsoftVoices[0];
+      }
+
+      // Fallback to any Arabic voice
+      if (arabicVoices.length > 0) {
+        console.log('Selected fallback voice:', arabicVoices[0].name);
+        return arabicVoices[0];
+      }
+
+      return null;
+    }
+
     function speak(text, callback) {
+      if (isMuted) {
+        if (callback) callback();
+        return;
+      }
+
       if (synth.speaking) {
         synth.cancel();
       }
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 1.0;
-      utterance.pitch = 0.9;
+      utterance.rate = 0.9;
+      utterance.pitch = 0.75;
       utterance.volume = 1;
 
-      const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
-      const preferredVoices = ['microsoft hoda', 'microsoft naayf', 'microsoft', 'google'];
-      
-      let selectedVoice = null;
-      for (const pref of preferredVoices) {
-        const found = arabicVoices.find(voice => voice.name.toLowerCase().includes(pref));
-        if (found) {
-          selectedVoice = found;
-          break;
-        }
-      }
-
-      if (!selectedVoice && arabicVoices.length > 0) {
-        selectedVoice = arabicVoices[0];
-      }
-
+      const selectedVoice = getBestMaleVoice();
       if (selectedVoice) {
         utterance.voice = selectedVoice;
       }
 
-      utterance.onend = callback;
-      utterance.onerror = callback;
+      utterance.onstart = () => {
+        isTalking = true;
+      };
+
+      utterance.onend = () => {
+        isTalking = false;
+        if (callback) callback();
+      };
+
+      utterance.onerror = () => {
+        isTalking = false;
+        if (callback) callback();
+      };
 
       synth.speak(utterance);
-    }
-
-    // Animation for robot mouth (simulate talking)
-    function animateTalking(isTalking) {
-      if (isTalking) {
-        chest.scale.y = 1 + Math.sin(Date.now() * 0.02) * 0.1;
-      } else {
-        chest.scale.y = 1;
-      }
     }
 
     // Message display
@@ -480,16 +580,20 @@
     const continueBtn = document.getElementById('continue-btn');
     const skipBtn = document.getElementById('skip-btn');
     const loadingOverlay = document.getElementById('loading-overlay');
+    const loadingText = document.getElementById('loading-text');
+    const muteBtn = document.getElementById('mute-btn');
+    const replayBtn = document.getElementById('replay-btn');
 
     function typeText(element, text, callback) {
       let index = 0;
       element.textContent = '';
+      element.classList.add('visible');
       
       function type() {
         if (index < text.length) {
           element.textContent += text.charAt(index);
           index++;
-          setTimeout(type, 50);
+          setTimeout(type, 45);
         } else if (callback) {
           callback();
         }
@@ -498,23 +602,47 @@
       type();
     }
 
-    // Start welcome sequence
-    setTimeout(() => {
-      typeText(speechBubble, 'مرحباً أيها العميل المميز', () => {
-        speak('مرحبا أيها العميل المميز', () => {
+    function showMessage(index, callback) {
+      if (index >= messages.length) {
+        if (callback) callback();
+        return;
+      }
+
+      currentMessageIndex = index;
+      typeText(speechBubble, messages[index], () => {
+        speak(messages[index], () => {
           setTimeout(() => {
-            typeText(speechBubble, 'للتحدث معي انقر على المتابعة 👇', () => {
-              speak('للتحدث معي انقر على المتابعة', () => {
-                continueBtn.classList.add('visible');
-              });
-            });
-          }, 500);
+            showMessage(index + 1, callback);
+          }, 800);
         });
       });
-    }, 1500);
+    }
+
+    function startWelcomeSequence() {
+      loadingText.textContent = 'جاري التحميل...';
+      
+      // Wait for robot to load
+      const checkRobotLoaded = setInterval(() => {
+        if (isRobotLoaded) {
+          clearInterval(checkRobotLoaded);
+          loadingText.textContent = '';
+          
+          // Start welcome sequence
+          setTimeout(() => {
+            showMessage(0, () => {
+              continueBtn.classList.add('visible');
+            });
+          }, 500);
+        }
+      }, 100);
+    }
+
+    // Initial start
+    startWelcomeSequence();
 
     // Continue button
     continueBtn.addEventListener('click', () => {
+      synth.cancel();
       loadingOverlay.classList.add('fade-out');
       setTimeout(() => {
         window.location.href = 'index.html?openChat=true';
@@ -530,17 +658,43 @@
       }, 1000);
     });
 
-    // Talking animation loop
-    let isTalking = false;
-    setInterval(() => {
-      if (synth.speaking) {
-        isTalking = true;
-        animateTalking(true);
+    // Mute button
+    muteBtn.addEventListener('click', () => {
+      isMuted = !isMuted;
+      if (isMuted) {
+        synth.cancel();
+        muteBtn.textContent = '🔇 كتم';
+        muteBtn.classList.add('active');
       } else {
-        isTalking = false;
-        animateTalking(false);
+        muteBtn.textContent = '🔊 صوت';
+        muteBtn.classList.remove('active');
+        // Replay current message
+        if (currentMessageIndex < messages.length) {
+          speak(messages[currentMessageIndex]);
+        }
       }
-    }, 50);
+    });
+
+    // Replay button
+    replayBtn.addEventListener('click', () => {
+      synth.cancel();
+      continueBtn.classList.remove('visible');
+      speechBubble.classList.remove('visible');
+      speechBubble.textContent = '';
+      
+      setTimeout(() => {
+        showMessage(0, () => {
+          continueBtn.classList.add('visible');
+        });
+      }, 500);
+    });
+
+    // Audio interaction for mobile
+    document.addEventListener('click', () => {
+      if (synth.getVoices().length === 0) {
+        loadVoices();
+      }
+    }, { once: true });
   </script>
 </body>
 </html>
