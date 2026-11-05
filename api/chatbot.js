@@ -26,11 +26,11 @@ export default async function handler(req, res) {
     }
 
     // Get Groq API key from environment variables
-    const groqApiKey = process.env.GROQ_API_KEY;
+    const groqApiKey = process.env.GROQ_API_KEY23;
     
     if (!groqApiKey) {
-      console.error('GROQ_API_KEY not configured');
-      return res.status(500).json({ error: 'GROQ_API_KEY not configured' });
+      console.error('GROQ_API_KEY23 not configured');
+      return res.status(500).json({ error: 'GROQ_API_KEY23 not configured' });
     }
 
     console.log('Groq API Key exists, making request...');
