@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تحميل... — YAS Help Desk</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1a56db 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .loading-container {
+      text-align: center;
+      color: white;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .robot-container {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto 40px;
+      animation: robotFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes robotFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .robot-body {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .robot-head {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(145deg, #ffffff 0%, #e0f2fe 100%);
+      border-radius: 30px;
+      border: 4px solid #1a56db;
+      box-shadow: 
+        0 20px 60px rgba(26, 86, 219, 0.4),
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        inset 0 8px 16px rgba(255, 255, 255, 0.95);
+    }
+
+    .robot-eye {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: #1a56db;
+      border-radius: 50%;
+      top: 45px;
+      animation: blink 4s infinite;
+    }
+
+    .robot-eye.left {
+      left: 25px;
+    }
+
+    .robot-eye.right {
+      right: 25px;
+    }
+
+    .robot-eye::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 50%;
+      top: 4px;
+      left: 4px;
+    }
+
+    @keyframes blink {
+      0%, 45%, 55%, 100% {
+        transform: scaleY(1);
+      }
+      50% {
+        transform: scaleY(0.1);
+      }
+    }
+
+    .robot-mouth {
+      position: absolute;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 20px;
+      border: 3px solid #1a56db;
+      border-top: none;
+      border-radius: 0 0 20px 20px;
+      animation: talk 0.3s infinite;
+    }
+
+    @keyframes talk {
+      0%, 100% {
+        height: 20px;
+      }
+      50% {
+        height: 25px;
+      }
+    }
+
+    .robot-antenna {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 30px;
+      background: #1a56db;
+      border-radius: 3px;
+    }
+
+    .robot-antenna::after {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      background: #1a56db;
+      border-radius: 50%;
+      animation: glow 2s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 0 10px #1a56db, 0 0 20px #1a56db;
+      }
+      50% {
+        box-shadow: 0 0 20px #1a56db, 0 0 40px #1a56db, 0 0 60px #1a56db;
+      }
+    }
+
+    .robot-body-torso {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 140px;
+      background: linear-gradient(145deg, #ffffff 0%, #e0f2fe 100%);
+      border-radius: 35px;
+      border: 4px solid #1a56db;
+      box-shadow: 
+        0 20px 60px rgba(26, 86, 219, 0.4),
+        0 10px 30px rgba(0, 0, 0, 0.2),
+        inset 0 8px 16px rgba(255, 255, 255, 0.95);
+    }
+
+    .robot-chest {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(145deg, #1a56db 0%, #1e40af 100%);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(26, 86, 219, 0.4);
+    }
+
+    .robot-chest::after {
+      content: 'YAS';
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .robot-arms {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    .robot-arm {
+      position: absolute;
+      width: 30px;
+      height: 100px;
+      background: linear-gradient(145deg, #ffffff 0%, #e0f2fe 100%);
+      border: 3px solid #1a56db;
+      border-radius: 15px;
+      top: 80px;
+    }
+
+    .robot-arm.left {
+      left: 20px;
+      transform: rotate(-20deg);
+    }
+
+    .robot-arm.right {
+      right: 20px;
+      transform: rotate(20deg);
+    }
+
+    .message {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #ffffff;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      min-height: 60px;
+    }
+
+    .sub-message {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 40px;
+      color: #bae6fd;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      min-height: 40px;
+    }
+
+    .continue-btn {
+      padding: 16px 48px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #1a56db 0%, #1e40af 100%);
+      border: 3px solid #ffffff;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      box-shadow: 
+        0 10px 30px rgba(26, 86, 219, 0.4),
+        0 5px 15px rgba(0, 0, 0, 0.2),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInBtn 0.5s ease-in 10s forwards;
+    }
+
+    @keyframes fadeInBtn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .continue-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 
+        0 15px 40px rgba(26, 86, 219, 0.5),
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .continue-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .loading-bar {
+      width: 300px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      margin: 30px auto;
+      overflow: hidden;
+    }
+
+    .loading-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #1a56db, #3b82f6, #1a56db);
+      background-size: 200% 100%;
+      animation: loading 10s linear forwards;
+      border-radius: 3px;
+    }
+
+    @keyframes loading {
+      0% {
+        width: 0%;
+      }
+      100% {
+        width: 100%;
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-container">
+    <div class="robot-container">
+      <div class="robot-body">
+        <div class="robot-antenna"></div>
+        <div class="robot-head">
+          <div class="robot-eye left"></div>
+          <div class="robot-eye right"></div>
+          <div class="robot-mouth"></div>
+        </div>
+        <div class="robot-body-torso">
+          <div class="robot-chest"></div>
+        </div>
+        <div class="robot-arms">
+          <div class="robot-arm left"></div>
+          <div class="robot-arm right"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="message" id="welcome-message"></div>
+    <div class="sub-message" id="sub-message"></div>
+
+    <div class="loading-bar">
+      <div class="loading-progress"></div>
+    </div>
+
+    <button class="continue-btn" id="continue-btn">متابعة</button>
+  </div>
+
+  <script>
+    // Check if already loaded
+    if (sessionStorage.getItem('loadingShown')) {
+      window.location.href = 'index.html';
+    }
+
+    // Set loading shown
+    sessionStorage.setItem('loadingShown', 'true');
+
+    const synth = window.speechSynthesis;
+    let voices = [];
+
+    function loadVoices() {
+      voices = synth.getVoices();
+    }
+
+    loadVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    function speak(text, callback) {
+      if (synth.speaking) {
+        synth.cancel();
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ar-SA';
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      // Try to find Arabic voice
+      const arabicVoice = voices.find(voice => voice.lang.includes('ar'));
+      if (arabicVoice) {
+        utterance.voice = arabicVoice;
+      }
+
+      utterance.onend = callback;
+      utterance.onerror = callback;
+
+      synth.speak(utterance);
+    }
+
+    const welcomeMessage = document.getElementById('welcome-message');
+    const subMessage = document.getElementById('sub-message');
+    const continueBtn = document.getElementById('continue-btn');
+
+    // Type welcome message
+    let welcomeText = 'مرحباً بك أيها العميل 🤖';
+    let welcomeIndex = 0;
+
+    function typeWelcome() {
+      if (welcomeIndex < welcomeText.length) {
+        welcomeMessage.textContent += welcomeText.charAt(welcomeIndex);
+        welcomeIndex++;
+        setTimeout(typeWelcome, 50);
+      } else {
+        // Speak welcome message
+        setTimeout(() => {
+          speak('مرحبا بك أيها العميل', () => {
+            // Show sub message
+            setTimeout(() => {
+              typeSubMessage();
+            }, 500);
+          });
+        }, 500);
+      }
+    }
+
+    let subText = 'للتحدث معي انقر على كلمة متابعة التي تحتي 👇';
+    let subIndex = 0;
+
+    function typeSubMessage() {
+      if (subIndex < subText.length) {
+        subMessage.textContent += subText.charAt(subIndex);
+        subIndex++;
+        setTimeout(typeSubMessage, 30);
+      } else {
+        // Speak sub message
+        setTimeout(() => {
+          speak('للتحدث معي انقر على كلمة متابعة التي تحتي');
+        }, 500);
+      }
+    }
+
+    // Start after a short delay
+    setTimeout(() => {
+      typeWelcome();
+    }, 1000);
+
+    // Continue button - open chatbot and redirect
+    continueBtn.addEventListener('click', () => {
+      // Redirect to index with open chat
+      window.location.href = 'index.html?openChat=true';
+    });
+  </script>
+</body>
+</html>

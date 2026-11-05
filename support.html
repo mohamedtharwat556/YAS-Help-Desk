@@ -13,6 +13,12 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/chatbot.css">
+  <script>
+    // Check if loading screen has been shown
+    if (!sessionStorage.getItem('loadingShown')) {
+      window.location.href = 'loading.html';
+    }
+  </script>
 </head>
 <body>
 
