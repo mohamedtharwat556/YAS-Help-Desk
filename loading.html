@@ -711,6 +711,8 @@
     function getBestMaleVoice() {
       const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
       
+      console.log('All Arabic voices:', arabicVoices.map(v => v.name));
+      
       // Priority: Male voices first - expanded list
       const maleKeywords = ['male', 'naayf', 'mohamed', 'hany', 'maged', 'ahmed', 'karim', 'omar', 'adam', 'david', 'daniel', 'alex', 'hussein', 'ali', 'sayed', 'khaled', 'mahmoud', 'youssef', 'ibraheem'];
       
@@ -722,6 +724,17 @@
           console.log('Selected male voice:', found.name);
           return found;
         }
+      }
+
+      // Try to avoid female voices
+      const femaleKeywords = ['female', 'zira', 'hoda', 'fatima', 'amira', 'lara', 'nour', 'salma'];
+      const nonFemaleVoices = arabicVoices.filter(voice => 
+        !femaleKeywords.some(keyword => voice.name.toLowerCase().includes(keyword))
+      );
+      
+      if (nonFemaleVoices.length > 0) {
+        console.log('Selected non-female voice:', nonFemaleVoices[0].name);
+        return nonFemaleVoices[0];
       }
 
       // Fallback to Microsoft voices (usually high quality)
@@ -763,14 +776,16 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 0.85; // Slightly slower for deeper voice
-      utterance.pitch = 0.6; // Lower pitch for deeper male voice
+      utterance.rate = 0.8; // Slower for deeper voice
+      utterance.pitch = 0.5; // Much lower pitch for very deep male voice
       utterance.volume = 1;
 
       const selectedVoice = getBestMaleVoice();
       if (selectedVoice) {
         utterance.voice = selectedVoice;
         console.log('Using voice:', selectedVoice.name, 'Pitch:', utterance.pitch, 'Rate:', utterance.rate);
+      } else {
+        console.log('No voice selected, using default');
       }
 
       utterance.onstart = () => {
