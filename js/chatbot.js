@@ -522,11 +522,10 @@ class ChatbotWidget {
     // Show typing indicator
     this.showTyping();
 
-    // Smart FAQ matching
-    const response = this.getSmartResponse(message);
-
-    // Simulate typing delay for realism
-    setTimeout(() => {
+    try {
+      // Try Groq AI API first
+      const response = await this.getGroqResponse(message);
+      
       this.hideTyping();
       this.addMessage(response, 'bot');
       
@@ -538,7 +537,44 @@ class ChatbotWidget {
       if (this.conversationHistory.length > 10) {
         this.conversationHistory = this.conversationHistory.slice(-10);
       }
-    }, 800 + Math.random() * 600);
+    } catch (error) {
+      console.error('Groq API error, falling back to local FAQ:', error);
+      
+      // Fallback to local FAQ matching
+      const response = this.getSmartResponse(message);
+      
+      this.hideTyping();
+      this.addMessage(response, 'bot');
+      
+      // Update conversation history
+      this.conversationHistory.push({ role: 'user', content: message });
+      this.conversationHistory.push({ role: 'assistant', content: response });
+      
+      // Keep only last 10 messages
+      if (this.conversationHistory.length > 10) {
+        this.conversationHistory = this.conversationHistory.slice(-10);
+      }
+    }
+  }
+
+  async getGroqResponse(message) {
+    const response = await fetch('/api/chatbot', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: message,
+        conversationHistory: this.conversationHistory
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Groq API request failed');
+    }
+
+    const data = await response.json();
+    return data.response;
   }
 
   getSmartResponse(message) {
