@@ -39,10 +39,6 @@
       height: 100%;
       background: linear-gradient(135deg, #0a0e27 0%, #1a237e 50%, #0d47a1 100%);
       z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       transition: opacity 1s ease, transform 1s ease;
     }
 
@@ -52,46 +48,56 @@
       pointer-events: none;
     }
 
+    /* Glassmorphism Speech Bubble */
     .speech-bubble {
       position: absolute;
-      bottom: 25%;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255, 255, 255, 0.95);
-      color: #0a0e27;
-      padding: 25px 35px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      color: white;
+      padding: 20px 30px;
       border-radius: 25px;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 700;
-      max-width: 450px;
+      max-width: 400px;
       text-align: center;
       box-shadow: 
-        0 15px 50px rgba(26, 86, 219, 0.3),
-        0 0 0 3px rgba(255, 255, 255, 0.2);
+        0 8px 32px rgba(26, 86, 219, 0.3),
+        0 0 0 2px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.2);
       opacity: 0;
-      transform: translateX(-50%) translateY(20px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(20px) scale(0.9);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 10;
+      pointer-events: none;
     }
 
     .speech-bubble.visible {
       opacity: 1;
-      transform: translateX(-50%) translateY(0);
+      transform: translateY(0) scale(1);
     }
 
-    .speech-bubble::after {
+    .speech-bubble::before {
       content: '';
       position: absolute;
-      bottom: -18px;
+      bottom: -12px;
       left: 50%;
       transform: translateX(-50%);
-      border: 18px solid transparent;
-      border-top-color: rgba(255, 255, 255, 0.95);
+      border: 12px solid transparent;
+      border-top-color: rgba(255, 255, 255, 0.15);
+      filter: drop-shadow(0 -2px 4px rgba(0, 0, 0, 0.1));
     }
 
+    .speech-bubble.hide {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.95);
+    }
+
+    /* Continue Button */
     .continue-btn {
       position: absolute;
-      bottom: 15%;
+      bottom: 12%;
       left: 50%;
       transform: translateX(-50%);
       padding: 18px 60px;
@@ -130,6 +136,7 @@
       transform: translateX(-50%) translateY(0) scale(0.98);
     }
 
+    /* Skip Button */
     .skip-btn {
       position: absolute;
       top: 30px;
@@ -153,6 +160,7 @@
       border-color: rgba(255, 255, 255, 0.4);
     }
 
+    /* Loading Text */
     .loading-text {
       position: absolute;
       bottom: 5%;
@@ -163,6 +171,7 @@
       z-index: 10;
     }
 
+    /* Audio Controls */
     .audio-controls {
       position: absolute;
       top: 30px;
@@ -197,11 +206,12 @@
       color: white;
     }
 
+    /* Responsive */
     @media (max-width: 768px) {
       .speech-bubble {
         font-size: 1.1rem;
-        padding: 20px 25px;
-        max-width: 320px;
+        padding: 15px 20px;
+        max-width: 300px;
       }
 
       .continue-btn {
@@ -453,13 +463,15 @@
       // Antenna tip pulsing
       antennaTip.material.emissiveIntensity = 0.5 + Math.sin(Date.now() * 0.005) * 0.3;
 
-      // Talking animation
+      // Talking animation - more realistic mouth movement
       if (isTalking) {
-        chest.scale.y = 1 + Math.sin(Date.now() * 0.025) * 0.08;
-        head.rotation.y = Math.sin(Date.now() * 0.01) * 0.05;
+        chest.scale.y = 1 + Math.sin(Date.now() * 0.03) * 0.12;
+        head.rotation.y = Math.sin(Date.now() * 0.012) * 0.08;
+        head.rotation.x = Math.sin(Date.now() * 0.008) * 0.04;
       } else {
         chest.scale.y = 1;
         head.rotation.y = 0;
+        head.rotation.x = 0;
       }
 
       renderer.render(scene, camera);
@@ -474,12 +486,43 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Mark robot as loaded after animation starts
+    // Calculate speech bubble position near robot's mouth
+    function updateSpeechBubblePosition() {
+      const speechBubble = document.getElementById('speech-bubble');
+      
+      // Get robot's head position in screen coordinates
+      const headPosition = new THREE.Vector3();
+      head.getWorldPosition(headPosition);
+      headPosition.project(camera);
+      
+      // Convert to screen coordinates
+      const screenX = (headPosition.x * 0.5 + 0.5) * window.innerWidth;
+      const screenY = (-(headPosition.y * 0.5) + 0.5) * window.innerHeight;
+      
+      // Position bubble near the mouth (slightly below and to the right of head)
+      speechBubble.style.left = (screenX + 60) + 'px';
+      speechBubble.style.top = (screenY - 80) + 'px';
+      speechBubble.style.transform = 'translate(0, 0)';
+    }
+
+    // Update bubble position continuously to follow robot
+    setInterval(updateSpeechBubblePosition, 16);
+
+    // Mark robot as loaded immediately - it's already visible
     setTimeout(() => {
       isRobotLoaded = true;
       const loadingText = document.getElementById('loading-text');
       loadingText.textContent = 'جاري التحميل...';
-    }, 2000);
+    }, 500);
+
+    // Wait for robot to be fully visible before starting speech
+    setTimeout(() => {
+      if (isRobotLoaded) {
+        const loadingText = document.getElementById('loading-text');
+        loadingText.textContent = '';
+        startWelcomeSequence();
+      }
+    }, 2500);
 
     // Speech Synthesis
     const synth = window.speechSynthesis;
@@ -578,7 +621,7 @@
     // Message display
     const speechBubble = document.getElementById('speech-bubble');
     const continueBtn = document.getElementById('continue-btn');
-    const skipBtn = document.getElementById('skip-btn');
+    const skipBtn = document('skip-btn');
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
     const muteBtn = document.getElementById('mute-btn');
@@ -593,7 +636,7 @@
         if (index < text.length) {
           element.textContent += text.charAt(index);
           index++;
-          setTimeout(type, 45);
+          setTimeout(type, 50);
         } else if (callback) {
           callback();
         }
@@ -609,36 +652,33 @@
       }
 
       currentMessageIndex = index;
-      typeText(speechBubble, messages[index], () => {
-        speak(messages[index], () => {
-          setTimeout(() => {
-            showMessage(index + 1, callback);
-          }, 800);
+      
+      // Hide previous message if exists
+      speechBubble.classList.remove('visible');
+      speechBubble.classList.add('hide');
+      
+      setTimeout(() => {
+        speechBubble.classList.remove('hide');
+        typeText(speechBubble, messages[index], () => {
+          speak(messages[index], () => {
+            setTimeout(() => {
+              showMessage(index + 1, callback);
+            }, 800);
+          });
         });
-      });
+      }, 300);
     }
 
     function startWelcomeSequence() {
-      loadingText.textContent = 'جاري التحميل...';
+      loadingText.textContent = '';
       
-      // Wait for robot to load
-      const checkRobotLoaded = setInterval(() => {
-        if (isRobotLoaded) {
-          clearInterval(checkRobotLoaded);
-          loadingText.textContent = '';
-          
-          // Start welcome sequence
-          setTimeout(() => {
-            showMessage(0, () => {
-              continueBtn.classList.add('visible');
-            });
-          }, 500);
-        }
-      }, 100);
+      // Robot is already visible, start speech immediately
+      setTimeout(() => {
+        showMessage(0, () => {
+          continueBtn.classList.add('visible');
+        });
+      }, 500);
     }
-
-    // Initial start
-    startWelcomeSequence();
 
     // Continue button
     continueBtn.addEventListener('click', () => {
@@ -680,6 +720,7 @@
       synth.cancel();
       continueBtn.classList.remove('visible');
       speechBubble.classList.remove('visible');
+      speechBubble.classList.add('hide');
       speechBubble.textContent = '';
       
       setTimeout(() => {
