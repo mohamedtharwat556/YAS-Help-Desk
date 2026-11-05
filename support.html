@@ -13,14 +13,39 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/loading-animations.css">
   <script>
     // Check if loading screen has been shown
     if (!sessionStorage.getItem('loadingShown')) {
       window.location.href = 'loading.html';
     }
+
+    // Hide page loader on load
+    window.addEventListener('load', () => {
+      const pageLoader = document.getElementById('page-loader');
+      if (pageLoader) {
+        setTimeout(() => {
+          pageLoader.classList.add('hidden');
+        }, 500);
+      }
+    });
   </script>
 </head>
 <body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="page-loader">
+  <div class="robot-loader"></div>
+  <div class="loading-text">جاري التحميل...</div>
+  <div class="progress-bar">
+    <div class="progress-bar-fill"></div>
+  </div>
+  <div class="dots-loader">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
 
 <!-- Header -->
 <header class="portal-header">

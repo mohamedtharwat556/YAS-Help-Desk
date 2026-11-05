@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/loading-animations.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     // Check if loading screen has been shown
@@ -23,12 +24,20 @@
     
     // Check if should open chat from loading page
     window.addEventListener('load', () => {
+      // Hide page loader
+      const pageLoader = document.getElementById('page-loader');
+      if (pageLoader) {
+        setTimeout(() => {
+          pageLoader.classList.add('hidden');
+        }, 500);
+      }
+
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.get('openChat') === 'true') {
         // Remove parameter from URL
         const newUrl = window.location.pathname;
         window.history.replaceState({}, '', newUrl);
-        
+
         // Open chat after a short delay
         setTimeout(() => {
           const toggle = document.getElementById('chatbot-toggle');
@@ -41,6 +50,20 @@
   </script>
 </head>
 <body>
+
+<!-- Page Loader -->
+<div class="page-loader" id="page-loader">
+  <div class="robot-loader"></div>
+  <div class="loading-text">جاري التحميل...</div>
+  <div class="progress-bar">
+    <div class="progress-bar-fill"></div>
+  </div>
+  <div class="dots-loader">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
 
 <!-- ── Header ───────────────────────────────────────────────── -->
 <header class="portal-header">
