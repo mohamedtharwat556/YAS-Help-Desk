@@ -78,7 +78,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile', // Latest supported Groq model
+        model: 'llama-3.1-8b-instant', // Free and fast Groq model
         messages: messages,
         temperature: 0.7,
         max_tokens: 500,
