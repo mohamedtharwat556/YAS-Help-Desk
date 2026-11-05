@@ -6,6 +6,7 @@
   <title>تحميل... — YAS Help Desk</title>
   <link rel="icon" type="image/png" href="logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -15,343 +16,197 @@
 
     body {
       font-family: 'Cairo', sans-serif;
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #1a56db 100%);
+      background: linear-gradient(135deg, #0a0e27 0%, #1a237e 50%, #0d47a1 100%);
       min-height: 100vh;
+      overflow: hidden;
+      color: white;
+    }
+
+    #canvas-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a237e 50%, #0d47a1 100%);
+      z-index: 2;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      transition: opacity 1s ease, transform 1s ease;
     }
 
-    .loading-container {
+    .loading-overlay.fade-out {
+      opacity: 0;
+      transform: scale(1.1);
+      pointer-events: none;
+    }
+
+    .speech-bubble {
+      position: absolute;
+      bottom: 25%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 255, 255, 0.95);
+      color: #0a0e27;
+      padding: 20px 30px;
+      border-radius: 20px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      max-width: 400px;
       text-align: center;
-      color: white;
-      animation: fadeIn 1s ease-in;
+      box-shadow: 
+        0 10px 40px rgba(26, 86, 219, 0.3),
+        0 0 0 3px rgba(255, 255, 255, 0.2);
+      opacity: 0;
+      animation: bubbleFadeIn 0.5s ease forwards;
+      z-index: 10;
     }
 
-    @keyframes fadeIn {
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 15px solid transparent;
+      border-top-color: rgba(255, 255, 255, 0.95);
+    }
+
+    @keyframes bubbleFadeIn {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateX(-50%) translateY(20px);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(-50%) translateY(0);
       }
-    }
-
-    .robot-container {
-      position: relative;
-      width: 300px;
-      height: 300px;
-      margin: 0 auto 40px;
-      animation: robotFloat 3s ease-in-out infinite;
-    }
-
-    @keyframes robotFloat {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-20px);
-      }
-    }
-
-    .robot-body {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-    }
-
-    .robot-head {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 120px;
-      height: 120px;
-      background: linear-gradient(145deg, #ffffff 0%, #e0f2fe 100%);
-      border-radius: 30px;
-      border: 4px solid #1a56db;
-      box-shadow: 
-        0 20px 60px rgba(26, 86, 219, 0.4),
-        0 10px 30px rgba(0, 0, 0, 0.2),
-        inset 0 8px 16px rgba(255, 255, 255, 0.95);
-    }
-
-    .robot-eye {
-      position: absolute;
-      width: 24px;
-      height: 24px;
-      background: #1a56db;
-      border-radius: 50%;
-      top: 45px;
-      animation: blink 4s infinite;
-    }
-
-    .robot-eye.left {
-      left: 25px;
-    }
-
-    .robot-eye.right {
-      right: 25px;
-    }
-
-    .robot-eye::after {
-      content: '';
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: rgba(255, 255, 255, 0.9);
-      border-radius: 50%;
-      top: 4px;
-      left: 4px;
-    }
-
-    @keyframes blink {
-      0%, 45%, 55%, 100% {
-        transform: scaleY(1);
-      }
-      50% {
-        transform: scaleY(0.1);
-      }
-    }
-
-    .robot-mouth {
-      position: absolute;
-      bottom: 25px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 40px;
-      height: 20px;
-      border: 3px solid #1a56db;
-      border-top: none;
-      border-radius: 0 0 20px 20px;
-      animation: talk 0.3s infinite;
-    }
-
-    @keyframes talk {
-      0%, 100% {
-        height: 20px;
-      }
-      50% {
-        height: 25px;
-      }
-    }
-
-    .robot-antenna {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 6px;
-      height: 30px;
-      background: #1a56db;
-      border-radius: 3px;
-    }
-
-    .robot-antenna::after {
-      content: '';
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 16px;
-      height: 16px;
-      background: #1a56db;
-      border-radius: 50%;
-      animation: glow 2s ease-in-out infinite;
-    }
-
-    @keyframes glow {
-      0%, 100% {
-        box-shadow: 0 0 10px #1a56db, 0 0 20px #1a56db;
-      }
-      50% {
-        box-shadow: 0 0 20px #1a56db, 0 0 40px #1a56db, 0 0 60px #1a56db;
-      }
-    }
-
-    .robot-body-torso {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 140px;
-      height: 140px;
-      background: linear-gradient(145deg, #ffffff 0%, #e0f2fe 100%);
-      border-radius: 35px;
-      border: 4px solid #1a56db;
-      box-shadow: 
-        0 20px 60px rgba(26, 86, 219, 0.4),
-        0 10px 30px rgba(0, 0, 0, 0.2),
-        inset 0 8px 16px rgba(255, 255, 255, 0.95);
-    }
-
-    .robot-chest {
-      position: absolute;
-      top: 30px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(145deg, #1a56db 0%, #1e40af 100%);
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 4px 12px rgba(26, 86, 219, 0.4);
-    }
-
-    .robot-chest::after {
-      content: 'YAS';
-      color: white;
-      font-weight: 800;
-      font-size: 14px;
-    }
-
-    .robot-arms {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-    }
-
-    .robot-arm {
-      position: absolute;
-      width: 30px;
-      height: 100px;
-      background: linear-gradient(145deg, #ffffff 0%, #e0f2fe 100%);
-      border: 3px solid #1a56db;
-      border-radius: 15px;
-      top: 80px;
-    }
-
-    .robot-arm.left {
-      left: 20px;
-      transform: rotate(-20deg);
-    }
-
-    .robot-arm.right {
-      right: 20px;
-      transform: rotate(20deg);
-    }
-
-    .message {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      color: #ffffff;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-      min-height: 60px;
-    }
-
-    .sub-message {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 40px;
-      color: #bae6fd;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-      min-height: 40px;
     }
 
     .continue-btn {
-      padding: 16px 48px;
-      font-size: 1.25rem;
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 18px 60px;
+      font-size: 1.3rem;
       font-weight: 700;
       color: white;
-      background: linear-gradient(135deg, #1a56db 0%, #1e40af 100%);
-      border: 3px solid #ffffff;
+      background: linear-gradient(135deg, #1a56db 0%, #0d47a1 100%);
+      border: 3px solid rgba(255, 255, 255, 0.3);
       border-radius: 50px;
       cursor: pointer;
       font-family: 'Cairo', sans-serif;
       box-shadow: 
-        0 10px 30px rgba(26, 86, 219, 0.4),
-        0 5px 15px rgba(0, 0, 0, 0.2),
-        inset 0 2px 0 rgba(255, 255, 255, 0.3);
+        0 15px 40px rgba(26, 86, 219, 0.4),
+        0 5px 20px rgba(0, 0, 0, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2);
       transition: all 0.3s ease;
       opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInBtn 0.5s ease-in 10s forwards;
+      transform: translateX(-50%) translateY(30px);
+      z-index: 10;
     }
 
-    @keyframes fadeInBtn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .continue-btn.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .continue-btn:hover {
-      transform: translateY(-3px) scale(1.05);
+      transform: translateX(-50%) translateY(-5px) scale(1.05);
       box-shadow: 
-        0 15px 40px rgba(26, 86, 219, 0.5),
-        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 20px 50px rgba(26, 86, 219, 0.5),
+        0 10px 30px rgba(0, 0, 0, 0.4),
         inset 0 2px 0 rgba(255, 255, 255, 0.3);
     }
 
     .continue-btn:active {
-      transform: translateY(0) scale(0.98);
+      transform: translateX(-50%) translateY(0) scale(0.98);
     }
 
-    .loading-bar {
-      width: 300px;
-      height: 6px;
+    .skip-btn {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      padding: 10px 25px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.7);
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .skip-btn:hover {
+      color: white;
       background: rgba(255, 255, 255, 0.2);
-      border-radius: 3px;
-      margin: 30px auto;
-      overflow: hidden;
+      border-color: rgba(255, 255, 255, 0.4);
     }
 
-    .loading-progress {
-      height: 100%;
-      background: linear-gradient(90deg, #1a56db, #3b82f6, #1a56db);
-      background-size: 200% 100%;
-      animation: loading 10s linear forwards;
-      border-radius: 3px;
+    .loading-text {
+      position: absolute;
+      bottom: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.5);
+      z-index: 10;
     }
 
-    @keyframes loading {
-      0% {
-        width: 0%;
+    @media (max-width: 768px) {
+      .speech-bubble {
+        font-size: 1.2rem;
+        padding: 15px 20px;
+        max-width: 300px;
       }
-      100% {
-        width: 100%;
+
+      .continue-btn {
+        padding: 15px 40px;
+        font-size: 1.1rem;
+      }
+
+      .skip-btn {
+        top: 20px;
+        right: 20px;
+        padding: 8px 20px;
+        font-size: 0.8rem;
       }
     }
 
-    .hidden {
-      display: none;
+    @media (prefers-reduced-motion: reduce) {
+      .loading-overlay {
+        transition: none;
+      }
+
+      .continue-btn:hover {
+        transform: translateX(-50%) translateY(0) scale(1);
+      }
     }
   </style>
 </head>
 <body>
-  <div class="loading-container">
-    <div class="robot-container">
-      <div class="robot-body">
-        <div class="robot-antenna"></div>
-        <div class="robot-head">
-          <div class="robot-eye left"></div>
-          <div class="robot-eye right"></div>
-          <div class="robot-mouth"></div>
-        </div>
-        <div class="robot-body-torso">
-          <div class="robot-chest"></div>
-        </div>
-        <div class="robot-arms">
-          <div class="robot-arm left"></div>
-          <div class="robot-arm right"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="message" id="welcome-message"></div>
-    <div class="sub-message" id="sub-message"></div>
-
-    <div class="loading-bar">
-      <div class="loading-progress"></div>
-    </div>
-
+  <div id="canvas-container"></div>
+  
+  <div class="loading-overlay" id="loading-overlay">
+    <div class="speech-bubble" id="speech-bubble"></div>
     <button class="continue-btn" id="continue-btn">متابعة</button>
+    <button class="skip-btn" id="skip-btn">تخطي</button>
+    <div class="loading-text">جاري التحميل...</div>
   </div>
 
   <script>
@@ -363,28 +218,216 @@
     // Set loading shown
     sessionStorage.setItem('loadingShown', 'true');
 
+    // Three.js Setup
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0x1a56db, 1);
+    directionalLight.position.set(5, 5, 5);
+    scene.add(directionalLight);
+
+    const pointLight = new THREE.PointLight(0x3b82f6, 1, 100);
+    pointLight.position.set(0, 5, 0);
+    scene.add(pointLight);
+
+    const rimLight = new THREE.DirectionalLight(0x60a5fa, 0.5);
+    rimLight.position.set(-5, 0, -5);
+    scene.add(rimLight);
+
+    // Robot Group
+    const robot = new THREE.Group();
+
+    // Materials
+    const bodyMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0xffffff,
+      metalness: 0.3,
+      roughness: 0.4
+    });
+
+    const accentMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0x1a56db,
+      metalness: 0.5,
+      roughness: 0.3
+    });
+
+    const glowMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0x3b82f6,
+      emissive: 0x3b82f6,
+      emissiveIntensity: 0.5,
+      metalness: 0.8,
+      roughness: 0.2
+    });
+
+    // Head
+    const headGeometry = new THREE.SphereGeometry(1.2, 32, 32);
+    const head = new THREE.Mesh(headGeometry, bodyMaterial);
+    head.position.y = 2.5;
+    robot.add(head);
+
+    // Eyes
+    const eyeGeometry = new THREE.SphereGeometry(0.25, 16, 16);
+    const leftEye = new THREE.Mesh(eyeGeometry, accentMaterial);
+    leftEye.position.set(-0.4, 2.6, 0.9);
+    robot.add(leftEye);
+
+    const rightEye = new THREE.Mesh(eyeGeometry, accentMaterial);
+    rightEye.position.set(0.4, 2.6, 0.9);
+    robot.add(rightEye);
+
+    // Eye glow
+    const eyeGlowGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+    const leftEyeGlow = new THREE.Mesh(eyeGlowGeometry, glowMaterial);
+    leftEyeGlow.position.set(-0.4, 2.6, 0.85);
+    leftEyeGlow.scale.set(1.2, 1.2, 0.5);
+    robot.add(leftEyeGlow);
+
+    const rightEyeGlow = new THREE.Mesh(eyeGlowGeometry, glowMaterial);
+    rightEyeGlow.position.set(0.4, 2.6, 0.85);
+    rightEyeGlow.scale.set(1.2, 1.2, 0.5);
+    robot.add(rightEyeGlow);
+
+    // Body
+    const bodyGeometry = new THREE.CylinderGeometry(1, 1.2, 2, 32);
+    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    body.position.y = 0.5;
+    robot.add(body);
+
+    // Chest plate
+    const chestGeometry = new THREE.BoxGeometry(1.2, 0.8, 0.3);
+    const chest = new THREE.Mesh(chestGeometry, accentMaterial);
+    chest.position.set(0, 0.8, 0.8);
+    robot.add(chest);
+
+    // Arms
+    const armGeometry = new THREE.CylinderGeometry(0.2, 0.25, 1.5, 16);
+    const leftArm = new THREE.Mesh(armGeometry, bodyMaterial);
+    leftArm.position.set(-1.5, 0.5, 0);
+    leftArm.rotation.z = 0.3;
+    robot.add(leftArm);
+
+    const rightArm = new THREE.Mesh(armGeometry, bodyMaterial);
+    rightArm.position.set(1.5, 0.5, 0);
+    rightArm.rotation.z = -0.3;
+    robot.add(rightArm);
+
+    // Hands
+    const handGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+    const leftHand = new THREE.Mesh(handGeometry, bodyMaterial);
+    leftHand.position.set(-1.8, -0.4, 0);
+    robot.add(leftHand);
+
+    const rightHand = new THREE.Mesh(handGeometry, bodyMaterial);
+    rightHand.position.set(1.8, -0.4, 0);
+    robot.add(rightHand);
+
+    // Antenna
+    const antennaGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.8, 8);
+    const antenna = new THREE.Mesh(antennaGeometry, accentMaterial);
+    antenna.position.set(0, 3.7, 0);
+    robot.add(antenna);
+
+    const antennaTipGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+    const antennaTip = new THREE.Mesh(antennaTipGeometry, glowMaterial);
+    antennaTip.position.set(0, 4.1, 0);
+    robot.add(antennaTip);
+
+    // Add robot to scene
+    scene.add(robot);
+
+    // Camera position
+    camera.position.set(0, 1.5, 6);
+    camera.lookAt(0, 1.5, 0);
+
+    // Particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 500;
+    const posArray = new Float32Array(particlesCount * 3);
+
+    for (let i = 0; i < particlesCount * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 20;
+    }
+
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.05,
+      color: 0x3b82f6,
+      transparent: true,
+      opacity: 0.6
+    });
+    const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
+
+    // Animation variables
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetRotationX = 0;
+    let targetRotationY = 0;
+
+    // Mouse movement
+    document.addEventListener('mousemove', (event) => {
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+    });
+
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Robot floating
+      robot.position.y = Math.sin(Date.now() * 0.001) * 0.1;
+
+      // Robot rotation based on mouse
+      targetRotationY = mouseX * 0.3;
+      targetRotationX = mouseY * 0.2;
+      robot.rotation.y += (targetRotationY - robot.rotation.y) * 0.05;
+      robot.rotation.x += (targetRotationX - robot.rotation.x) * 0.05;
+
+      // Particles animation
+      particles.rotation.y += 0.0005;
+      particles.rotation.x += 0.0002;
+
+      // Eye glow pulsing
+      const glowIntensity = 0.3 + Math.sin(Date.now() * 0.003) * 0.2;
+      leftEyeGlow.material.emissiveIntensity = glowIntensity;
+      rightEyeGlow.material.emissiveIntensity = glowIntensity;
+
+      // Antenna tip pulsing
+      antennaTip.material.emissiveIntensity = 0.5 + Math.sin(Date.now() * 0.005) * 0.3;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Speech Synthesis
     const synth = window.speechSynthesis;
     let voices = [];
 
     function loadVoices() {
       voices = synth.getVoices();
-      console.log('Available voices:', voices.map(v => v.name + ' (' + v.lang + ')'));
     }
 
     loadVoices();
     if (speechSynthesis.onvoiceschanged !== undefined) {
       speechSynthesis.onvoiceschanged = loadVoices;
     }
-
-    // Preload voices by speaking a short silent utterance
-    function preloadVoice() {
-      const utterance = new SpeechSynthesisUtterance('');
-      utterance.volume = 0;
-      synth.speak(utterance);
-    }
-
-    // Call preload after voices are loaded
-    setTimeout(preloadVoice, 1000);
 
     function speak(text, callback) {
       if (synth.speaking) {
@@ -397,44 +440,24 @@
       utterance.pitch = 0.9;
       utterance.volume = 1;
 
-      // Try to find best Arabic voice - prioritize Microsoft
       const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
+      const preferredVoices = ['microsoft hoda', 'microsoft naayf', 'microsoft', 'google'];
       
-      // Priority order for voice selection - Microsoft voices first
-      const preferredVoices = [
-        'microsoft hoda',
-        'microsoft naayf',
-        'microsoft',
-        'google',
-        'hoda',
-        'naayf',
-        'zahra',
-        'maged',
-        'hany',
-        'salma'
-      ];
-
       let selectedVoice = null;
-      
-      // Try to find preferred voices
       for (const pref of preferredVoices) {
-        const found = arabicVoices.find(voice => 
-          voice.name.toLowerCase().includes(pref)
-        );
+        const found = arabicVoices.find(voice => voice.name.toLowerCase().includes(pref));
         if (found) {
           selectedVoice = found;
           break;
         }
       }
 
-      // If no preferred voice found, use first Arabic voice
       if (!selectedVoice && arabicVoices.length > 0) {
         selectedVoice = arabicVoices[0];
       }
 
       if (selectedVoice) {
         utterance.voice = selectedVoice;
-        console.log('Using voice:', selectedVoice.name);
       }
 
       utterance.onend = callback;
@@ -443,58 +466,81 @@
       synth.speak(utterance);
     }
 
-    const welcomeMessage = document.getElementById('welcome-message');
-    const subMessage = document.getElementById('sub-message');
+    // Animation for robot mouth (simulate talking)
+    function animateTalking(isTalking) {
+      if (isTalking) {
+        chest.scale.y = 1 + Math.sin(Date.now() * 0.02) * 0.1;
+      } else {
+        chest.scale.y = 1;
+      }
+    }
+
+    // Message display
+    const speechBubble = document.getElementById('speech-bubble');
     const continueBtn = document.getElementById('continue-btn');
+    const skipBtn = document.getElementById('skip-btn');
+    const loadingOverlay = document.getElementById('loading-overlay');
 
-    // Type welcome message
-    let welcomeText = 'مرحباً أيها العميل المميز 🤖';
-    let welcomeIndex = 0;
-
-    function typeWelcome() {
-      if (welcomeIndex < welcomeText.length) {
-        welcomeMessage.textContent += welcomeText.charAt(welcomeIndex);
-        welcomeIndex++;
-        setTimeout(typeWelcome, 50);
-      } else {
-        // Speak welcome message
-        setTimeout(() => {
-          speak('مرحبا أيها العميل المميز', () => {
-            // Show sub message
-            setTimeout(() => {
-              typeSubMessage();
-            }, 500);
-          });
-        }, 500);
+    function typeText(element, text, callback) {
+      let index = 0;
+      element.textContent = '';
+      
+      function type() {
+        if (index < text.length) {
+          element.textContent += text.charAt(index);
+          index++;
+          setTimeout(type, 50);
+        } else if (callback) {
+          callback();
+        }
       }
+      
+      type();
     }
 
-    let subText = 'للتحدث معي انقر على المتابعة 👇';
-    let subIndex = 0;
-
-    function typeSubMessage() {
-      if (subIndex < subText.length) {
-        subMessage.textContent += subText.charAt(subIndex);
-        subIndex++;
-        setTimeout(typeSubMessage, 30);
-      } else {
-        // Speak sub message
-        setTimeout(() => {
-          speak('للتحدث معي انقر على المتابعة');
-        }, 500);
-      }
-    }
-
-    // Start after a short delay - give voices time to load
+    // Start welcome sequence
     setTimeout(() => {
-      typeWelcome();
+      typeText(speechBubble, 'مرحباً أيها العميل المميز', () => {
+        speak('مرحبا أيها العميل المميز', () => {
+          setTimeout(() => {
+            typeText(speechBubble, 'للتحدث معي انقر على المتابعة 👇', () => {
+              speak('للتحدث معي انقر على المتابعة', () => {
+                continueBtn.classList.add('visible');
+              });
+            });
+          }, 500);
+        });
+      });
     }, 1500);
 
-    // Continue button - open chatbot and redirect
+    // Continue button
     continueBtn.addEventListener('click', () => {
-      // Redirect to index with open chat
-      window.location.href = 'index.html?openChat=true';
+      loadingOverlay.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = 'index.html?openChat=true';
+      }, 1000);
     });
+
+    // Skip button
+    skipBtn.addEventListener('click', () => {
+      synth.cancel();
+      loadingOverlay.classList.add('fade-out');
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 1000);
+    });
+
+    // Talking animation loop
+    let isTalking = false;
+    setInterval(() => {
+      if (synth.speaking) {
+        isTalking = true;
+        animateTalking(true);
+      } else {
+        isTalking = false;
+        animateTalking(false);
+      }
+    }, 50);
   </script>
 </body>
 </html>
