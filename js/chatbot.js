@@ -4,6 +4,7 @@ class ChatbotWidget {
     this.isOpen = false;
     this.conversationHistory = [];
     this.faqDatabase = this.buildFAQDatabase();
+    this.loadConversationHistory(); // Load from localStorage
     this.init();
   }
 
@@ -238,6 +239,32 @@ class ChatbotWidget {
       'تسليم': 'لطلب تسليم، اتصل بنا: 01101267185\n\nأو قم بزيارة موقعنا: yas-eg.com',
       'استلام': 'للاستلام، اتصل بنا: 01101267185\n\nأو قم بزيارة موقعنا: yas-eg.com'
     };
+  }
+
+  loadConversationHistory() {
+    try {
+      const saved = localStorage.getItem('chatbot_conversation_history');
+      if (saved) {
+        this.conversationHistory = JSON.parse(saved);
+        console.log('Loaded conversation history:', this.conversationHistory.length, 'messages');
+      }
+    } catch (error) {
+      console.error('Error loading conversation history:', error);
+    }
+  }
+
+  saveConversationHistory() {
+    try {
+      localStorage.setItem('chatbot_conversation_history', JSON.stringify(this.conversationHistory));
+    } catch (error) {
+      console.error('Error saving conversation history:', error);
+    }
+  }
+
+  clearConversationHistory() {
+    this.conversationHistory = [];
+    localStorage.removeItem('chatbot_conversation_history');
+    console.log('Conversation history cleared');
   }
 
   init() {
@@ -533,10 +560,13 @@ class ChatbotWidget {
       this.conversationHistory.push({ role: 'user', content: message });
       this.conversationHistory.push({ role: 'assistant', content: response });
       
-      // Keep only last 10 messages
-      if (this.conversationHistory.length > 10) {
-        this.conversationHistory = this.conversationHistory.slice(-10);
+      // Keep only last 20 messages for better memory
+      if (this.conversationHistory.length > 20) {
+        this.conversationHistory = this.conversationHistory.slice(-20);
       }
+
+      // Save to localStorage
+      this.saveConversationHistory();
     } catch (error) {
       console.error('Groq API error, falling back to local FAQ:', error);
       
@@ -550,10 +580,13 @@ class ChatbotWidget {
       this.conversationHistory.push({ role: 'user', content: message });
       this.conversationHistory.push({ role: 'assistant', content: response });
       
-      // Keep only last 10 messages
-      if (this.conversationHistory.length > 10) {
-        this.conversationHistory = this.conversationHistory.slice(-10);
+      // Keep only last 20 messages
+      if (this.conversationHistory.length > 20) {
+        this.conversationHistory = this.conversationHistory.slice(-20);
       }
+
+      // Save to localStorage
+      this.saveConversationHistory();
     }
   }
 
