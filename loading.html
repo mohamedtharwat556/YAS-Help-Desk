@@ -621,7 +621,7 @@
     // Message display
     const speechBubble = document.getElementById('speech-bubble');
     const continueBtn = document.getElementById('continue-btn');
-    const skipBtn = document('skip-btn');
+    const skipBtn = document.getElementById('skip-btn');
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
     const muteBtn = document.getElementById('mute-btn');
@@ -670,7 +670,9 @@
     }
 
     function startWelcomeSequence() {
-      loadingText.textContent = '';
+      if (loadingText) {
+        loadingText.textContent = '';
+      }
       
       // Robot is already visible, start speech immediately
       setTimeout(() => {
@@ -679,6 +681,24 @@
         });
       }, 500);
     }
+
+    // Mark robot as loaded immediately - it's already visible
+    setTimeout(() => {
+      isRobotLoaded = true;
+      if (loadingText) {
+        loadingText.textContent = 'جاري التحميل...';
+      }
+    }, 500);
+
+    // Wait for robot to be fully visible before starting speech
+    setTimeout(() => {
+      if (isRobotLoaded) {
+        if (loadingText) {
+          loadingText.textContent = '';
+        }
+        startWelcomeSequence();
+      }
+    }, 2500);
 
     // Continue button
     continueBtn.addEventListener('click', () => {
