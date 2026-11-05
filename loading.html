@@ -634,9 +634,9 @@
       
       function type() {
         if (index < text.length) {
-          element.textContent += text.charAt(index);
+          element.textContent = text.substring(0, index + 1);
           index++;
-          setTimeout(type, 50);
+          setTimeout(type, 60);
         } else if (callback) {
           callback();
         }
@@ -660,11 +660,14 @@
       setTimeout(() => {
         speechBubble.classList.remove('hide');
         typeText(speechBubble, messages[index], () => {
-          speak(messages[index], () => {
-            setTimeout(() => {
-              showMessage(index + 1, callback);
-            }, 800);
-          });
+          // Start speaking after typing is complete
+          setTimeout(() => {
+            speak(messages[index], () => {
+              setTimeout(() => {
+                showMessage(index + 1, callback);
+              }, 1000);
+            });
+          }, 300);
         });
       }, 300);
     }
