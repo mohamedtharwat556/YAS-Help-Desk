@@ -345,6 +345,11 @@
     
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.autoUpdate = true;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
     container.appendChild(renderer.domElement);
 
     // Enhanced Lighting with dynamic effects
@@ -354,6 +359,10 @@
     const directionalLight = new THREE.DirectionalLight(0x1a56db, 1.5);
     directionalLight.position.set(5, 5, 5);
     directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.camera.near = 0.5;
+    directionalLight.shadow.camera.far = 50;
     scene.add(directionalLight);
 
     const pointLight = new THREE.PointLight(0x3b82f6, 2, 100);
@@ -599,6 +608,14 @@
     // Add robot to scene
     scene.add(robot);
 
+    // Enable shadows on body parts
+    head.castShadow = true;
+    body.castShadow = true;
+    leftArm.castShadow = true;
+    rightArm.castShadow = true;
+    leftLeg.castShadow = true;
+    rightLeg.castShadow = true;
+
     // Store references for animation
     robot.userData = {
       leftShoulder,
@@ -659,6 +676,7 @@
 
     // Enhanced mouse interaction - click on robot
     let isRobotClicked = false;
+    let eyeClicked = false;
     renderer.domElement.addEventListener('click', (event) => {
       const mouse = new THREE.Vector2();
       mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -669,8 +687,20 @@
       
       const intersects = raycaster.intersectObjects(robot.children, true);
       if (intersects.length > 0) {
-        isRobotClicked = true;
-        setTimeout(() => isRobotClicked = false, 500);
+        const clickedObj = intersects[0].object;
+        if (clickedObj === leftEye || clickedObj === rightEye) {
+          eyeClicked = true;
+          leftEyeGlow.material.emissiveIntensity = 2;
+          rightEyeGlow.material.emissiveIntensity = 2;
+          setTimeout(() => {
+            eyeClicked = false;
+            leftEyeGlow.material.emissiveIntensity = 0.6;
+            rightEyeGlow.material.emissiveIntensity = 0.6;
+          }, 300);
+        } else {
+          isRobotClicked = true;
+          setTimeout(() => isRobotClicked = false, 500);
+        }
       }
     });
     let mouseX = 0;
@@ -766,10 +796,19 @@
       mouseLight.position.y = mouseY * 10;
       mouseLight.position.z = 5;
 
-      // Enhanced particles animation
+      // Enhanced particles animation with wave effect
       particles.rotation.y += 0.0005;
       particles.rotation.x += 0.00025;
       particles.position.y = Math.sin(time * 0.001) * 0.8;
+      
+      // Wave motion for particles
+      const positions = particles.geometry.attributes.position.array;
+      for (let i = 0; i < particlesCount; i++) {
+        const i3 = i * 3;
+        positions[i3 + 1] += Math.sin(time * 0.002 + i * 0.01) * 0.002;
+        positions[i3 + 2] += Math.cos(time * 0.002 + i * 0.01) * 0.002;
+      }
+      particles.geometry.attributes.position.needsUpdate = true;
 
       // Eye glow pulsing - more dynamic
       const glowIntensity = 0.5 + Math.sin(time * 0.005) * 0.4;
@@ -880,11 +919,19 @@
 
     animate();
 
-    // Resize handler
+    // Resize handler with mobile optimization
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
+      
+      // Adjust quality based on device
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      } else {
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      }
     });
 
     // Calculate speech bubble position near robot's mouth
