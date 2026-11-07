@@ -609,8 +609,8 @@
     scene.add(robot);
 
     // Create simple environment map using cube camera
-    const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, 256);
-    const cubeCamera = new THREE.CubeCamera(0.1, 1, 256);
+    const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256);
+    const cubeCamera = new THREE.CubeCamera(0.1, 1, cubeRenderTarget);
     scene.add(cubeCamera);
     
     // Apply environment map to materials
