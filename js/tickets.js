@@ -202,7 +202,8 @@ const TicketForm = {
 
     if (step === 2) {
       const deviceType = document.getElementById('device-type-hidden');
-      const brand      = document.getElementById('device-brand');
+      const brandSelect = document.getElementById('device-brand');
+      const brandCustom = document.getElementById('device-brand-custom');
       const model      = document.getElementById('device-model');
       const serial     = document.getElementById('device-serial');
       const purchase   = document.getElementById('device-purchase');
@@ -213,9 +214,21 @@ const TicketForm = {
         valid = false;
       }
 
-      // Brand validation
-      if (!brand?.value || brand.value === '' || brand.value === 'اختر الماركة') {
-        this.markError(brand, 'device-brand-error', 'الماركة مطلوبة');
+      // Brand validation - check both select and custom input
+      let brandValue = '';
+      let brandElement = null;
+      if (brandSelect && brandSelect.style.display !== 'none') {
+        brandValue = brandSelect.value;
+        brandElement = brandSelect;
+      } else if (brandCustom && brandCustom.style.display !== 'none') {
+        brandValue = brandCustom.value.trim();
+        brandElement = brandCustom;
+      }
+
+      if (!brandValue || brandValue === '' || brandValue === 'اختر الماركة') {
+        if (brandElement) {
+          this.markError(brandElement, 'device-brand-error', 'الماركة مطلوبة');
+        }
         valid = false;
       }
 
@@ -296,9 +309,20 @@ const TicketForm = {
 
     if (step === 2) {
       const serialStatus = document.getElementById('serial-status')?.value || 'available';
+
+      // Get brand value from select or custom input
+      let brandValue = '';
+      const brandSelect = document.getElementById('device-brand');
+      const brandCustom = document.getElementById('device-brand-custom');
+      if (brandSelect && brandSelect.style.display !== 'none') {
+        brandValue = brandSelect.value;
+      } else if (brandCustom && brandCustom.style.display !== 'none') {
+        brandValue = brandCustom.value.trim();
+      }
+
       this.data.device = {
         type:         document.getElementById('device-type-hidden')?.value || '',
-        brand:        document.getElementById('device-brand')?.value.trim() || '',
+        brand:        brandValue,
         model:        document.getElementById('device-model')?.value.trim() || '',
         serial_status: serialStatus,
         serial_number: serialStatus === 'available' ? (document.getElementById('device-serial')?.value.trim() || '') : '',
