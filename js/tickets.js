@@ -214,7 +214,7 @@ const TicketForm = {
       }
 
       // Brand validation
-      if (!brand?.value || brand.value === '') {
+      if (!brand?.value || brand.value === '' || brand.value === 'اختر الماركة') {
         this.markError(brand, 'device-brand-error', 'الماركة مطلوبة');
         valid = false;
       }
