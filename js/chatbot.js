@@ -8,6 +8,91 @@ class ChatbotWidget {
     this.init();
   }
 
+  // Get all problem suggestions
+  getProblemSuggestions() {
+    return [
+      'الجهاز لا يعمل',
+      'الجهاز لا يشحن',
+      'الجهاز يسخن',
+      'الشاشة لا تعمل',
+      'الشاشة سوداء',
+      'صوت غريب',
+      'لا يتصل بالإنترنت',
+      'البطارية تستنزف',
+      'الجهاز بطيء',
+      'الواي فاي لا يعمل',
+      'لا يوجد صوت',
+      'الكاميرا لا تعمل',
+      'الميكروفون لا يعمل',
+      'التطبيق يغلق',
+      'لا يمكن التنزيل',
+      'التخزين ممتلئ',
+      'تخطي الشاشة',
+      'الشاشة تومض',
+      'لوحة المفاتيح لا تعمل',
+      'الماوس لا يعمل',
+      'الطابعة لا تعمل',
+      'الجهاز لا يشتغل',
+      'لا يشتغل',
+      'تجمد',
+      'بلوتوث',
+      'تطبيق',
+      'تنزيل',
+      'تخزين',
+      'صوت منخفض',
+      'كاميرا',
+      'لا يمكن التسجيل'
+    ];
+  }
+
+  // Show problem suggestions
+  showProblemSuggestions() {
+    const suggestions = this.getProblemSuggestions();
+    const chatMessages = document.querySelector('.chatbot-messages');
+    
+    const suggestionsDiv = document.createElement('div');
+    suggestionsDiv.className = 'problem-suggestions';
+    suggestionsDiv.innerHTML = `
+      <div class="suggestions-header">🔧 اختر مشكلتك:</div>
+      <div class="suggestions-list">
+        ${suggestions.map(s => `
+          <button class="suggestion-btn" data-suggestion="${s}">
+            ${s}
+          </button>
+        `).join('')}
+      </div>
+    `;
+    
+    chatMessages.appendChild(suggestionsDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Add click handlers
+    suggestionsDiv.querySelectorAll('.suggestion-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const suggestion = btn.dataset.suggestion;
+        suggestionsDiv.remove();
+        this.handleUserMessage(suggestion);
+      });
+    });
+  }
+
+  // Check if user is typing a problem
+  checkForProblemInput(message) {
+    const problemPhrases = [
+      'عندي مشكلة في',
+      'مشكلة في',
+      'مشكلة بـ',
+      'عندي مشكلة بـ',
+      'عايز اعرف عن',
+      'اشكو من',
+      'عندي مشكلة مع',
+      'المشكلة في',
+      'في مشكلة'
+    ];
+    
+    return problemPhrases.some(phrase => message.includes(phrase));
+  }
+
   buildFAQDatabase() {
     return {
       // General Questions
