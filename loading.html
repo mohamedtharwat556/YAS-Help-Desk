@@ -347,59 +347,80 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Enhanced Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // Enhanced Lighting with dynamic effects
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0x1a56db, 1.2);
+    const directionalLight = new THREE.DirectionalLight(0x1a56db, 1.5);
     directionalLight.position.set(5, 5, 5);
+    directionalLight.castShadow = true;
     scene.add(directionalLight);
 
-    const pointLight = new THREE.PointLight(0x3b82f6, 1.5, 100);
+    const pointLight = new THREE.PointLight(0x3b82f6, 2, 100);
     pointLight.position.set(0, 5, 0);
     scene.add(pointLight);
 
-    const rimLight = new THREE.DirectionalLight(0x60a5fa, 0.8);
+    const rimLight = new THREE.DirectionalLight(0x60a5fa, 1.0);
     rimLight.position.set(-5, 0, -5);
     scene.add(rimLight);
 
-    // Add fill light
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+    const fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
     fillLight.position.set(0, 2, 5);
     scene.add(fillLight);
+
+    // Dynamic mouse-following light
+    const mouseLight = new THREE.PointLight(0x3b82f6, 1.5, 50);
+    scene.add(mouseLight);
 
     // Robot Group
     const robot = new THREE.Group();
 
-    // Materials
+    // Enhanced Materials
     const bodyMaterial = new THREE.MeshStandardMaterial({ 
       color: 0xffffff,
-      metalness: 0.4,
-      roughness: 0.3
+      metalness: 0.7,
+      roughness: 0.2,
+      envMapIntensity: 1
     });
 
     const accentMaterial = new THREE.MeshStandardMaterial({ 
       color: 0x1a56db,
-      metalness: 0.6,
-      roughness: 0.2
+      metalness: 0.8,
+      roughness: 0.1,
+      envMapIntensity: 1.2
     });
 
     const glowMaterial = new THREE.MeshStandardMaterial({ 
       color: 0x3b82f6,
       emissive: 0x3b82f6,
-      emissiveIntensity: 0.6,
+      emissiveIntensity: 0.8,
       metalness: 0.9,
-      roughness: 0.1
+      roughness: 0.05
     });
 
-    // Head
-    const headGeometry = new THREE.SphereGeometry(1.2, 32, 32);
+    const screenMaterial = new THREE.MeshStandardMaterial({
+      color: 0x000000,
+      emissive: 0x00ff00,
+      emissiveIntensity: 0.5,
+      metalness: 0.8,
+      roughness: 0.2
+    });
+
+    // Head with more detail
+    const headGeometry = new THREE.SphereGeometry(1.2, 64, 64);
     const head = new THREE.Mesh(headGeometry, bodyMaterial);
     head.position.y = 2.5;
     robot.add(head);
 
-    // Eyes (repositioned for better eye contact)
-    const eyeGeometry = new THREE.SphereGeometry(0.25, 16, 16);
+    // Nose
+    const noseGeometry = new THREE.ConeGeometry(0.1, 0.2, 16);
+    const nose = new THREE.Mesh(noseGeometry, bodyMaterial);
+    nose.position.set(0, 2.4, 1.15);
+    nose.rotation.x = Math.PI / 2;
+    robot.add(nose);
+
+    // Eyes (more detailed)
+    const eyeGeometry = new THREE.SphereGeometry(0.25, 32, 32);
     const leftEye = new THREE.Mesh(eyeGeometry, accentMaterial);
     leftEye.position.set(-0.4, 2.6, 0.95);
     robot.add(leftEye);
@@ -408,111 +429,213 @@
     rightEye.position.set(0.4, 2.6, 0.95);
     robot.add(rightEye);
 
-    // Eye glow
-    const eyeGlowGeometry = new THREE.SphereGeometry(0.3, 16, 16);
+    // Eye glow (stronger)
+    const eyeGlowGeometry = new THREE.SphereGeometry(0.3, 32, 32);
     const leftEyeGlow = new THREE.Mesh(eyeGlowGeometry, glowMaterial);
     leftEyeGlow.position.set(-0.4, 2.6, 0.9);
-    leftEyeGlow.scale.set(1.2, 1.2, 0.5);
+    leftEyeGlow.scale.set(1.3, 1.3, 0.4);
     robot.add(leftEyeGlow);
 
     const rightEyeGlow = new THREE.Mesh(eyeGlowGeometry, glowMaterial);
     rightEyeGlow.position.set(0.4, 2.6, 0.9);
-    rightEyeGlow.scale.set(1.2, 1.2, 0.5);
+    rightEyeGlow.scale.set(1.3, 1.3, 0.4);
     robot.add(rightEyeGlow);
 
-    // Mouth (new - for realistic facial animation)
-    const mouthGeometry = new THREE.BoxGeometry(0.4, 0.1, 0.1);
+    // Mouth (enhanced)
+    const mouthGeometry = new THREE.BoxGeometry(0.5, 0.12, 0.12);
     const mouthMaterial = new THREE.MeshStandardMaterial({ 
       color: 0x1a56db,
-      metalness: 0.5,
-      roughness: 0.3
+      metalness: 0.6,
+      roughness: 0.2
     });
     const mouth = new THREE.Mesh(mouthGeometry, mouthMaterial);
     mouth.position.set(0, 2.2, 1.1);
     robot.add(mouth);
 
-    // Eyebrows (for expressions)
-    const eyebrowGeometry = new THREE.BoxGeometry(0.3, 0.05, 0.05);
+    // Eyebrows (more detailed)
+    const eyebrowGeometry = new THREE.BoxGeometry(0.35, 0.06, 0.06);
     const eyebrowMaterial = new THREE.MeshStandardMaterial({ 
       color: 0x1a56db,
-      metalness: 0.5,
-      roughness: 0.3
+      metalness: 0.6,
+      roughness: 0.2
     });
     
     const leftEyebrow = new THREE.Mesh(eyebrowGeometry, eyebrowMaterial);
-    leftEyebrow.position.set(-0.4, 2.85, 1.1);
+    leftEyebrow.position.set(-0.4, 2.85, 1.15);
     robot.add(leftEyebrow);
 
     const rightEyebrow = new THREE.Mesh(eyebrowGeometry, eyebrowMaterial);
-    rightEyebrow.position.set(0.4, 2.85, 1.1);
+    rightEyebrow.position.set(0.4, 2.85, 1.15);
     robot.add(rightEyebrow);
 
-    // Body
-    const bodyGeometry = new THREE.CylinderGeometry(1, 1.2, 2, 32);
+    // Neck
+    const neckGeometry = new THREE.CylinderGeometry(0.6, 0.8, 0.4, 32);
+    const neck = new THREE.Mesh(neckGeometry, bodyMaterial);
+    neck.position.y = 1.8;
+    robot.add(neck);
+
+    // Body with more detail
+    const bodyGeometry = new THREE.CylinderGeometry(1, 1.2, 2.2, 64);
     const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
     body.position.y = 0.5;
     robot.add(body);
 
-    // Chest plate
-    const chestGeometry = new THREE.BoxGeometry(1.2, 0.8, 0.3);
+    // Chest screen (new)
+    const chestScreenGeometry = new THREE.BoxGeometry(0.8, 0.5, 0.1);
+    const chestScreen = new THREE.Mesh(chestScreenGeometry, screenMaterial);
+    chestScreen.position.set(0, 0.9, 0.85);
+    robot.add(chestScreen);
+
+    // Chest plate (below screen)
+    const chestGeometry = new THREE.BoxGeometry(1.2, 0.3, 0.25);
     const chest = new THREE.Mesh(chestGeometry, accentMaterial);
-    chest.position.set(0, 0.8, 0.8);
+    chest.position.set(0, 0.6, 0.85);
     robot.add(chest);
 
-    // Arms
-    const armGeometry = new THREE.CylinderGeometry(0.2, 0.25, 1.5, 16);
-    const leftArm = new THREE.Mesh(armGeometry, bodyMaterial);
-    leftArm.position.set(-1.5, 0.5, 0);
-    leftArm.rotation.z = 0.3;
-    robot.add(leftArm);
+    // Buttons on chest (new)
+    const buttonGeometry = new THREE.CircleGeometry(0.1, 16);
+    const button1 = new THREE.Mesh(buttonGeometry, glowMaterial);
+    button1.position.set(-0.3, 0.6, 0.9);
+    button1.rotation.y = Math.PI / 2;
+    robot.add(button1);
 
-    const rightArm = new THREE.Mesh(armGeometry, bodyMaterial);
-    rightArm.position.set(1.5, 0.5, 0);
-    rightArm.rotation.z = -0.3;
-    robot.add(rightArm);
+    const button2 = new THREE.Mesh(buttonGeometry, glowMaterial);
+    button2.position.set(0.3, 0.6, 0.9);
+    button2.rotation.y = Math.PI / 2;
+    robot.add(button2);
 
-    // Hands
-    const handGeometry = new THREE.SphereGeometry(0.3, 16, 16);
-    const leftHand = new THREE.Mesh(handGeometry, bodyMaterial);
-    leftHand.position.set(-1.8, -0.4, 0);
-    robot.add(leftHand);
+    // Arms with joints (new)
+    const leftShoulder = new THREE.Group();
+    leftShoulder.position.set(-1.4, 1.2, 0);
+    robot.add(leftShoulder);
 
-    const rightHand = new THREE.Mesh(handGeometry, bodyMaterial);
-    rightHand.position.set(1.8, -0.4, 0);
-    robot.add(rightHand);
+    const leftArmGeometry = new THREE.CylinderGeometry(0.22, 0.28, 1.3, 32);
+    const leftArm = new THREE.Mesh(leftArmGeometry, bodyMaterial);
+    leftArm.position.y = -0.5;
+    leftShoulder.add(leftArm);
 
-    // Antenna
-    const antennaGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.8, 8);
+    const leftElbow = new THREE.Group();
+    leftElbow.position.y = -0.65;
+    leftArm.add(leftElbow);
+
+    const leftForearmGeometry = new THREE.CylinderGeometry(0.18, 0.22, 1.0, 32);
+    const leftForearm = new THREE.Mesh(leftForearmGeometry, bodyMaterial);
+    leftForearm.position.y = -0.5;
+    leftElbow.add(leftForearm);
+
+    const leftHandGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+    const leftHand = new THREE.Mesh(leftHandGeometry, bodyMaterial);
+    leftHand.position.y = -0.65;
+    leftForearm.add(leftHand);
+
+    const rightShoulder = new THREE.Group();
+    rightShoulder.position.set(1.4, 1.2, 0);
+    robot.add(rightShoulder);
+
+    const rightArmGeometry = new THREE.CylinderGeometry(0.22, 0.28, 1.3, 32);
+    const rightArm = new THREE.Mesh(rightArmGeometry, bodyMaterial);
+    rightArm.position.y = -0.5;
+    rightShoulder.add(rightArm);
+
+    const rightElbow = new THREE.Group();
+    rightElbow.position.y = -0.65;
+    rightArm.add(rightElbow);
+
+    const rightForearmGeometry = new THREE.CylinderGeometry(0.18, 0.22, 1.0, 32);
+    const rightForearm = new THREE.Mesh(rightForearmGeometry, bodyMaterial);
+    rightForearm.position.y = -0.5;
+    rightElbow.add(rightForearm);
+
+    const rightHandGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+    const rightHand = new THREE.Mesh(rightHandGeometry, bodyMaterial);
+    rightHand.position.y = -0.65;
+    rightForearm.add(rightHand);
+
+    // Legs with joints (new)
+    const leftHip = new THREE.Group();
+    leftHip.position.set(-0.4, -0.6, 0);
+    robot.add(leftHip);
+
+    const leftLegGeometry = new THREE.CylinderGeometry(0.22, 0.28, 1.2, 32);
+    const leftLeg = new THREE.Mesh(leftLegGeometry, bodyMaterial);
+    leftLeg.position.y = -0.6;
+    leftHip.add(leftLeg);
+
+    const leftFootGeometry = new THREE.BoxGeometry(0.3, 0.15, 0.4);
+    const leftFoot = new THREE.Mesh(leftFootGeometry, accentMaterial);
+    leftFoot.position.set(0, -0.7, 0.1);
+    leftLeg.add(leftFoot);
+
+    const rightHip = new THREE.Group();
+    rightHip.position.set(0.4, -0.6, 0);
+    robot.add(rightHip);
+
+    const rightLegGeometry = new THREE.CylinderGeometry(0.22, 0.28, 1.2, 32);
+    const rightLeg = new THREE.Mesh(rightLegGeometry, bodyMaterial);
+    rightLeg.position.y = -0.6;
+    rightHip.add(rightLeg);
+
+    const rightFootGeometry = new THREE.BoxGeometry(0.3, 0.15, 0.4);
+    const rightFoot = new THREE.Mesh(rightFootGeometry, accentMaterial);
+    rightFoot.position.set(0, -0.7, 0.1);
+    rightLeg.add(rightFoot);
+
+    // Antenna with more detail
+    const antennaBaseGeometry = new THREE.CylinderGeometry(0.08, 0.1, 0.2, 16);
+    const antennaBase = new THREE.Mesh(antennaBaseGeometry, accentMaterial);
+    antennaBase.position.set(0, 3.6, 0);
+    robot.add(antennaBase);
+
+    const antennaGeometry = new THREE.CylinderGeometry(0.05, 0.05, 0.7, 16);
     const antenna = new THREE.Mesh(antennaGeometry, accentMaterial);
-    antenna.position.set(0, 3.7, 0);
+    antenna.position.set(0, 3.85, 0);
     robot.add(antenna);
 
-    const antennaTipGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+    const antennaTipGeometry = new THREE.SphereGeometry(0.12, 32, 32);
     const antennaTip = new THREE.Mesh(antennaTipGeometry, glowMaterial);
-    antennaTip.position.set(0, 4.1, 0);
+    antennaTip.position.set(0, 4.15, 0);
     robot.add(antennaTip);
 
     // Add robot to scene
     scene.add(robot);
 
+    // Store references for animation
+    robot.userData = {
+      leftShoulder,
+      rightShoulder,
+      leftElbow,
+      rightElbow,
+      leftHip,
+      rightHip,
+      mouth,
+      leftEyebrow,
+      rightEyebrow,
+      antennaTip,
+      chestScreen
+    };
+
     // Camera position
     camera.position.set(0, 1.5, 6);
     camera.lookAt(0, 1.5, 0);
 
-    // Enhanced Particles
+    // Enhanced Particles with multiple shapes
     const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 300;
+    const particlesCount = 500;
     const posArray = new Float32Array(particlesCount * 3);
     const colorArray = new Float32Array(particlesCount * 3);
+    const sizeArray = new Float32Array(particlesCount);
+    const shapeArray = new Float32Array(particlesCount); // 0 = circle, 1 = star, 2 = heart
 
-    for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 20;
-    }
-
-    // Add colors to particles
     for (let i = 0; i < particlesCount; i++) {
+      posArray[i * 3] = (Math.random() - 0.5) * 25;
+      posArray[i * 3 + 1] = (Math.random() - 0.5) * 25;
+      posArray[i * 3 + 2] = (Math.random() - 0.5) * 25;
+      
+      sizeArray[i] = Math.random() * 0.08 + 0.02;
+      shapeArray[i] = Math.floor(Math.random() * 3);
+      
       const color = new THREE.Color();
-      color.setHSL(0.6 + Math.random() * 0.1, 0.8, 0.6);
+      color.setHSL(0.55 + Math.random() * 0.15, 0.9, 0.7);
       colorArray[i * 3] = color.r;
       colorArray[i * 3 + 1] = color.g;
       colorArray[i * 3 + 2] = color.b;
@@ -520,18 +643,36 @@
 
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+    particlesGeometry.setAttribute('size', new THREE.BufferAttribute(sizeArray, 1));
+    particlesGeometry.setAttribute('shape', new THREE.BufferAttribute(shapeArray, 1));
     
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.04,
+      size: 0.05,
       vertexColors: true,
       transparent: true,
-      opacity: 0.6,
-      blending: THREE.AdditiveBlending
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
+      sizeAttenuation: true
     });
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     scene.add(particles);
 
-    // Animation variables
+    // Enhanced mouse interaction - click on robot
+    let isRobotClicked = false;
+    renderer.domElement.addEventListener('click', (event) => {
+      const mouse = new THREE.Vector2();
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      
+      const raycaster = new THREE.Raycaster();
+      raycaster.setFromCamera(mouse, camera);
+      
+      const intersects = raycaster.intersectObjects(robot.children, true);
+      if (intersects.length > 0) {
+        isRobotClicked = true;
+        setTimeout(() => isRobotClicked = false, 500);
+      }
+    });
     let mouseX = 0;
     let mouseY = 0;
     let targetRotationX = 0;
@@ -605,61 +746,80 @@
       }
     });
 
-    // Animation loop
+    // Animation loop with enhanced movements
     function animate() {
       requestAnimationFrame(animate);
 
-      // Robot floating
-      robot.position.y = Math.sin(Date.now() * 0.001) * 0.1;
+      const time = Date.now() * 0.001;
 
-      // Enhanced robot rotation based on mouse - stronger interaction
+      // Robot floating
+      robot.position.y = Math.sin(time) * 0.15;
+
+      // Enhanced robot rotation based on mouse
       targetRotationY = mouseX * 0.5;
       targetRotationX = mouseY * 0.3;
       robot.rotation.y += (targetRotationY - robot.rotation.y) * 0.08;
       robot.rotation.x += (targetRotationX - robot.rotation.x) * 0.08;
 
-      // Eyes follow mouse more closely
-      leftEye.rotation.z = mouseX * 0.2;
-      rightEye.rotation.z = mouseX * 0.2;
-      leftEye.rotation.x = -mouseY * 0.1;
-      rightEye.rotation.x = -mouseY * 0.1;
+      // Mouse-following light
+      mouseLight.position.x = mouseX * 10;
+      mouseLight.position.y = mouseY * 10;
+      mouseLight.position.z = 5;
 
       // Enhanced particles animation
-      particles.rotation.y += 0.0003;
-      particles.rotation.x += 0.00015;
-      particles.position.y = Math.sin(Date.now() * 0.0005) * 0.5;
+      particles.rotation.y += 0.0005;
+      particles.rotation.x += 0.00025;
+      particles.position.y = Math.sin(time * 0.001) * 0.8;
 
       // Eye glow pulsing - more dynamic
-      const glowIntensity = 0.4 + Math.sin(Date.now() * 0.004) * 0.3;
+      const glowIntensity = 0.5 + Math.sin(time * 0.005) * 0.4;
       leftEyeGlow.material.emissiveIntensity = glowIntensity;
       rightEyeGlow.material.emissiveIntensity = glowIntensity;
 
-      // Antenna tip pulsing
-      antennaTip.material.emissiveIntensity = 0.6 + Math.sin(Date.now() * 0.006) * 0.4;
+      // Antenna tip pulsing with color change
+      antennaTip.material.emissiveIntensity = 0.7 + Math.sin(time * 0.008) * 0.5;
+      const antennaColor = new THREE.Color().setHSL(0.6 + Math.sin(time * 0.002) * 0.1, 1, 0.8);
+      antennaTip.material.emissive = antennaColor;
 
-      // Enhanced talking animation with realistic mouth movement
+      // Chest screen animation
+      chestScreen.material.emissiveIntensity = 0.3 + Math.sin(time * 0.01) * 0.3;
+
+      // Button pulsing
+      button1.material.emissiveIntensity = 0.5 + Math.sin(time * 0.012) * 0.3;
+      button2.material.emissiveIntensity = 0.5 + Math.cos(time * 0.012) * 0.3;
+
+      // Enhanced talking animation with realistic movements
       if (isTalking) {
         // Mouth moves up and down like real speech
-        mouth.scale.y = 1 + Math.sin(Date.now() * 0.035) * 0.5;
-        mouth.scale.x = 1 + Math.sin(Date.now() * 0.04) * 0.2;
+        mouth.scale.y = 1 + Math.sin(time * 0.04) * 0.6;
+        mouth.scale.x = 1 + Math.sin(time * 0.045) * 0.25;
         
         // Chest breathing
-        chest.scale.y = 1 + Math.sin(Date.now() * 0.03) * 0.15;
-        chest.scale.x = 1 + Math.sin(Date.now() * 0.025) * 0.05;
+        chest.scale.y = 1 + Math.sin(time * 0.035) * 0.18;
+        chest.scale.x = 1 + Math.sin(time * 0.03) * 0.08;
         
         // Head movement during speech
-        head.rotation.y = Math.sin(Date.now() * 0.015) * 0.1;
-        head.rotation.x = Math.sin(Date.now() * 0.01) * 0.06;
+        head.rotation.y = Math.sin(time * 0.018) * 0.12;
+        head.rotation.x = Math.sin(time * 0.012) * 0.08;
         
         // Eyebrows for interested expression
-        leftEyebrow.rotation.z = 0.1;
-        rightEyebrow.rotation.z = -0.1;
-        leftEyebrow.position.y = 2.85 + Math.sin(Date.now() * 0.02) * 0.05;
-        rightEyebrow.position.y = 2.85 + Math.sin(Date.now() * 0.02) * 0.05;
-        
+        leftEyebrow.rotation.z = 0.15;
+        rightEyebrow.rotation.z = -0.15;
+        leftEyebrow.position.y = 2.85 + Math.sin(time * 0.025) * 0.06;
+        rightEyebrow.position.y = 2.85 + Math.sin(time * 0.025) * 0.06;
+
+        // Arm waving gesture
+        leftShoulder.rotation.z = Math.sin(time * 0.02) * 0.3;
+        rightShoulder.rotation.z = -Math.sin(time * 0.02) * 0.3;
+        leftElbow.rotation.z = Math.sin(time * 0.025) * 0.2;
+        rightElbow.rotation.z = -Math.sin(time * 0.025) * 0.2;
+
         // Hands micro-movement
-        leftHand.position.y = -0.4 + Math.sin(Date.now() * 0.025) * 0.05;
-        rightHand.position.y = -0.4 + Math.sin(Date.now() * 0.025) * 0.05;
+        leftHand.position.y = -0.65 + Math.sin(time * 0.03) * 0.08;
+        rightHand.position.y = -0.65 + Math.cos(time * 0.03) * 0.08;
+
+        // Subtle body sway
+        robot.rotation.z = Math.sin(time * 0.01) * 0.05;
       } else {
         // Reset to neutral
         mouth.scale.y = 1;
@@ -672,28 +832,47 @@
         rightEyebrow.rotation.z = 0;
         leftEyebrow.position.y = 2.85;
         rightEyebrow.position.y = 2.85;
-        leftHand.position.y = -0.4;
-        rightHand.position.y = -0.4;
+        leftShoulder.rotation.z = 0;
+        rightShoulder.rotation.z = 0;
+        leftElbow.rotation.z = 0;
+        rightElbow.rotation.z = 0;
+        leftHand.position.y = -0.65;
+        rightHand.position.y = -0.65;
+        robot.rotation.z = 0;
       }
 
       // Facial expressions based on context
       if (facialExpression === 'happy') {
-        leftEyebrow.rotation.z = -0.2;
-        rightEyebrow.rotation.z = 0.2;
+        leftEyebrow.rotation.z = -0.25;
+        rightEyebrow.rotation.z = 0.25;
         leftEyebrow.position.y = 2.9;
         rightEyebrow.position.y = 2.9;
+        // Slight smile effect
+        mouth.position.y = 2.18;
       } else if (facialExpression === 'surprised') {
         leftEyebrow.position.y = 2.95;
         rightEyebrow.position.y = 2.95;
-        leftEye.scale.set(1.2, 1.2, 1.2);
-        rightEye.scale.set(1.2, 1.2, 1.2);
+        leftEye.scale.set(1.3, 1.3, 1.3);
+        rightEye.scale.set(1.3, 1.3, 1.3);
+        mouth.scale.y = 1.3;
       } else if (facialExpression === 'interested') {
-        leftEyebrow.rotation.z = 0.15;
-        rightEyebrow.rotation.z = -0.15;
+        leftEyebrow.rotation.z = 0.2;
+        rightEyebrow.rotation.z = -0.2;
       } else {
         // Neutral
         leftEye.scale.set(1, 1, 1);
         rightEye.scale.set(1, 1, 1);
+        mouth.position.y = 2.2;
+      }
+
+      // Idle animations when not talking
+      if (!isTalking) {
+        // Subtle breathing
+        chest.scale.y = 1 + Math.sin(time * 0.008) * 0.05;
+        
+        // Slight arm movement
+        leftShoulder.rotation.z = Math.sin(time * 0.005) * 0.05;
+        rightShoulder.rotation.z = -Math.sin(time * 0.005) * 0.05;
       }
 
       renderer.render(scene, camera);
