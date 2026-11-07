@@ -384,26 +384,26 @@
     // Robot Group
     const robot = new THREE.Group();
 
-    // Enhanced Materials
+    // Enhanced Materials with improved roughness/metalness for texture-like appearance
     const bodyMaterial = new THREE.MeshStandardMaterial({ 
       color: 0xffffff,
-      metalness: 0.7,
-      roughness: 0.2,
-      envMapIntensity: 1
+      metalness: 0.85,
+      roughness: 0.15,
+      envMapIntensity: 1.2
     });
 
     const accentMaterial = new THREE.MeshStandardMaterial({ 
       color: 0x1a56db,
-      metalness: 0.8,
+      metalness: 0.9,
       roughness: 0.1,
-      envMapIntensity: 1.2
+      envMapIntensity: 1.5
     });
 
     const glowMaterial = new THREE.MeshStandardMaterial({ 
       color: 0x3b82f6,
       emissive: 0x3b82f6,
-      emissiveIntensity: 0.8,
-      metalness: 0.9,
+      emissiveIntensity: 0.9,
+      metalness: 0.95,
       roughness: 0.05
     });
 
@@ -415,9 +415,11 @@
       roughness: 0.2
     });
 
-    // Head with more detail
-    const headGeometry = new THREE.SphereGeometry(1.2, 64, 64);
-    const head = new THREE.Mesh(headGeometry, bodyMaterial);
+    // Head with more detail - LOD
+    const headGeometryHigh = new THREE.SphereGeometry(1.2, 64, 64);
+    const headGeometryMed = new THREE.SphereGeometry(1.2, 32, 32);
+    const headGeometryLow = new THREE.SphereGeometry(1.2, 16, 16);
+    const head = new THREE.Mesh(headGeometryHigh, bodyMaterial);
     head.position.y = 2.5;
     robot.add(head);
 
@@ -482,10 +484,10 @@
     const neck = new THREE.Mesh(neckGeometry, bodyMaterial);
     neck.position.y = 1.8;
     robot.add(neck);
-
-    // Body with more detail
-    const bodyGeometry = new THREE.CylinderGeometry(1, 1.2, 2.2, 64);
-    const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+    const bodyGeometryHigh = new THREE.CylinderGeometry(1, 1.2, 2.2, 64);
+    const bodyGeometryMed = new THREE.CylinderGeometry(1, 1.2, 2.2, 32);
+    const bodyGeometryLow = new THREE.CylinderGeometry(1, 1.2, 2.2, 16);
+    const body = new THREE.Mesh(bodyGeometryHigh, bodyMaterial);
     body.position.y = 0.5;
     robot.add(body);
 
@@ -794,6 +796,15 @@
       requestAnimationFrame(animate);
 
       const time = Date.now() * 0.001;
+
+      // LOD based on distance
+      const distance = camera.position.distanceTo(robot.position);
+      if (distance > 10) {
+        head.geometry.dispose();
+        head.geometry = new THREE.SphereGeometry(1.2, 16, 16);
+        body.geometry.dispose();
+        body.geometry = new THREE.CylinderGeometry(1, 1.2, 2.2, 16);
+      }
 
       // Update environment map every frame
       robot.visible = false;
