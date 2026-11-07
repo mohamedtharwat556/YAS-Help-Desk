@@ -711,46 +711,42 @@
     function getBestMaleVoice() {
       console.log('All available voices:', voices.map(v => v.name + ' (' + v.lang + ')'));
       
-      // Try Arabic male voices first
-      const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
-      const maleKeywords = ['male', 'naayf', 'mohamed', 'hany', 'maged', 'ahmed', 'karim', 'omar', 'adam', 'david', 'daniel', 'alex', 'hussein', 'ali', 'sayed', 'khaled', 'mahmoud', 'youssef', 'ibraheem'];
-      
-      for (const keyword of maleKeywords) {
-        const found = arabicVoices.find(voice => 
-          voice.name.toLowerCase().includes(keyword)
-        );
-        if (found) {
-          console.log('Selected Arabic male voice:', found.name);
-          return found;
-        }
+      // Priority 1: Microsoft David (male English, will speak Arabic with low pitch)
+      const davidVoice = voices.find(voice => voice.name.toLowerCase().includes('microsoft david'));
+      if (davidVoice) {
+        console.log('Selected Microsoft David:', davidVoice.name);
+        return davidVoice;
       }
 
-      // Try English male voices as fallback (will speak Arabic with English male voice)
-      const englishVoices = voices.filter(voice => voice.lang.includes('en'));
-      const englishMaleKeywords = ['male', 'david', 'daniel', 'mark', 'james', 'robert', 'thomas', 'alex', 'chris', 'google us english', 'microsoft david', 'microsoft mark'];
-      
-      for (const keyword of englishMaleKeywords) {
-        const found = englishVoices.find(voice => 
-          voice.name.toLowerCase().includes(keyword)
-        );
-        if (found) {
-          console.log('Selected English male voice for Arabic text:', found.name);
-          return found;
-        }
+      // Priority 2: Microsoft Mark (male English)
+      const markVoice = voices.find(voice => voice.name.toLowerCase().includes('microsoft mark'));
+      if (markVoice) {
+        console.log('Selected Microsoft Mark:', markVoice.name);
+        return markVoice;
       }
 
-      // Fallback to any non-female voice
-      const femaleKeywords = ['female', 'zira', 'hoda', 'fatima', 'amira', 'lara', 'nour', 'salma', 'samantha', 'victoria', 'jenny', 'karen', 'kate'];
-      const nonFemaleVoices = voices.filter(voice => 
-        !femaleKeywords.some(keyword => voice.name.toLowerCase().includes(keyword))
-      );
-      
-      if (nonFemaleVoices.length > 0) {
-        console.log('Selected non-female voice:', nonFemaleVoices[0].name);
-        return nonFemaleVoices[0];
+      // Priority 3: Google UK English Male
+      const googleMaleVoice = voices.find(voice => voice.name.toLowerCase().includes('google uk english male'));
+      if (googleMaleVoice) {
+        console.log('Selected Google UK English Male:', googleMaleVoice.name);
+        return googleMaleVoice;
       }
 
-      // Last fallback - use any voice but with very low pitch
+      // Priority 4: Google US English (neutral)
+      const googleUSVoice = voices.find(voice => voice.name.toLowerCase().includes('google us english'));
+      if (googleUSVoice) {
+        console.log('Selected Google US English:', googleUSVoice.name);
+        return googleUSVoice;
+      }
+
+      // Priority 5: Microsoft Hoda (Arabic female) - will be lowered to sound male
+      const hodaVoice = voices.find(voice => voice.name.toLowerCase().includes('microsoft hoda'));
+      if (hodaVoice) {
+        console.log('Selected Microsoft Hoda (Arabic with low pitch):', hodaVoice.name);
+        return hodaVoice;
+      }
+
+      // Last fallback
       if (voices.length > 0) {
         console.log('Selected fallback voice:', voices[0].name);
         return voices[0];
@@ -771,8 +767,8 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 0.75; // Slower for deeper voice
-      utterance.pitch = 0.4; // Very low pitch for deep male voice
+      utterance.rate = 0.7; // Slower for deeper voice
+      utterance.pitch = 0.3; // Extremely low pitch to make female voice sound male
       utterance.volume = 1;
 
       const selectedVoice = getBestMaleVoice();
