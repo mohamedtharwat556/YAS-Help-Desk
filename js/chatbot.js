@@ -1448,6 +1448,14 @@ class ChatbotWidget {
 
     if (!message) return;
 
+    // Check if user is typing a problem - show suggestions first
+    if (this.checkForProblemInput(message)) {
+      this.addMessage(message, 'user');
+      input.value = '';
+      this.showProblemSuggestions();
+      return;
+    }
+
     // Add user message
     this.addMessage(message, 'user');
     input.value = '';
