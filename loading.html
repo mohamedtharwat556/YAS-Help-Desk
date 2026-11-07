@@ -821,8 +821,8 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 0.7; // Slower for deeper voice
-      utterance.pitch = 0.3; // Extremely low pitch to make female voice sound male
+      utterance.rate = 0.9; // Normal speed
+      utterance.pitch = 1.0; // Normal pitch - audible
       utterance.volume = 1;
 
       const selectedVoice = getBestMaleVoice();
