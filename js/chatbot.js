@@ -6,53 +6,6 @@ class ChatbotWidget {
     this.faqDatabase = this.buildFAQDatabase();
     this.loadConversationHistory(); // Load from localStorage
     this.init();
-    this.initDarkMode(); // Initialize dark mode
-  }
-
-  // Initialize Dark Mode
-  initDarkMode() {
-    // Check for saved theme
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    }
-
-    // Create toggle button
-    const toggleBtn = document.createElement('button');
-    toggleBtn.innerHTML = '🌙';
-    toggleBtn.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: #1a56db;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 20px;
-      z-index: 9999;
-      box-shadow: 0 4px 12px rgba(26, 86, 219, 0.3);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    `;
-
-    toggleBtn.addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      toggleBtn.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
-    });
-
-    document.body.appendChild(toggleBtn);
-
-    // Update icon based on current theme
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    toggleBtn.innerHTML = currentTheme === 'dark' ? '☀️' : '🌙';
   }
 
   // Get all problem suggestions
