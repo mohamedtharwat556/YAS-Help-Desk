@@ -608,6 +608,19 @@
     // Add robot to scene
     scene.add(robot);
 
+    // Create simple environment map using cube camera
+    const cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, 256);
+    const cubeCamera = new THREE.CubeCamera(0.1, 1, 256);
+    scene.add(cubeCamera);
+    
+    // Apply environment map to materials
+    bodyMaterial.envMap = cubeRenderTarget.texture;
+    bodyMaterial.envMapIntensity = 0.5;
+    accentMaterial.envMap = cubeRenderTarget.texture;
+    accentMaterial.envMapIntensity = 0.6;
+    glowMaterial.envMap = cubeRenderTarget.texture;
+    glowMaterial.envMapIntensity = 0.7;
+
     // Enable shadows on body parts
     head.castShadow = true;
     body.castShadow = true;
@@ -781,6 +794,12 @@
       requestAnimationFrame(animate);
 
       const time = Date.now() * 0.001;
+
+      // Update environment map every frame
+      robot.visible = false;
+      cubeCamera.position.copy(robot.position);
+      cubeCamera.update(renderer, scene);
+      robot.visible = true;
 
       // Robot floating
       robot.position.y = Math.sin(time) * 0.15;
