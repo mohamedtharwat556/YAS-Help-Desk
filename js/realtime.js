@@ -1,14 +1,26 @@
 // Real-time Updates using Supabase Realtime
-import { createClient } from '@supabase/supabase-js';
+// Using CDN instead of import to avoid build errors
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY;
+// Supabase Realtime will be initialized when needed
+let supabase = null;
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Initialize Supabase client from global CDN
+function initSupabase() {
+  if (!supabase && window.supabase) {
+    supabase = window.supabase.createClient(
+      window.SUPABASE_URL,
+      window.SUPABASE_ANON_KEY
+    );
+  }
+  return supabase;
+}
 
 // Subscribe to ticket updates
 export function subscribeToTicketUpdates(ticketId, callback) {
-  const channel = supabase
+  const client = initSupabase();
+  if (!client) return null;
+
+  const channel = client
     .channel(`ticket:${ticketId}`)
     .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'tickets', filter: `id=eq.${ticketId}` }, (payload) => {
       callback(payload.new);
@@ -20,7 +32,10 @@ export function subscribeToTicketUpdates(ticketId, callback) {
 
 // Subscribe to all tickets (for dashboard)
 export function subscribeToAllTickets(callback) {
-  const channel = supabase
+  const client = initSupabase();
+  if (!client) return null;
+
+  const channel = client
     .channel('tickets')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, (payload) => {
       callback(payload);
@@ -32,7 +47,10 @@ export function subscribeToAllTickets(callback) {
 
 // Subscribe to customer updates
 export function subscribeToCustomerUpdates(customerId, callback) {
-  const channel = supabase
+  const client = initSupabase();
+  if (!client) return null;
+
+  const channel = client
     .channel(`customer:${customerId}`)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'customers', filter: `id=eq.${customerId}` }, (payload) => {
       callback(payload.new);
@@ -44,7 +62,7 @@ export function subscribeToCustomerUpdates(customerId, callback) {
 
 // Unsubscribe from channel
 export function unsubscribe(channel) {
-  if (channel) {
+  if (channel && supabase) {
     supabase.removeChannel(channel);
   }
 }
