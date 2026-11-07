@@ -206,6 +206,60 @@
       color: white;
     }
 
+    /* Start Audio Button */
+    .start-audio-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      z-index: 100;
+    }
+
+    .start-audio-btn {
+      padding: 20px 40px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+      background: linear-gradient(135deg, #1a56db 0%, #0d47a1 100%);
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: 'Cairo', sans-serif;
+      box-shadow: 
+        0 15px 40px rgba(26, 86, 219, 0.4),
+        0 5px 20px rgba(0, 0, 0, 0.3),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .start-audio-btn:hover {
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow: 
+        0 20px 50px rgba(26, 86, 219, 0.5),
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    .start-audio-text {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.8);
+      font-family: 'Cairo', sans-serif;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       .speech-bubble {
@@ -256,7 +310,15 @@
   <div id="canvas-container"></div>
   
   <div class="loading-overlay" id="loading-overlay">
-    <div class="audio-controls">
+    <!-- Start Audio Button -->
+    <div class="start-audio-container" id="start-audio-container">
+      <button class="start-audio-btn" id="start-audio-btn">
+        🔊 تشغيل الصوت
+      </button>
+      <p class="start-audio-text">اضغط لتفعيل الصوت</p>
+    </div>
+
+    <div class="audio-controls" id="audio-controls" style="display: none;">
       <button class="audio-btn" id="mute-btn">🔊 صوت</button>
       <button class="audio-btn" id="replay-btn">🔄 إعادة</button>
     </div>
@@ -673,18 +735,10 @@
       isRobotLoaded = true;
       const loadingText = document.getElementById('loading-text');
       loadingText.textContent = 'جاري التحميل...';
-      // Play robot appear sound
-      playRobotAppearSound();
+      // Don't play sound until user clicks start audio
     }, 500);
 
-    // Wait for robot to be fully visible before starting speech
-    setTimeout(() => {
-      if (isRobotLoaded && !currentMessageIndex) {
-        const loadingText = document.getElementById('loading-text');
-        loadingText.textContent = '';
-        startWelcomeSequence();
-      }
-    }, 2500);
+    // Removed auto-start - user must click start audio button
 
     // Speech Synthesis
     const synth = window.speechSynthesis;
@@ -809,6 +863,32 @@
     const loadingText = document.getElementById('loading-text');
     const muteBtn = document.getElementById('mute-btn');
     const replayBtn = document.getElementById('replay-btn');
+    const startAudioBtn = document.getElementById('start-audio-btn');
+    const startAudioContainer = document.getElementById('start-audio-container');
+    const audioControls = document.getElementById('audio-controls');
+
+    // Audio enabled flag
+    let audioEnabled = false;
+
+    // Start audio button handler
+    startAudioBtn.addEventListener('click', () => {
+      // Initialize audio context
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+
+      // Load voices
+      loadVoices();
+
+      // Hide start button, show audio controls
+      startAudioContainer.style.display = 'none';
+      audioControls.style.display = 'flex';
+
+      audioEnabled = true;
+
+      // Start welcome sequence
+      startWelcomeSequence();
+    });
 
     function typeText(element, text, callback) {
       // Clear any existing typing
@@ -884,6 +964,9 @@
         });
       }, 500);
     }
+
+    // Don't auto-start - wait for user to click start audio button
+    // Remove the auto-start setTimeout below
 
     // Continue button
     continueBtn.addEventListener('click', () => {
