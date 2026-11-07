@@ -42,7 +42,7 @@ const translations = {
     label_serial_number: 'الرقم التسلسلي (Serial Number)',
     label_purchase_date: 'تاريخ الشراء',
     label_warranty: 'حالة الضمان',
-    placeholder_device_brand: 'مثال: Dell، HP، Lenovo، Apple',
+
     placeholder_device_model: 'مثال: Latitude 5420، EliteBook 840',
     placeholder_serial_number: 'اختياري — يساعد في التتبع',
     device_laptop: 'لاب توب',
@@ -168,7 +168,7 @@ const translations = {
     label_serial_number: 'الرقم التسلسلي',
     label_purchase_date: 'تاريخ الشراء',
     label_warranty: 'الضمان',
-    placeholder_device_brand: 'مثال: Dell، HP، Lenovo، Apple',
+
     placeholder_device_model: 'مثال: Latitude 5420، EliteBook 840',
     placeholder_serial_number: 'الرقم التسلسلي الموجود على الجهاز',
     placeholder_purchase_date: 'YYYY-MM-DD',
