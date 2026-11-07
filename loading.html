@@ -765,25 +765,18 @@
     function getBestMaleVoice() {
       console.log('All available voices:', voices.map(v => v.name + ' (' + v.lang + ')'));
       
-      // Priority 1: Microsoft Hoda (Arabic) - MUST USE ARABIC
+      // Use Microsoft Hoda (Arabic) - the best available Arabic voice
       const hodaVoice = voices.find(voice => voice.name.toLowerCase().includes('microsoft hoda'));
       if (hodaVoice) {
         console.log('Selected Microsoft Hoda (Arabic):', hodaVoice.name);
         return hodaVoice;
       }
 
-      // Priority 2: Any Arabic voice
+      // Fallback to any Arabic voice
       const arabicVoices = voices.filter(voice => voice.lang.includes('ar'));
       if (arabicVoices.length > 0) {
         console.log('Selected Arabic voice:', arabicVoices[0].name);
         return arabicVoices[0];
-      }
-
-      // Priority 3: English voices only if no Arabic available
-      const davidVoice = voices.find(voice => voice.name.toLowerCase().includes('microsoft david'));
-      if (davidVoice) {
-        console.log('Selected Microsoft David (English - no Arabic available):', davidVoice.name);
-        return davidVoice;
       }
 
       // Last fallback
@@ -807,8 +800,8 @@
 
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'ar-SA';
-      utterance.rate = 0.9; // Normal speed
-      utterance.pitch = 1.0; // Normal pitch - audible
+      utterance.rate = 1.0; // Normal speed
+      utterance.pitch = 1.0; // Normal pitch
       utterance.volume = 1.0; // Maximum volume
 
       const selectedVoice = getBestMaleVoice();
