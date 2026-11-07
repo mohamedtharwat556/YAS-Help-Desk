@@ -259,5 +259,16 @@
 <script src="js/i18n.js"></script>
 <script src="js/chatbot.js"></script>
 <script src="js/keyboard-shortcuts.js"></script>
+<script>
+  // Auto-refresh every 30 seconds for real-time updates
+  setInterval(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketId = urlParams.get('ticket');
+    if (ticketId) {
+      // Refresh only if ticket is in URL
+      window.location.reload();
+    }
+  }, 30000); // 30 seconds
+</script>
 </body>
 </html>
