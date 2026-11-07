@@ -25,8 +25,8 @@ VALUES
 -- Device 3: Khalid's HP Desktop
 ((SELECT id FROM customers WHERE phone = '0533210987' LIMIT 1), 'desktop', 'HP', 'ProDesk 400 G7', 'HP400-G7-9921', '2021-06-20'::date, 'expired'),
 
--- Device 4: Noura's Hikvision Camera
-((SELECT id FROM customers WHERE phone = '0505551234' LIMIT 1), 'hikvision', 'Hikvision', 'DS-2CD2143G2-I', 'HIK-CAM-3312', '2023-08-10'::date, 'active'),
+-- Device 4: Noura's Interactive Display
+((SELECT id FROM customers WHERE phone = '0505551234' LIMIT 1), 'interactive', 'Samsung', 'Interactive Display 65"', 'INT-DIS-65-3312', '2023-08-10'::date, 'active'),
 
 -- Device 5: Omar's Epson Projector
 ((SELECT id FROM customers WHERE phone = '0556667788' LIMIT 1), 'projector', 'Epson', 'EB-X51', 'EP-X51-0087', '2022-01-15'::date, 'expired'),
@@ -64,13 +64,13 @@ VALUES
  'الجهاز لا يشتغل تماماً. عند الضغط على زر التشغيل لا يحدث شيء.',
  'diagnosing'),
 
--- Ticket 4: Noura's Hikvision Camera
+-- Ticket 4: Noura's Interactive Display
 ('YAS-SUP-10486',
  (SELECT id FROM customers WHERE phone = '0505551234' LIMIT 1),
- (SELECT id FROM devices WHERE serial_number = 'HIK-CAM-3312' LIMIT 1),
+ (SELECT id FROM devices WHERE serial_number = 'INT-DIS-65-3312' LIMIT 1),
  'installation',
  'medium',
- 'طلب تركيب 4 كاميرات مراقبة إضافية في المستودع.',
+ 'طلب تركيب شاشة تفاعلية 65 بوصة في قاعة الاجتماعات.',
  'received'),
 
 -- Ticket 5: Omar's Epson Projector

@@ -73,7 +73,7 @@ function renderDeviceChart(tickets) {
   const deviceTypes = [
     { label: 'لاب توب',          key: 'laptop',      color: '#1A56DB' },
     { label: 'كاشير / POS',      key: 'pos',         color: '#7C3AED' },
-    { label: 'Hikvision',        key: 'hikvision',   color: '#0EA5E9' },
+    { label: 'شاشات تفاعلية',    key: 'interactive', color: '#0EA5E9' },
     { label: 'كمبيوتر مكتبي',   key: 'desktop',     color: '#10B981' },
     { label: 'بروجكتر',          key: 'projector',   color: '#F59E0B' },
     { label: 'شاشة',             key: 'monitor',     color: '#EF4444' },

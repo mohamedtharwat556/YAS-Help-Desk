@@ -715,8 +715,8 @@ async function seedDemoData() {
     {
       id: 'YAS-SUP-10485',
       customer: { name: 'نورة المنصور', phone: '0505551234', whatsapp: '0505551234', email: 'noura@company.com', company: 'مؤسسة النور' },
-      device: { type: 'hikvision', brand: 'Hikvision', model: 'DS-2CD2143G2-I', serial_number: 'HIK-CAM-3312', purchase_date: '2023-08-10', warranty_status: 'active' },
-      request: { type: 'installation', priority: 'medium', description: 'طلب تركيب 4 كاميرات مراقبة إضافية في المستودع. لدينا نظام Hikvision موجود ونريد التوسعة.' },
+      device: { type: 'interactive', brand: 'Samsung', model: 'Interactive Display 65"', serial_number: 'INT-DIS-65-3312', purchase_date: '2023-08-10', warranty_status: 'active' },
+      request: { type: 'installation', priority: 'medium', description: 'طلب تركيب شاشة تفاعلية 65 بوصة في قاعة الاجتماعات. نحتاج التثبيت والتهيئة.' },
       status: 'received', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 1).toISOString(),
       updatedAt: new Date(Date.now() - 3600000 * 1).toISOString(),

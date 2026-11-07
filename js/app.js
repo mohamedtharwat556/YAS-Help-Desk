@@ -122,7 +122,7 @@ const DeviceTypeLabels = {
   laptop:      'لاب توب',
   desktop:     'كمبيوتر مكتبي',
   pos:         'كاشير / POS',
-  hikvision:   'Hikvision',
+  interactive: 'شاشات تفاعلية',
   projector:   'بروجكتر',
   monitor:     'شاشة',
   printer:     'طابعة',
