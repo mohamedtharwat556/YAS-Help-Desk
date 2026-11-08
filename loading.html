@@ -331,7 +331,9 @@
   <script>
     // Check if already loaded
     if (sessionStorage.getItem('loadingShown')) {
-      window.location.href = 'index.html';
+      const returnUrl = sessionStorage.getItem('returnUrl') || 'index.html';
+      sessionStorage.removeItem('returnUrl');
+      window.location.href = returnUrl;
     }
 
     // Set loading shown
@@ -1211,8 +1213,10 @@
     continueBtn.addEventListener('click', () => {
       synth.cancel();
       loadingOverlay.classList.add('fade-out');
+      const returnUrl = sessionStorage.getItem('returnUrl') || 'index.html?openChat=true';
+      sessionStorage.removeItem('returnUrl');
       setTimeout(() => {
-        window.location.href = 'index.html?openChat=true';
+        window.location.href = returnUrl;
       }, 1000);
     });
 
@@ -1220,8 +1224,10 @@
     skipBtn.addEventListener('click', () => {
       synth.cancel();
       loadingOverlay.classList.add('fade-out');
+      const returnUrl = sessionStorage.getItem('returnUrl') || 'index.html';
+      sessionStorage.removeItem('returnUrl');
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = returnUrl;
       }, 1000);
     });
 

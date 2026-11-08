@@ -18,6 +18,8 @@
   <script>
     // Check if loading screen has been shown
     if (!sessionStorage.getItem('loadingShown')) {
+      // Save the current URL with ticket parameter
+      sessionStorage.setItem('returnUrl', window.location.href);
       window.location.href = 'loading.html';
     }
 
