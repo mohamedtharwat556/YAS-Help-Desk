@@ -16,21 +16,31 @@
   <link rel="stylesheet" href="css/loading-animations.css">
   <link rel="stylesheet" href="css/keyboard-shortcuts.css">
   <script>
+    // Debug logging
+    console.log('[Tracking Page] URL:', window.location.href);
+    console.log('[Tracking Page] Search params:', window.location.search);
+
     // Get ticket ID from URL parameter
     function getTicketIdFromURL() {
       const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('ticket');
+      const ticketId = urlParams.get('ticket');
+      console.log('[Tracking Page] Extracted ticket ID:', ticketId);
+      return ticketId;
     }
 
     // Auto-search if ticket parameter exists
     const ticketId = getTicketIdFromURL();
     if (ticketId) {
+      console.log('[Tracking Page] Auto-search ticket:', ticketId);
       // Store for use after page load
       window.autoSearchTicket = ticketId;
+    } else {
+      console.log('[Tracking Page] No ticket parameter found');
     }
 
     // Hide page loader on load
     window.addEventListener('load', () => {
+      console.log('[Tracking Page] Page loaded');
       const pageLoader = document.getElementById('page-loader');
       if (pageLoader) {
         setTimeout(() => {
@@ -40,14 +50,20 @@
 
       // Auto-search if ticket parameter exists
       if (window.autoSearchTicket) {
+        console.log('[Tracking Page] Executing auto-search for:', window.autoSearchTicket);
         const input = document.getElementById('track-input');
         const form = document.getElementById('tracking-form');
         const resultDiv = document.getElementById('ticket-result');
 
         if (input && form && resultDiv) {
           input.value = window.autoSearchTicket;
+          console.log('[Tracking Page] Input value set to:', input.value);
           // Trigger form submission to search
-          form.dispatchEvent(new Event('submit'));
+          setTimeout(() => {
+            form.dispatchEvent(new Event('submit'));
+          }, 100);
+        } else {
+          console.error('[Tracking Page] Missing elements:', { input, form, resultDiv });
         }
       }
     });
