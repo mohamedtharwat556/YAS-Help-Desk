@@ -650,8 +650,7 @@ const TicketDetails = {
             closed:      'تم الحل (مغلق)'
           };
           const statusLabel = statusLabels[newStatus] || newStatus;
-          const trackingUrl = `https://yas-portfolio-eta.vercel.app/tracking.html?ticket=${this.ticket.ticket_number}`;
-          const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم تحديث حالة طلبك ${this.ticket.ticket_number} إلى: ${statusLabel}\n\n${note ? `ملاحظة: ${note}\n\n` : ''}لتتبع طلبك اضغط على الرابط:\n${trackingUrl}`;
+          const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم تحديث حالة طلبك ${this.ticket.ticket_number} إلى: ${statusLabel}\n\n${note ? `ملاحظة: ${note}` : ''}`;
 
           const formattedNumber = this.formatWhatsAppNumber(waNumber);
           const waLink = YAS.buildWhatsAppLink(formattedNumber, waMsg);
@@ -713,11 +712,10 @@ const TicketDetails = {
             this.renderActivities();
             YAS.showToast('تم إغلاق الطلب', 'success');
 
-            // Open WhatsApp with closure message and rating link
+            // Open WhatsApp with closure message
             const waNumber = this.ticket.customer?.whatsapp || this.ticket.customer?.phone;
             if (waNumber) {
-              const trackingUrl = `https://yas-portfolio-eta.vercel.app/tracking.html?ticket=${ticketId}`;
-              const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم إغلاق طلبك ${ticketId} بنجاح.\n\nلتتبع طلبك اضغط على الرابط:\n${trackingUrl}\n\nشكراً لتعاملكم معنا!`;
+              const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم إغلاق طلبك ${ticketId} بنجاح.\n\nشكراً لتعاملكم معنا!`;
               const formattedNumber = this.formatWhatsAppNumber(waNumber);
               const waLink = YAS.buildWhatsAppLink(formattedNumber, waMsg);
               window.open(waLink, '_blank');
