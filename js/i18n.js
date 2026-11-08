@@ -109,7 +109,7 @@ const translations = {
     review_label_issue_type: 'نوع الطلب',
     review_label_priority: 'الأولوية',
     review_label_description: 'وصف المشكلة',
-    review_notice: 'بعد الإرسال، سيتم تعيين طلبك إلى Eng. Adam Farouk وسيتم التواصل معك قريباً.',
+    review_notice: 'بعد الإرسال، سيتم تعيين طلبك إلى مهندس الدعم الفني وسيتم التواصل معك قريباً.',
     step_4_of_4: 'الخطوة 4 من 4',
     btn_edit: 'تعديل',
     btn_submit_ticket: 'إرسال طلب الدعم',
@@ -122,7 +122,7 @@ const translations = {
     btn_copy_code: 'نسخ الكود',
     btn_back_home: 'العودة للرئيسية',
     whats_next_title: 'ماذا سيحدث الآن؟',
-    whats_next_step1: 'سيراجع Eng. Adam Farouk طلبك',
+    whats_next_step1: 'سيراجع مهندس الدعم الفني طلبك',
     whats_next_step1_sub: 'خلال ساعات العمل الرسمية',
     whats_next_step2: 'سيتم التواصل معك عبر الهاتف أو واتساب',
     whats_next_step2_sub: 'للاستفسار عن تفاصيل إضافية إذا لزم',
@@ -140,7 +140,7 @@ const translations = {
     tracking_new_ticket: 'طلب دعم جديد',
     tracking_search_again: 'بحث آخر',
     tracking_help_title: 'لا تتذكر رقم طلبك؟',
-    tracking_help_desc: 'تحقق من الرسالة التي أرسلها لك النظام عند تسجيل الطلب. إذا واجهت مشكلة، تواصل مع Eng. Adam Farouk مباشرة.',
+    tracking_help_desc: 'تحقق من الرسالة التي أرسلها لك النظام عند تسجيل الطلب. إذا واجهت مشكلة، تواصل مع مهندس الدعم الفني مباشرة.',
 
     // Support Form
     form_customer_title: 'بيانات العميل',
@@ -221,7 +221,7 @@ const translations = {
     btn_copy_code: 'نسخ الكود',
     btn_back_home: 'العودة للرئيسية',
     whats_next_title: 'ماذا سيحدث الآن؟',
-    whats_next_step1: 'سيراجع Eng. Adam Farouk طلبك',
+    whats_next_step1: 'سيراجع مهندس الدعم الفني طلبك',
     whats_next_step1_sub: 'خلال ساعات العمل الرسمية',
     whats_next_step2: 'سيتم التواصل معك عبر الهاتف أو واتساب',
     whats_next_step2_sub: 'للاستفسار عن تفاصيل إضافية إذا لزم',
@@ -263,7 +263,7 @@ const translations = {
     step2_title: 'احصل على رقم',
     step2_desc: 'ستحصل فوراً على رقم الطلب الفريد YAS-SUP-XXXXX',
     step3_title: 'فريقنا يتواصل',
-    step3_desc: 'سيتواصل معك Eng. Adam Farouk وتحديد موعد للصيانة',
+    step3_desc: 'سيتواصل معك مهندس الدعم الفني وتحديد موعد للصيانة',
     step4_title: 'حل المشكلة',
     step4_desc: 'تابع حالة طلبك حتى يتم حل مشكلتك بنجاح',
     
@@ -282,8 +282,8 @@ const translations = {
     faq_a5: 'تكلفة الخدمة تعتم الاتفاق عليها بناءً على نوع المشكلة وطبيعة العمل المطلوبة. خدمات الدعم الفني الأساسية ضمن الضمان تكون مجانية. للصيانة خارج الضمان أو التركيب الجديد، يتم تحديد التكلفة بعد التقييم.',
     faq_q6: 'ما الفرق بين طلب الصيانة وطلب الدعم الفني؟',
     faq_a6: 'الدعم الفني يشمل المساعدة في حل المشكلات البرمجية والتقنية عن بُعد أو بزيارة. أما الصيانة فتعني الفحص الفيزيائي للجهاز وإصلاح الأعطال المادية، وقد تتطلب استلام الجهاز في مقر YAS.',
-    faq_q7: 'كيف أتواصل مع Eng. Adam Farouk مباشرة؟',
-    faq_a7: 'يمكنك التواصل مع Eng. Adam Farouk عبر الواتساب (+20 11 01267185) أو البريد الإلكتروني: adam@yas.sa. سيتواصل معك في أقرب وقت ممكن.',
+    faq_q7: 'كيف أتواصل مع مهندس الدعم الفني مباشرة؟',
+    faq_a7: 'يمكنك التواصل مع مهندس الدعم الفني عبر الواتساب (+20 11 01267185) أو البريد الإلكتروني: adam@yas.sa. سيتواصل معك في أقرب وقت ممكن.',
     
     // Footer
     footer_company: 'Technical Support & Customer Service',
@@ -390,7 +390,7 @@ const translations = {
     btn_copy_code: 'Copy Code',
     btn_back_home: 'Back to Home',
     whats_next_title: 'What happens next?',
-    whats_next_step1: 'Eng. Adam Farouk will review your request',
+    whats_next_step1: 'مهندس الدعم الفني will review your request',
     whats_next_step1_sub: 'During official working hours',
     whats_next_step2: 'You will be contacted via phone or WhatsApp',
     whats_next_step2_sub: 'For additional details if needed',
@@ -468,7 +468,7 @@ const translations = {
     review_label_issue_type: 'Request Type',
     review_label_priority: 'Priority',
     review_label_description: 'Problem Description',
-    review_notice: 'After submission, your request will be assigned to Eng. Adam Farouk and you will be contacted soon.',
+    review_notice: 'After submission, your request will be assigned to مهندس الدعم الفني and you will be contacted soon.',
     step_4_of_4: 'Step 4 of 4',
     btn_edit: 'Edit',
     btn_submit_ticket: 'Submit Support Ticket',
@@ -481,7 +481,7 @@ const translations = {
     btn_copy_code: 'Copy Code',
     btn_back_home: 'Back to Home',
     whats_next_title: 'What happens next?',
-    whats_next_step1: 'Eng. Adam Farouk will review your request',
+    whats_next_step1: 'مهندس الدعم الفني will review your request',
     whats_next_step1_sub: 'During official business hours',
     whats_next_step2: 'You will be contacted via phone or WhatsApp',
     whats_next_step2_sub: 'For additional details if needed',
@@ -499,7 +499,7 @@ const translations = {
     tracking_new_ticket: 'New Support Ticket',
     tracking_search_again: 'Search Again',
     tracking_help_title: 'Don\'t remember your ticket number?',
-    tracking_help_desc: 'Check the message sent to you by the system when you submitted the ticket. If you encounter any issues, contact Eng. Adam Farouk directly.',
+    tracking_help_desc: 'Check the message sent to you by the system when you submitted the ticket. If you encounter any issues, contact مهندس الدعم الفني directly.',
     
     // Hero
     hero_badge: 'Professional Technical Support',
@@ -536,7 +536,7 @@ const translations = {
     step2_title: 'Get Your Number',
     step2_desc: 'You will immediately receive a unique ticket number YAS-SUP-XXXXX',
     step3_title: 'Our Team Contacts You',
-    step3_desc: 'Eng. Adam Farouk will contact you to schedule maintenance',
+    step3_desc: 'مهندس الدعم الفني will contact you to schedule maintenance',
     step4_title: 'Problem Solved',
     step4_desc: 'Track your ticket status until your problem is successfully resolved',
     
@@ -555,8 +555,8 @@ const translations = {
     faq_a5: 'Service costs depend on the type of problem and the nature of the work required. Basic technical support services under warranty are free. For out-of-warranty maintenance or new installation, costs are determined after evaluation.',
     faq_q6: 'What is the difference between maintenance and technical support?',
     faq_a6: 'Technical support includes assistance in solving software and technical problems remotely or via visit. Maintenance means physical inspection of the device and repair of hardware issues, which may require receiving the device at YAS headquarters.',
-    faq_q7: 'How can I contact Eng. Adam Farouk directly?',
-    faq_a7: 'You can contact Eng. Adam Farouk via WhatsApp (+20 11 01267185) or email: adam@yas.sa. He will contact you as soon as possible.',
+    faq_q7: 'How can I contact مهندس الدعم الفني directly?',
+    faq_a7: 'You can contact مهندس الدعم الفني via WhatsApp (+20 11 01267185) or email: adam@yas.sa. He will contact you as soon as possible.',
     
     // Footer
     footer_company: 'Technical Support & Customer Service',
@@ -663,7 +663,7 @@ const translations = {
     btn_copy_code: '复制代码',
     btn_back_home: '返回首页',
     whats_next_title: '接下来会发生什么？',
-    whats_next_step1: 'Eng. Adam Farouk 将审查您的请求',
+    whats_next_step1: 'مهندس الدعم الفني 将审查您的请求',
     whats_next_step1_sub: '在官方工作时间内',
     whats_next_step2: '我们将通过电话或 WhatsApp 与您联系',
     whats_next_step2_sub: '如需更多详细信息',
@@ -751,7 +751,7 @@ const translations = {
     review_label_issue_type: '请求类型',
     review_label_priority: '优先级',
     review_label_description: '问题描述',
-    review_notice: '提交后，您的请求将分配给 Eng. Adam Farouk，我们将尽快与您联系。',
+    review_notice: '提交后，您的请求将分配给 مهندس الدعم الفني，我们将尽快与您联系。',
     step_4_of_4: '步骤 4 / 4',
     btn_edit: '编辑',
     btn_submit_ticket: '提交支持工单',
@@ -764,7 +764,7 @@ const translations = {
     btn_copy_code: '复制代码',
     btn_back_home: '返回首页',
     whats_next_title: '接下来会发生什么？',
-    whats_next_step1: 'Eng. Adam Farouk 将审查您的请求',
+    whats_next_step1: 'مهندس الدعم الفني 将审查您的请求',
     whats_next_step1_sub: '在官方工作时间内',
     whats_next_step2: '我们将通过电话或 WhatsApp 与您联系',
     whats_next_step2_sub: '如需额外详情',
@@ -782,7 +782,7 @@ const translations = {
     tracking_new_ticket: '新支持工单',
     tracking_search_again: '再次搜索',
     tracking_help_title: '不记得您的工单号码？',
-    tracking_help_desc: '检查系统在您提交工单时发送给您的消息。如果遇到任何问题，请直接联系 Eng. Adam Farouk。',
+    tracking_help_desc: '检查系统在您提交工单时发送给您的消息。如果遇到任何问题，请直接联系 مهندس الدعم الفني。',
     
     // Hero
     hero_badge: '专业技术支持',
@@ -819,7 +819,7 @@ const translations = {
     step2_title: '获取您的号码',
     step2_desc: '您将立即收到唯一的工单号码 YAS-SUP-XXXXX',
     step3_title: '我们的团队联系您',
-    step3_desc: 'Eng. Adam Farouk 将联系您安排维护',
+    step3_desc: 'مهندس الدعم الفني 将联系您安排维护',
     step4_title: '问题解决',
     step4_desc: '跟踪您的工单状态，直到问题成功解决',
     
@@ -838,8 +838,8 @@ const translations = {
     faq_a5: '服务费用取决于问题类型和所需工作的性质。保修内的基本技术支持服务是免费的。对于保修外维护或新安装，费用在评估后确定。',
     faq_q6: '维护和技术支持有什么区别？',
     faq_a6: '技术支持包括通过远程访问或访问来解决软件和技术问题。维护意味着对设备进行物理检查和维修硬件问题，可能需要将设备送到 YAS 总部。',
-    faq_q7: '如何直接联系 Eng. Adam Farouk？',
-    faq_a7: '您可以通过 WhatsApp (+20 11 01267185) 或电子邮件：adam@yas.sa 联系 Eng. Adam Farouk。他将尽快与您联系。',
+    faq_q7: '如何直接联系 مهندس الدعم الفني？',
+    faq_a7: '您可以通过 WhatsApp (+20 11 01267185) 或电子邮件：adam@yas.sa 联系 مهندس الدعم الفني。他将尽快与您联系。',
     
     // Footer
     footer_company: 'Technical Support & Customer Service',

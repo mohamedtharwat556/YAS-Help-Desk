@@ -193,7 +193,7 @@ async function createTicket(ticketData) {
       {
         time:  new Date(Date.now() + 60000).toISOString(),
         label: 'تم استلام الطلب',
-        desc:  'تم استلام الطلب وإسناده إلى Eng. Adam Farouk',
+        desc:  'تم استلام الطلب وإسناده إلى مهندس الدعم الفني',
         type:  'assign'
       }
     ]
@@ -268,7 +268,7 @@ async function updateTicketStatus(id, newStatus, note = '') {
       // Also add to notes if note is provided
       const newNote = note ? {
         id: Date.now(),
-        author: 'Eng. Adam Farouk',
+        author: 'مهندس الدعم الفني',
         text: note,
         timestamp: new Date().toISOString()
       } : null;
@@ -348,7 +348,7 @@ async function addTicketNote(id, noteText) {
 
       const newNote = {
         id: Date.now(),
-        author: 'Eng. Adam Farouk',
+        author: 'مهندس الدعم الفني',
         text: noteText,
         time: new Date().toISOString()
       };
@@ -384,7 +384,7 @@ async function addTicketNote(id, noteText) {
 
   const note = {
     id:     Date.now(),
-    author: 'Eng. Adam Farouk',
+    author: 'مهندس الدعم الفني',
     text:   noteText,
     time:   new Date().toISOString()
   };
@@ -599,7 +599,7 @@ function getSettings() {
   const defaults = {
     whatsappNumber: '',
     companyName:    'YAS',
-    engineerName:   'Eng. Adam Farouk',
+    engineerName:   'مهندس الدعم الفني',
     autoAssign:     true,
     emailNotif:     false,
     darkMode:       false,
@@ -674,10 +674,10 @@ async function seedDemoData() {
       status: 'reviewing', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
       updatedAt: new Date(Date.now() - 900000).toISOString(),
-      notes: [{ id: 1, author: 'Eng. Adam Farouk', text: 'يبدو أن المشكلة مرتبطة بتحديث KB5034441. سيتم التراجع عن التحديث وإعادة الاختبار.', time: new Date(Date.now() - 1800000).toISOString() }],
+      notes: [{ id: 1, author: 'مهندس الدعم الفني', text: 'يبدو أن المشكلة مرتبطة بتحديث KB5034441. سيتم التراجع عن التحديث وإعادة الاختبار.', time: new Date(Date.now() - 1800000).toISOString() }],
       activities: [
         { time: new Date(Date.now() - 3600000 * 2).toISOString(), label: 'تم إنشاء الطلب', desc: 'أنشأ العميل محمد أحمد طلب دعم جديد', type: 'create' },
-        { time: new Date(Date.now() - 3600000 * 2 + 300000).toISOString(), label: 'تم استلام الطلب', desc: 'تم استلام الطلب وإسناده إلى Eng. Adam Farouk', type: 'assign' },
+        { time: new Date(Date.now() - 3600000 * 2 + 300000).toISOString(), label: 'تم استلام الطلب', desc: 'تم استلام الطلب وإسناده إلى مهندس الدعم الفني', type: 'assign' },
         { time: new Date(Date.now() - 3600000).toISOString(), label: 'تحديث الحالة: قيد المراجعة', desc: 'يتم مراجعة تفاصيل المشكلة', type: 'status' }
       ]
     },
@@ -692,7 +692,7 @@ async function seedDemoData() {
       notes: [],
       activities: [
         { time: new Date(Date.now() - 3600000 * 5).toISOString(), label: 'تم إنشاء الطلب', desc: 'أنشأت العميلة سارة العمري طلب دعم جديد', type: 'create' },
-        { time: new Date(Date.now() - 3600000 * 5 + 300000).toISOString(), label: 'تم استلام الطلب', desc: 'تم استلام الطلب وإسناده إلى Eng. Adam Farouk', type: 'assign' },
+        { time: new Date(Date.now() - 3600000 * 5 + 300000).toISOString(), label: 'تم استلام الطلب', desc: 'تم استلام الطلب وإسناده إلى مهندس الدعم الفني', type: 'assign' },
         { time: new Date(Date.now() - 3600000 * 3).toISOString(), label: 'تحديث الحالة: جاري التواصل', desc: 'جاري التواصل مع العميل عبر WhatsApp', type: 'status' }
       ]
     },
@@ -704,10 +704,10 @@ async function seedDemoData() {
       status: 'diagnosing', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
       updatedAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-      notes: [{ id: 2, author: 'Eng. Adam Farouk', text: 'على الأرجح مشكلة في وحدة الإمداد بالطاقة (PSU). يجب فحص المكونات الداخلية.', time: new Date(Date.now() - 3600000 * 3).toISOString() }],
+      notes: [{ id: 2, author: 'مهندس الدعم الفني', text: 'على الأرجح مشكلة في وحدة الإمداد بالطاقة (PSU). يجب فحص المكونات الداخلية.', time: new Date(Date.now() - 3600000 * 3).toISOString() }],
       activities: [
         { time: new Date(Date.now() - 3600000 * 24).toISOString(), label: 'تم إنشاء الطلب', desc: 'أنشأ العميل خالد الزهراني طلب دعم جديد', type: 'create' },
-        { time: new Date(Date.now() - 3600000 * 24 + 300000).toISOString(), label: 'تم استلام الطلب', desc: 'تم استلام الطلب وإسناده إلى Eng. Adam Farouk', type: 'assign' },
+        { time: new Date(Date.now() - 3600000 * 24 + 300000).toISOString(), label: 'تم استلام الطلب', desc: 'تم استلام الطلب وإسناده إلى مهندس الدعم الفني', type: 'assign' },
         { time: new Date(Date.now() - 3600000 * 20).toISOString(), label: 'تحديث الحالة: جاري التواصل', desc: '', type: 'status' },
         { time: new Date(Date.now() - 3600000 * 4).toISOString(), label: 'تحديث الحالة: جاري الفحص', desc: 'تم استلام الجهاز وبدأ الفحص الفعلي', type: 'status' }
       ]
@@ -723,7 +723,7 @@ async function seedDemoData() {
       notes: [],
       activities: [
         { time: new Date(Date.now() - 3600000).toISOString(), label: 'تم إنشاء الطلب', desc: 'أنشأت العميلة نورة المنصور طلب دعم جديد', type: 'create' },
-        { time: new Date(Date.now() - 3600000 + 120000).toISOString(), label: 'تم استلام الطلب', desc: 'تم استلام الطلب وإسناده إلى Eng. Adam Farouk', type: 'assign' }
+        { time: new Date(Date.now() - 3600000 + 120000).toISOString(), label: 'تم استلام الطلب', desc: 'تم استلام الطلب وإسناده إلى مهندس الدعم الفني', type: 'assign' }
       ]
     },
     {
@@ -750,7 +750,7 @@ async function seedDemoData() {
       status: 'resolved', assignedTo: 'Adam Farouk',
       createdAt: new Date(Date.now() - 3600000 * 72).toISOString(),
       updatedAt: new Date(Date.now() - 3600000 * 24).toISOString(),
-      notes: [{ id: 3, author: 'Eng. Adam Farouk', text: 'تم استبدال كيبل الشاشة الداخلي، المشكلة حُلت بنجاح.', time: new Date(Date.now() - 3600000 * 26).toISOString() }],
+      notes: [{ id: 3, author: 'مهندس الدعم الفني', text: 'تم استبدال كيبل الشاشة الداخلي، المشكلة حُلت بنجاح.', time: new Date(Date.now() - 3600000 * 26).toISOString() }],
       activities: [
         { time: new Date(Date.now() - 3600000 * 72).toISOString(), label: 'تم إنشاء الطلب', desc: '', type: 'create' },
         { time: new Date(Date.now() - 3600000 * 72 + 300000).toISOString(), label: 'تم استلام الطلب', desc: '', type: 'assign' },

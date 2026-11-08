@@ -75,7 +75,7 @@ async function exportTicketsToCSV(tickets) {
     'نوع الطلب': YAS.RequestTypeLabels[t.request_type] || t.request_type || t.request?.type || '—',
     'الأولوية': YAS.PriorityLabels[t.priority] || t.priority || t.request?.priority || '—',
     'الحالة': YAS.StatusLabels[t.status] || t.status || '—',
-    'المسؤول': t.assigned_user?.name || t.assignedTo || 'Eng. Adam Farouk',
+    'المسؤول': t.assigned_user?.name || t.assignedTo || 'مهندس الدعم الفني',
     'تاريخ الإنشاء': t.created_at || t.createdAt || '—',
     'آخر تحديث': t.updated_at || t.updatedAt || '—',
     'وصف المشكلة': t.request?.description || t.description || '—'
@@ -248,7 +248,7 @@ function exportToPDF(elementId, filename = 'export.pdf') {
       </div>
       ${content}
       <div class="footer">
-        <p>إشراف Eng. Adam Farouk · جميع الحقوق محفوظة لـ YAS © 2026</p>
+        <p>إشراف مهندس الدعم الفني · جميع الحقوق محفوظة لـ YAS © 2026</p>
       </div>
     </body>
     </html>
@@ -474,7 +474,7 @@ async function exportReportsToExcel() {
     'نوع الطلب': YAS.RequestTypeLabels[t.request_type] || t.request_type || t.request?.type || '—',
     'الأولوية': YAS.PriorityLabels[t.priority] || t.priority || t.request?.priority || '—',
     'الحالة': YAS.StatusLabels[t.status] || t.status || '—',
-    'المسؤول': t.assigned_user?.name || t.assignedTo || 'Eng. Adam Farouk',
+    'المسؤول': t.assigned_user?.name || t.assignedTo || 'مهندس الدعم الفني',
     'تاريخ الإنشاء': t.created_at || t.createdAt || '—',
     'آخر تحديث': t.updated_at || t.updatedAt || '—',
     'وصف المشكلة': t.request?.description || t.description || '—'
@@ -571,7 +571,7 @@ async function exportReportsToWord() {
       </table>
 
       <p style="text-align: center; margin-top: 30px; color: #666; font-size: 12px;">
-        إشراف Eng. Adam Farouk · جميع الحقوق محفوظة لـ YAS © 2026
+        إشراف مهندس الدعم الفني · جميع الحقوق محفوظة لـ YAS © 2026
       </p>
     </body>
     </html>
