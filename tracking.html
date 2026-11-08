@@ -16,11 +16,17 @@
   <link rel="stylesheet" href="css/loading-animations.css">
   <link rel="stylesheet" href="css/keyboard-shortcuts.css">
   <script>
-    // Check if loading screen has been shown
-    if (!sessionStorage.getItem('loadingShown')) {
-      // Save the current URL with ticket parameter
-      sessionStorage.setItem('returnUrl', window.location.href);
-      window.location.href = 'loading.html';
+    // Get ticket ID from URL parameter
+    function getTicketIdFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('ticket');
+    }
+
+    // Auto-search if ticket parameter exists
+    const ticketId = getTicketIdFromURL();
+    if (ticketId) {
+      // Store for use after page load
+      window.autoSearchTicket = ticketId;
     }
 
     // Hide page loader on load
@@ -30,6 +36,19 @@
         setTimeout(() => {
           pageLoader.classList.add('hidden');
         }, 500);
+      }
+
+      // Auto-search if ticket parameter exists
+      if (window.autoSearchTicket) {
+        const input = document.getElementById('track-input');
+        const form = document.getElementById('tracking-form');
+        const resultDiv = document.getElementById('ticket-result');
+
+        if (input && form && resultDiv) {
+          input.value = window.autoSearchTicket;
+          // Trigger form submission to search
+          form.dispatchEvent(new Event('submit'));
+        }
       }
     });
   </script>
