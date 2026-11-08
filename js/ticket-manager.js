@@ -651,7 +651,7 @@ const TicketDetails = {
           };
           const statusLabel = statusLabels[newStatus] || newStatus;
           const trackingUrl = `https://yas-portfolio-eta.vercel.app/tracking.html?ticket=${this.ticket.ticket_number}`;
-          const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم تحديث حالة طلبك ${this.ticket.ticket_number} إلى: ${statusLabel}\n\n${note ? `ملاحظة: ${note}\n\n` : ''}تتبع طلبك: ${trackingUrl}`;
+          const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم تحديث حالة طلبك ${this.ticket.ticket_number} إلى: ${statusLabel}\n\n${note ? `ملاحظة: ${note}\n\n` : ''}لتتبع طلبك اضغط على الرابط:\n${trackingUrl}`;
 
           const formattedNumber = this.formatWhatsAppNumber(waNumber);
           const waLink = YAS.buildWhatsAppLink(formattedNumber, waMsg);
@@ -717,7 +717,7 @@ const TicketDetails = {
             const waNumber = this.ticket.customer?.whatsapp || this.ticket.customer?.phone;
             if (waNumber) {
               const trackingUrl = `https://yas-portfolio-eta.vercel.app/tracking.html?ticket=${ticketId}`;
-              const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم إغلاق طلبك ${ticketId} بنجاح.\n\nتتبع طلبك: ${trackingUrl}\n\nشكراً لتعاملكم معنا!`;
+              const waMsg = `مرحباً ${this.ticket.customer?.name || 'العميل'}،\n\nتم إغلاق طلبك ${ticketId} بنجاح.\n\nلتتبع طلبك اضغط على الرابط:\n${trackingUrl}\n\nشكراً لتعاملكم معنا!`;
               const formattedNumber = this.formatWhatsAppNumber(waNumber);
               const waLink = YAS.buildWhatsAppLink(formattedNumber, waMsg);
               window.open(waLink, '_blank');
