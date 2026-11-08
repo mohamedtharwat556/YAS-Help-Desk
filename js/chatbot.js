@@ -3,9 +3,193 @@ class ChatbotWidget {
   constructor() {
     this.isOpen = false;
     this.conversationHistory = [];
+    this.context = {
+      userIntent: null,
+      problemType: null,
+      deviceType: null,
+      urgency: 'normal',
+      previousQuestions: [],
+      solutionAttempts: 0
+    };
     this.faqDatabase = this.buildFAQDatabase();
     this.loadConversationHistory(); // Load from localStorage
     this.init();
+  }
+
+  // Analyze user intent
+  analyzeIntent(message) {
+    const lowerMessage = message.toLowerCase();
+
+    // Intent classification
+    if (lowerMessage.includes('سجل') || lowerMessage.includes('طلب') || lowerMessage.includes('تذكرة')) {
+      return 'create_ticket';
+    }
+    if (lowerMessage.includes('تتبع') || lowerMessage.includes('حالة') || lowerMessage.includes('رقم الطلب')) {
+      return 'track_ticket';
+    }
+    if (lowerMessage.includes('مشكلة') || lowerMessage.includes('عيال') || lowerMessage.includes('مشاكل')) {
+      return 'report_problem';
+    }
+    if (lowerMessage.includes('فني') || lowerMessage.includes('موظف') || lowerMessage.includes('دعم')) {
+      return 'contact_support';
+    }
+    if (lowerMessage.includes('اتصل') || lowerMessage.includes('واتساب') || lowerMessage.includes('تواصل')) {
+      return 'contact_us';
+    }
+
+    return 'general_inquiry';
+  }
+
+  // Detect device type from message
+  detectDeviceType(message) {
+    const deviceKeywords = {
+      'لابتوب': ['لابتوب', 'لابتوب', 'notebook', 'لاب'],
+      'كمبيوتر': ['كمبيوتر', 'pc', 'computer', 'ديسك توب'],
+      'كاشير': ['كاشير', 'pos', 'cashier'],
+      'شاشة تفاعلية': ['شاشة تفاعلية', 'interactive', 'touch screen'],
+      'بروجكتر': ['بروجكتر', 'projector', 'بروجكشن'],
+      'شاشة': ['شاشة', 'monitor', 'display'],
+      'طابعة': ['طابعة', 'printer'],
+      'شبكة': ['شبكة', 'network', 'واي فاي', 'wifi', 'انترنت', 'internet'],
+      'كاميرا': ['كاميرا', 'camera'],
+      'ميكروفون': ['ميكروفون', 'microphone', 'ميك']
+    };
+
+    for (const [device, keywords] of Object.entries(deviceKeywords)) {
+      if (keywords.some(keyword => message.toLowerCase().includes(keyword))) {
+        return device;
+      }
+    }
+
+    return null;
+  }
+
+  // Detect urgency level
+  detectUrgency(message) {
+    const urgentKeywords = ['عاجل', 'فوراً', 'سريع', 'مهم جداً', 'كارثة', 'حالياً', 'الآن'];
+    const lowerMessage = message.toLowerCase();
+
+    if (urgentKeywords.some(keyword => lowerMessage.includes(keyword))) {
+      return 'urgent';
+    }
+
+    return 'normal';
+  }
+
+  // Update context based on message
+  updateContext(message) {
+    this.context.userIntent = this.analyzeIntent(message);
+    this.context.deviceType = this.detectDeviceType(message) || this.context.deviceType;
+    this.context.urgency = this.detectUrgency(message);
+    this.context.previousQuestions.push(message);
+
+    // Keep only last 5 questions to avoid memory overflow
+    if (this.context.previousQuestions.length > 5) {
+      this.context.previousQuestions.shift();
+    }
+  }
+
+  // Get smart response based on context
+  getSmartResponse(message) {
+    this.updateContext(message);
+
+    // Check if this is a follow-up question
+    if (this.context.previousQuestions.length > 1) {
+      const followUpResponse = this.getFollowUpResponse(message);
+      if (followUpResponse) return followUpResponse;
+    }
+
+    // Check FAQ database first
+    const faqResponse = this.getFAQResponse(message);
+    if (faqResponse) return faqResponse;
+
+    // Use Groq AI for complex queries
+    return this.getGroqResponse(message);
+  }
+
+  // Get follow-up response based on context
+  getFollowUpResponse(message) {
+    const previousIntent = this.context.userIntent;
+    const deviceType = this.context.deviceType;
+
+    // If user previously asked about a problem and now asks for help
+    if (previousIntent === 'report_problem' && deviceType) {
+      return `أفهم أن لديك مشكلة في ${deviceType}. هل تريدني أن أساعدك في حلها أم تفضل تسجيل طلب دعم فني؟ 🤔`;
+    }
+
+    // If user asked about tracking and now asks about status
+    if (previousIntent === 'track_ticket') {
+      return `يمكنك تتبع طلبك عبر صفحة التتبع. هل لديك رقم الطلب؟ أو تريد مني مساعدتك في العثور عليه؟ 🔍`;
+    }
+
+    return null;
+  }
+
+  // Get FAQ response with smart matching
+  getFAQResponse(message) {
+    const normalizedMessage = this.normalizeArabic(message.toLowerCase().trim());
+
+    // Check for intent-based responses
+    if (this.context.userIntent === 'create_ticket') {
+      return 'حسناً! سأساعدك في تسجيل طلب دعم جديد 📝\n\nسيتم نقلك تلقائياً إلى صفحة تسجيل الطلب بعد ثانيتين...';
+    }
+
+    if (this.context.userIntent === 'track_ticket') {
+      return 'حسناً! سأساعدك في تتبع طلبك 🔍\n\nسيتم نقلك تلقائياً إلى صفحة تتبع الطلب بعد ثانيتين...\n\nستحتاج رقم الطلب (مثل: YAS-SUP-XXXXX)';
+    }
+
+    if (this.context.userIntent === 'contact_support') {
+      return 'يمكنك التواصل مع الدعم الفني عبر:\n\n📞 الهاتف: 01101267185\n📱 واتساب: سيتم فتح تلقائياً عند تحديث حالة طلبك\n\nأو سجل طلب جديد وسيقوم الفني بالتواصل معك';
+    }
+
+    // Check for device-specific responses
+    if (this.context.deviceType) {
+      const deviceResponse = this.getDeviceSpecificResponse(this.context.deviceType, message);
+      if (deviceResponse) return deviceResponse;
+    }
+
+    // Check urgency
+    if (this.context.urgency === 'urgent') {
+      return 'أفهم أن الأمر عاجل! ⚡\n\nسأساعدك بأسرع وقت ممكن. يرجى تزويدي بتفاصيل المشكلة وسأوجهك للحل المناسب.\n\nأو اتصل بالدعم الفني مباشرة: 01101267185 📞';
+    }
+
+    // Direct exact match from FAQ database
+    if (this.faqDatabase[normalizedMessage]) {
+      return this.faqDatabase[normalizedMessage];
+    }
+
+    // Smart fuzzy matching with scoring
+    let bestMatch = null;
+    let bestScore = 0;
+
+    for (const [key, response] of Object.entries(this.faqDatabase)) {
+      const normalizedKey = this.normalizeArabic(key);
+      const score = this.calculateMatchScore(normalizedMessage, normalizedKey);
+
+      if (score > bestScore && score >= 0.6) {
+        bestScore = score;
+        bestMatch = response;
+      }
+    }
+
+    if (bestMatch) {
+      return bestMatch;
+    }
+
+    // If no match found, suggest creating a ticket
+    return 'عذراً، هذه المشكلة تحتاج تقييم فني متخصص 🤔\n\nيرجى تسجيل طلب جديد وسيقوم فريقنا بمساعدتك في أسرع وقت 🔧\n\nسجل طلبك هنا: <a href="support.html" style="color: #1a56db; text-decoration: underline;">تسجيل طلب جديد</a>\n\nأو اتصل بنا مباشرة: 01101267185 📞';
+  }
+
+  // Get device-specific response
+  getDeviceSpecificResponse(deviceType, message) {
+    const deviceResponses = {
+      'لابتوب': 'أفهم أن لديك مشكلة في اللابتوب 💻\n\nالخطوات الشائعة:\n1. أعد تشغيل الجهاز\n2. افحص الشحن والبطارية\n3. تأكد من عدم وجود تحديثات معلقة\n\nإذا استمرت المشكلة، سجل طلب دعم فني',
+      'كمبيوتر': 'أفهم أن لديك مشكلة في الكمبيوتر 🖥️\n\nالخطوات الشائعة:\n1. أعد تشغيل الجهاز\n2. افحص الكابلات والاتصالات\n3. تأكد من التهوية المناسبة\n\nإذا استمرت المشكلة، سجل طلب دعم فني',
+      'شبكة': 'أفهم أن لديك مشكلة في الشبكة 🌐\n\nالخطوات الشائعة:\n1. أعد تشغيل الراوتر\n2. افحص كابل الإنترنت\n3. تأكد من كلمة مرور الواي فاي\n\nإذا استمرت المشكلة، سجل طلب دعم فني',
+      'طابعة': 'أفهم أن لديك مشكلة في الطابعة 🖨️\n\nالخطوات الشائعة:\n1. تأكد من الورق والحبر\n2. أعد تشغيل الطابعة\n3. افحص الاتصال بالكمبيوتر\n\nإذا استمرت المشكلة، سجل طلب دعم فني'
+    };
+
+    return deviceResponses[deviceType] || null;
   }
 
   // Get all problem suggestions
@@ -1464,16 +1648,16 @@ class ChatbotWidget {
     this.showTyping();
 
     try {
-      // Try Groq AI API first
-      const response = await this.getGroqResponse(message);
-      
+      // Use smart response with context awareness
+      const response = await this.getSmartResponse(message);
+
       this.hideTyping();
       this.addMessage(response, 'bot');
-      
+
       // Update conversation history
       this.conversationHistory.push({ role: 'user', content: message });
       this.conversationHistory.push({ role: 'assistant', content: response });
-      
+
       // Keep only last 20 messages for better memory
       if (this.conversationHistory.length > 20) {
         this.conversationHistory = this.conversationHistory.slice(-20);
@@ -1482,13 +1666,15 @@ class ChatbotWidget {
       // Save to localStorage
       this.saveConversationHistory();
     } catch (error) {
-      console.error('Groq API error, falling back to local FAQ:', error);
-      
-      // Fallback to local FAQ matching
-      const response = this.getSmartResponse(message);
-      
+      console.error('Error getting response:', error);
+
+      // Fallback to FAQ database
+      const response = this.getFAQResponse(message) || 'عذراً، حدث خطأ. يرجى المحاولة مرة أخرى أو تواصل مع الدعم الفني. 🙏';
+
       this.hideTyping();
       this.addMessage(response, 'bot');
+    }
+  }
       
       // Update conversation history
       this.conversationHistory.push({ role: 'user', content: message });
